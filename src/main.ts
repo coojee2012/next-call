@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
-import { VersioningType } from '@nestjs/common';
+import { VersioningType, ValidationPipe} from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+      cors: true,
+      bodyParser: true,
+  });
   app.enableVersioning({
     type: VersioningType.URI,
   });
@@ -23,6 +26,13 @@ async function bootstrap() {
        },
     }),
   );
+  app.useGlobalPipes(new ValidationPipe({
+    disableErrorMessages: false,
+    whitelist: false, // if true, will delete dto values without @
+    forbidNonWhitelisted: false,
+    transform: true,
+  }));
   await app.listen(3001);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

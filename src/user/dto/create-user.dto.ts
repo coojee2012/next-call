@@ -1,7 +1,8 @@
 export class CreateUserDto {
-    userName: string;
+    username: string;
+    password: string;
     firstName: string;
     lastName: string;
     age: number;
-    tags: string[];
+    roleIds: number[];
 }

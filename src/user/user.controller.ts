@@ -11,6 +11,9 @@ import {
   Res,
   Session,
   Inject,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+  ParseIntPipe
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,20 +22,31 @@ import { LoginUserDto } from './dto/login.dot';
 import { IUser } from './interfaces/user.interface';
 import * as svgCaptCha from 'svg-captcha';
 import { Request, Response } from 'express';
-import session from 'express-session';
+import { LoggerService } from 'src/logger/logger.service';
+import { ConfigService } from '@nestjs/config';
+import { UserEntity } from './entities/user.entity';
+import { UpdateResult } from 'typeorm';
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly logger: LoggerService,
+    private readonly configService: ConfigService,
+  ) {
+    this.logger.setContext(UserController.name);
+  }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity | undefined> {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll(): IUser[] {
-    return this.userService.findAll();
+  async findAll(): Promise<UserEntity[]> {
+    const users =  await this.userService.findAll();
+    return users;
   }
 
   @Get('code')
@@ -55,7 +69,11 @@ export class UserController {
   }
 
   @Post('authenticate')
-  login(@Req() req: Request, @Body() body: LoginUserDto, @Session() session: any) {
+  login(
+    @Req() req: Request,
+    @Body() body: LoginUserDto,
+    @Session() session: any,
+  ) {
     console.log(body, session);
     if (body?.code?.toLocaleLowerCase() == session?.code?.toLocaleLowerCase()) {
       return { code: 200 };
@@ -65,12 +83,12 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserEntity | null> {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) : Promise<UpdateResult> {
     return this.userService.update(+id, updateUserDto);
   }
 
