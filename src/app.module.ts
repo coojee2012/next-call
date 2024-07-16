@@ -1,4 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -24,6 +25,11 @@ import { join } from 'path';
 import { DgramService } from './dgram/dgram.service';
 import { ProcessService } from './process/process.service';
 import { ApolloDriver } from '@nestjs/apollo';
+import { EslModule } from './esl/esl.module';
+import { EslService } from './esl/esl.service';
+import { LoggerService } from './logger/logger.service';
+import { PbxModule } from './pbx/pbx.module';
+import { TenantModule } from './tenant/tenant.module';
 
 @Module({
   imports: [
@@ -60,47 +66,83 @@ import { ApolloDriver } from '@nestjs/apollo';
       }),
       inject: [ConfigService],
     }),
-    DgramModule.forRoot({address: '0.0.0.0', port: 3002}),
+    DgramModule.forRoot({ address: '0.0.0.0', port: 3002 }),
+    EventEmitterModule.forRoot({
+      // set this to `true` to use wildcards
+      wildcard: true,
+      // the delimiter used to segment namespaces
+      delimiter: '::',
+      // set this to `true` if you want to emit the newListener event
+      newListener: false,
+      // set this to `true` if you want to emit the removeListener event
+      removeListener: false,
+      // the maximum amount of listeners that can be assigned to an event
+      maxListeners: 10000,
+      // show event name in memory leak message when more than maximum amount of listeners is assigned
+      verboseMemoryLeak: false,
+      // disable throwing uncaughtException if an error event is emitted and it has no listeners
+      ignoreErrors: false,
+    }),
     UserModule,
     LoggerModule,
     RoleModule,
     TasksModule,
     GraphQLModule.forRoot({
       driver: ApolloDriver,
-			typePaths: ['./**/*.graphql'],
-			path: '/',
-			resolvers: { JSON: GraphQLJSON },
-			subscriptions: {
-				path: '/ws',
-				keepAlive: 10000,
-			},
-			installSubscriptionHandlers: true,
-			resolverValidationOptions: {
-				requireResolversForResolveType: false,
-			},
-			debug: true,
-			definitions: {
-				path: join(process.cwd(), 'src/graphql.schema.ts'),
-				outputAs: 'class',
-			},
-		}),
-		ProcessModule,
+      typePaths: ['./**/*.graphql'],
+      path: '/',
+      resolvers: { JSON: GraphQLJSON },
+      subscriptions: {
+        path: '/ws',
+        keepAlive: 10000,
+      },
+      installSubscriptionHandlers: true,
+      resolverValidationOptions: {
+        requireResolversForResolveType: false,
+      },
+      debug: true,
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.schema.ts'),
+        outputAs: 'class',
+      },
+    }),
+    ProcessModule,
+    EslModule,
+    PbxModule,
+    TenantModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   constructor(
-		private readonly dgramService: DgramService,
-		private readonly processService: ProcessService,
-	) {}
+    private readonly loggerr: LoggerService,
+    private readonly dgramService: DgramService,
+    private readonly processService: ProcessService,
+    private readonly eslService: EslService,
+  ) {}
 
   configure(consumer: MiddlewareConsumer) {
+    this.loggerr.setContext("START APP");
     consumer.apply(CorsMiddleware).forRoutes('*'); // for all routes
     consumer.apply(WhiteListMiddleware).forRoutes('*');
     const dgramSocketServer = this.dgramService.createDgramSocket();
-		this.processService.onMessage(dgramSocketServer);
+    this.processService.onMessage(dgramSocketServer);
+    this.eslService
+      .startOutbound()
+      .then((res) => {
+        this.loggerr.info(null, 'ESL Outbound Server Started OK!')
+      })
+      .catch((err) => {
+        this.loggerr.error(null, 'ESL Outbound Server Started Error!', err)
+      });
+    this.eslService
+      .startInbound()
+      .then((res) => {
+        this.loggerr.info(null, 'ESL Inbound Server Started OK!')
+      })
+      .catch((err) => {
+        this.loggerr.info(null, 'ESL Inbound Server Started Error!', err)
+      });
   }
 }
