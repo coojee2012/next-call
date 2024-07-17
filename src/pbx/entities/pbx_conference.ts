@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, Index } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
 @Entity('pbx_conference')
 @Index(["tenantId", "number"], { unique: true })
-export class PbxConference {
+export class PbxConference extends BaseEntity {
   @Column()
   tenantId: number;
   @Column()

@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from 'config/configuration';
 import databaseConfig from 'config/database.config';
 import { IDtabaseConifg } from 'config/database.config';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -30,6 +31,7 @@ import { EslService } from './esl/esl.service';
 import { LoggerService } from './logger/logger.service';
 import { PbxModule } from './pbx/pbx.module';
 import { TenantModule } from './tenant/tenant.module';
+import { Connection } from './esl/NodeESL/Connection';
 
 @Module({
   imports: [
@@ -83,6 +85,18 @@ import { TenantModule } from './tenant/tenant.module';
       // disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('redis.host'),
+          port: configService.get('redis.port'),
+          password: configService.get('redis.password', undefined),
+        },
+        prefix: 'ESL'
+      }),
+      inject: [ConfigService],
+    }),
     UserModule,
     LoggerModule,
     RoleModule,
@@ -123,26 +137,29 @@ export class AppModule implements NestModule {
   ) {}
 
   configure(consumer: MiddlewareConsumer) {
-    this.loggerr.setContext("START APP");
+    this.loggerr.setContext('START APP');
     consumer.apply(CorsMiddleware).forRoutes('*'); // for all routes
     consumer.apply(WhiteListMiddleware).forRoutes('*');
     const dgramSocketServer = this.dgramService.createDgramSocket();
     this.processService.onMessage(dgramSocketServer);
+    BullModule.registerQueue({
+      name: 'BullQueue,RedLock,PUB,SUB',
+    });
     this.eslService
       .startOutbound()
       .then((res) => {
-        this.loggerr.info(null, 'ESL Outbound Server Started OK!')
+        this.loggerr.info(null, 'ESL Outbound Server Started OK!');
       })
       .catch((err) => {
-        this.loggerr.error(null, 'ESL Outbound Server Started Error!', err)
+        this.loggerr.error(null, 'ESL Outbound Server Started Error!', err);
       });
     this.eslService
       .startInbound()
       .then((res) => {
-        this.loggerr.info(null, 'ESL Inbound Server Started OK!')
+        this.loggerr.info(null, 'ESL Inbound Server Started OK!');
       })
       .catch((err) => {
-        this.loggerr.info(null, 'ESL Inbound Server Started Error!', err)
+        this.loggerr.info(null, 'ESL Inbound Server Started Error!', err);
       });
   }
 }

@@ -1,11 +1,12 @@
 import { Expose } from 'class-transformer';
 import {
+  BaseEntity as TypeOrmBaseEntity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-export abstract class BaseEntity {
+export abstract class BaseEntity extends TypeOrmBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
