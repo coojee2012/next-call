@@ -10,5 +10,23 @@ export class PbxLocalNumberService extends BaseService<PbxLocalNumber> {
     ) {
       super(repository);
     }
+    async getLocalByNumber(tenantId: number, localNumber: string) {
+      try {
+          const localNumberDoc = await this.findOne({
+              tenantId: tenantId,
+              number: localNumber
+          });
+              
+          if(localNumberDoc){
+              return Promise.resolve(localNumberDoc);
+          }else{
+              return Promise.reject(`Can't find localNumber <${localNumber}> for <${tenantId}>!`);
+          }
+         
+
+      } catch (ex) {
+          return Promise.reject(ex);
+      }
+  }
   }
 

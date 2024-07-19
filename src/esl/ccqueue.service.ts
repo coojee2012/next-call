@@ -19,6 +19,8 @@ import { PbxQueue } from 'src/pbx/entities/pbx_queue';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PbxQueueOption } from 'src/pbx/entities/pbx_queue_option';
 import { AnswerStatus } from 'src/pbx/entities/pbx_cdr';
+import { HangupCase } from 'src/pbx/entities/pbx_queue_statistic';
+import { ExtensionSate } from 'src/pbx/entities/pbx_extensionn';
 
 export type dialQueueMemberResult = {
   success: boolean;
@@ -301,7 +303,7 @@ export class CcqueueService {
                     callId,
                     tenantId as number,
                     queueNumber,
-                    'agent',
+                    HangupCase.BY_AGENT,
                   );
                   //this.alegHangupBy = 'agent';
                   const roommId = this.originationUuid
@@ -361,7 +363,7 @@ export class CcqueueService {
                     callId,
                     tenantId as number,
                     queueNumber,
-                    'user',
+                    HangupCase.BY_USER,
                   );
 
                   // _this.R.alegHangupBy = 'visitor';
@@ -496,7 +498,7 @@ export class CcqueueService {
       await this.pbxExtensionService.setAgentState(
         tenantId as number,
         agentNumber,
-        'idle',
+        ExtensionSate.idle,
       );
       //   const stateResult = await service.extension.setAgentState(Object.assign({}, pubData, {
       //     state: _this.endState,
@@ -933,7 +935,7 @@ export class CcqueueService {
           callId,
           tenantId,
           queueNumber,
-          'ring',
+          HangupCase.ON_RING,
         ),
       );
 
@@ -941,7 +943,7 @@ export class CcqueueService {
         this.pbxAgentStatisticService.hangupCall({
           callId,
           bLegId: this.originationUuid,
-          hangupCase: 'ring',
+          hangupCase: HangupCase.ON_RING,
         }),
       );
       tasks.push(
@@ -1001,7 +1003,7 @@ export class CcqueueService {
           callId,
           tenantId,
           queueNumber,
-          'user',
+          HangupCase.BY_USER,
         );
         // _this.R.alegHangupBy = 'visitor';
 
@@ -1213,7 +1215,7 @@ export class CcqueueService {
         agent: agentId,
       });
 
-      await this.pbxExtensionService.setAgentState(tenantId, agentId, 'ring');
+      await this.pbxExtensionService.setAgentState(tenantId, agentId, ExtensionSate.ringing);
       await this.pbxCallProcessService.create({
         caller: caller,
         called: accountCode,
@@ -1303,7 +1305,7 @@ export class CcqueueService {
         await this.pbxExtensionService.setAgentState(
           tenantId,
           agentId,
-          'inthecall',
+          ExtensionSate.inthecall,
         );
 
         // await _this.R.pbxApi.uuidDebugMedia(newId);
@@ -1371,7 +1373,7 @@ export class CcqueueService {
           //     bLegId: _this.R.originationUuid,
           //     hangupCase: 'visitor',
           // });
-          this.pbxExtensionService.setAgentState(tenantId, agentId, 'idle');
+          this.pbxExtensionService.setAgentState(tenantId, agentId, ExtensionSate.idle);
           dialMemberResult.reason = dialResult.reason;
         }
         return dialMemberResult;
@@ -1413,7 +1415,7 @@ export class CcqueueService {
         }
         // _this.R.service.queue.hangupBy({ tenantId, callId: `${callId}_${_this.R.originationUuid}`, hangupBy: 'system' });
 
-        await this.pbxExtensionService.setAgentState(tenantId, agentId, 'idle');
+        await this.pbxExtensionService.setAgentState(tenantId, agentId, ExtensionSate.idle);
         await this.pbxAgentService.noAnsweredCall({
           tenantId,
           queueNumber: queueNumber,

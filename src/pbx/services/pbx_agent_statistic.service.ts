@@ -17,4 +17,7 @@ export class PbxAgentStatisticService extends BaseService<PbxAgentStatistic> {
   answerCall(data:any) {
 
   }
+  setSatisfaction(callId:string, agentLeg:string, inputKey:number) {
+
+  }
 }

@@ -10,11 +10,13 @@ import { TenantModule } from 'src/tenant/tenant.module';
 import { RuntimeDataService } from './runtime-data.service';
 import { CcqueueService } from './ccqueue.service';
 import { QueueWorkerService } from './queue-worker.service';
+import { UserModule } from 'src/user/user.module';
+import { FreeSwitchCallFlowService } from './free-switch-call-flow.service';
 
 
 @Module({
-  imports:[PbxModule, TenantModule],
-  providers: [EslService, EventService, RedisService, FlowBaseService, IvrService, FreeSwitchPbxService, RuntimeDataService, CcqueueService, QueueWorkerService],
+  imports:[PbxModule, TenantModule, UserModule],
+  providers: [EslService, EventService, RedisService, FlowBaseService, IvrService, FreeSwitchPbxService, RuntimeDataService, CcqueueService, QueueWorkerService, FreeSwitchCallFlowService],
   exports: [
 		EslService,
 	],

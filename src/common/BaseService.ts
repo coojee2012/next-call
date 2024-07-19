@@ -3,7 +3,7 @@ import { BaseEntity } from './entiies/BaseEntity';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export abstract class BaseService<T extends BaseEntity> {
-  constructor(private readonly repository: Repository<T>) {}
+  constructor(protected readonly repository: Repository<T>) {}
 
   async findAll(): Promise<T[]> {
     return await this.repository.find();
@@ -26,9 +26,19 @@ export abstract class BaseService<T extends BaseEntity> {
     return await this.repository.create(entity);
   }
 
+  async bulkCreate(entityLikeArray: DeepPartial<T>[]): Promise<T[]> {
+    const entities = await this.repository.create(entityLikeArray as DeepPartial<T>[]);
+    return entities;
+  }
+
   async update(id: number, data: Partial<T>): Promise<T|null> {
     await this.repository.update(id, data as QueryDeepPartialEntity<T>);
     return await this.findById(id);
+  }
+
+  async updateOne(where: Partial<T>, data: Partial<T>): Promise<T|null> {
+    await this.repository.update(where as FindOptionsWhere<T>, data as QueryDeepPartialEntity<T>);
+    return await this.findOne(where);
   }
 
   async delete(id: number): Promise<void> {
