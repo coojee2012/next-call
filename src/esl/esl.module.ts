@@ -1,4 +1,4 @@
-import { Module,DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { EslService } from './esl.service';
 import { EventService } from './event/event.service';
 import { RedisService } from './redis/redis.service';
@@ -15,10 +15,19 @@ import { FreeSwitchCallFlowService } from './free-switch-call-flow.service';
 
 
 @Module({
-  imports:[PbxModule, TenantModule, UserModule],
-  providers: [EslService, EventService, RedisService, FlowBaseService, IvrService, FreeSwitchPbxService, RuntimeDataService, CcqueueService, QueueWorkerService, FreeSwitchCallFlowService],
-  exports: [
-		EslService,
-	],
+  imports: [PbxModule, TenantModule, UserModule],
+  providers: [
+    EslService,
+    EventService,
+    RedisService,
+    FlowBaseService,
+    IvrService,
+    FreeSwitchPbxService,
+    RuntimeDataService,
+    CcqueueService,
+    QueueWorkerService,
+    FreeSwitchCallFlowService,
+  ],
+  exports: [EslService],
 })
 export class EslModule {}

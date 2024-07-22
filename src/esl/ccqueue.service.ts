@@ -93,7 +93,7 @@ export class CcqueueService {
    * @param queueNumber
    * @returns {Promise.<*>}
    */
-  async dialQueue(queueNumber: string): Promise<dialQueueResult> {
+  async dialQueue(conn_id:string, queueNumber: string): Promise<dialQueueResult> {
     try {
       this.logger.debug(
         'CcqueueService',
@@ -105,8 +105,8 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
-      const { CallDirection, callType } = this.runtimeData.getChannelData();
+      } = this.runtimeData.getRunData(conn_id);
+      const { CallDirection, callType } = this.runtimeData.getChannelData(conn_id);
       const tenantInfo = await this.runtimeData.getTenantInfo();
       this.agentEndState = 'idle';
       const bullQueueName = `esl_q_queue::${tenantId}::${queueNumber}`;
@@ -114,7 +114,7 @@ export class CcqueueService {
         tenantId as number,
         queueNumber,
       )) as Queue;
-      this.addBullQueueMonitor();
+      this.addBullQueueMonitor(conn_id);
 
       let result: dialQueueResult = {
         success: false,
@@ -131,6 +131,7 @@ export class CcqueueService {
       const agentType = this.config.get('sipRegInFS') ? 'user' : 'kamailio';
       this.queue = await this.pbxQueueService.getQueue(tenantId, queueNumber) as PbxQueue;
       const enterQueueTime = await this.fsPbx.getChannelVar(
+        conn_id,
         'queue_enter_time',
         callId,
       );
@@ -145,7 +146,7 @@ export class CcqueueService {
       });
 
       // 用户没有设置reqType
-      this.cgrReqType = await this.fsPbx.getChannelVar('cgr_reqtype', callId);
+      this.cgrReqType = await this.fsPbx.getChannelVar(conn_id, 'cgr_reqtype', callId);
       if (this.queue && this.cgrReqType) {
         const { queueName, queue: queueConf } = this.queue;
         const { maxWaitTime, enterTipFile } = queueConf;
@@ -165,7 +166,7 @@ export class CcqueueService {
 
         if (!this.queue.members.length) {
           this.logger.debug(null, '=====ENTER A EMPTY QUEUE=====');
-          await this.enterEmptyQueue();
+          await this.enterEmptyQueue(conn_id);
           return Promise.resolve(result);
         }
 
@@ -195,11 +196,13 @@ export class CcqueueService {
         // 未应答前主叫挂机,坐席接听电话后将取消这个监听
 
         this.fsPbx.addConnLisenter(
+          conn_id,
           callerHangupEvent,
           'once',
           this.onCallerHangupHandle.bind(this),
         );
         this.fsPbx.addConnLisenter(
+          conn_id,
           `esl::event::PLAYBACK_START::${callId}`,
           'once',
           this.startFindMemberJob.bind(this),
@@ -212,7 +215,7 @@ export class CcqueueService {
 
         this.queueMusicFile =
           this.queue.queue.mohSound || 'local_stream://moh/8000';
-        await this.playQueueMusic();
+        await this.playQueueMusic(conn_id);
 
         // 下面的代码只有在answer之后才能执行
         const bridgeResult = await new Promise<any>((resolve, reject) => {
@@ -247,7 +250,7 @@ export class CcqueueService {
           let doneOver = false;
           const doneAfter = async () => {
             try {
-              await this.afterQueueEnd({
+              await this.afterQueueEnd(conn_id, {
                 answered: result.answered,
                 agentNumber: result.agentNumber,
                 queueNumber,
@@ -400,12 +403,14 @@ export class CcqueueService {
             };
 
             this.fsPbx.addConnLisenter(
+              conn_id,
               `esl::event::CHANNEL_HANGUP::${this.originationUuid}`,
               'once',
               onAgentHangup,
             );
 
             this.fsPbx.addConnLisenter(
+              conn_id,
               `esl::event::CHANNEL_HANGUP::${callId}`,
               'once',
               onCallerHangup,
@@ -413,6 +418,7 @@ export class CcqueueService {
 
             // TODO 在坐席统计表中,发现挂机由system的原因可能是这里引起的,如果先监听到此事件,是否能从evt中获取到是谁引起的挂机,否者要考虑如何确定
             this.fsPbx.addConnLisenter(
+              conn_id,
               'esl::event::disconnect::notice',
               'once',
               onDisconnect,
@@ -422,7 +428,7 @@ export class CcqueueService {
             // _this.R.recordFiles[.callId] = `${_this.R.callId}`;
             const recordFileName = `${callId}.${this.originationUuid}`;
             this.fsPbx
-              .uuidRecord(callId, 'start', tenantId as number, '', recordFileName)
+              .uuidRecord(conn_id, callId, 'start', tenantId as number, '', recordFileName)
               .then((res) => {
                 this.logger.debug('CCQueueService', '启动队列录音成功!');
                 return this.pbxRecordFileService.create({
@@ -464,7 +470,7 @@ export class CcqueueService {
     }
   }
 
-  async afterQueueEnd({ answered, agentNumber, queueNumber }: any) {
+  async afterQueueEnd(conn_id:string, { answered, agentNumber, queueNumber }: any) {
     // const _this = this;
     // const { tenantId, fsName, fsCoreId, callType, callId, originationUuid, caller, DND, direction, logger, service } = _this.R;
     // const pubData = {
@@ -494,7 +500,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       await this.pbxExtensionService.setAgentState(
         tenantId as number,
         agentNumber,
@@ -523,7 +529,7 @@ export class CcqueueService {
     }
   }
 
-  addBullQueueMonitor() {
+  addBullQueueMonitor(conn_id:string) {
     this.bullQueue.on('error', (error) => {
       // An error occured.
       this.logger.error(null, 'in queue bullqueue error:', error);
@@ -545,7 +551,7 @@ export class CcqueueService {
 
     // this.bullQueue.on('global:completed', this.onFindQueueMember.bind(this)); // 感觉多执行了几次
     this.bullQueue.on('global:failed', (jobId, err) => {
-      this.onJobFail(jobId, err)
+      this.onJobFail(conn_id, jobId, err)
         .then()
         .catch((err) => {});
     });
@@ -559,7 +565,7 @@ export class CcqueueService {
     // });
   }
 
-  async timoutCheck() {
+  async timoutCheck(conn_id:string) {
     try {
       const {
         tenantId,
@@ -567,7 +573,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       let busyTipTime = this.startTime;
       const now = new Date().getTime();
       if (this.isDoneBusyTip || this.isDoneTimeoutTip) {
@@ -591,11 +597,11 @@ export class CcqueueService {
       ) {
         this.isDoneTimeoutTip = true;
         await this.fsPbx.uuidBreak(callId);
-        const res = await this.dialQueueTimeOut();
+        const res = await this.dialQueueTimeOut(conn_id);
         // 客户选择继续等待
         if (res && res.wait) {
           this.startTime = new Date().getTime();
-          await this.playQueueMusic();
+          await this.playQueueMusic(conn_id);
         }
         // 客户挂机
         else {
@@ -622,7 +628,7 @@ export class CcqueueService {
           abtInputErrRetry = -1,
         } = this.queue?.queue as PbxQueueOption;
         await this.fsPbx.uuidBreak(callId);
-        const res = await this.allBusyTip({
+        const res = await this.allBusyTip(conn_id, {
           abtFile,
           abtKeyTimeOut,
           abtWaitTime,
@@ -636,7 +642,7 @@ export class CcqueueService {
         this.logger.debug(null, `队列全忙，用户是否选择继续等待:${res}`);
         if (res) {
           busyTipTime = new Date().getTime();
-          await this.playQueueMusic();
+          await this.playQueueMusic(conn_id);
         }
         this.isDoneBusyTip = false;
       } else {
@@ -650,7 +656,7 @@ export class CcqueueService {
     }
   }
 
-  async startFindMemberJob() {
+  async startFindMemberJob(conn_id:string) {
     try {
       const {
         tenantId,
@@ -658,7 +664,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       this.logger.debug(null,
         `Start Find Member!Pass ${this.addInQueueJobTimes} Times!`,
       );
@@ -702,7 +708,7 @@ export class CcqueueService {
     }
   }
 
-  async onJobFail(jobId:any, err:any) {
+  async onJobFail(conn_id:string, jobId:any, err:any) {
     try {
       this.logger.info('queue job fail:', jobId, err);
       if (jobId === this.queueJob.id) {
@@ -714,10 +720,10 @@ export class CcqueueService {
         // 超时的情况
         else if (err && err.maxTimeOut) {
           this.logger.info('queue job 3333:', err.maxTimeOut);
-          const result = await this.dialQueueTimeOut();
+          const result = await this.dialQueueTimeOut(conn_id);
           if (result.wait) {
-            await this.playQueueMusic();
-            await this.startFindMemberJob();
+            await this.playQueueMusic(conn_id);
+            await this.startFindMemberJob(conn_id);
           }
         } else {
           this.logger.info('queue job 444444:', err);
@@ -737,14 +743,14 @@ export class CcqueueService {
    * @param job
    * @param data
    */
-  async onFindQueueMember(jobId:any, data:any) {
+  async onFindQueueMember(conn_id:string, jobId:any, data:any) {
     const {
       tenantId,
       callId,
       caller,
       callee: called,
       routerLine,
-    } = this.runtimeData.getRunData();
+    } = this.runtimeData.getRunData(conn_id);
     try {
       this.logger.debug(null, `On Find Queue Member ${jobId} ${this.queueJob.id}`);
 
@@ -778,7 +784,7 @@ export class CcqueueService {
           const startCallAgentTime = new Date();
           this.agentId = agentInfo.agentId;
           // 拨打坐席，当坐席应答后桥接坐席和用户，返回桥接后的结果
-          const dialResult = await this.dialQueueMember({ agentInfo });
+          const dialResult = await this.dialQueueMember(conn_id, { agentInfo });
           this.logger.debug(
             'CCQueueService',
             'dialQueueMember result:',
@@ -788,7 +794,7 @@ export class CcqueueService {
           if (this.isCallerHangup) {
             this.logger.info(null, 'When find Queue Member, Caller is Hangup');
           } else if (!dialResult.success) {
-            await this.startFindMemberJob();
+            await this.startFindMemberJob(conn_id);
           } else {
             this.queueAnswered = true;
             result.success = true;
@@ -798,7 +804,7 @@ export class CcqueueService {
             // 针对电话签入方式的坐席 在桥接后的一些特殊处理
             if (agentInfo.phoneLogin === 'yes') {
               const { channelName, useContext } =
-                this.runtimeData.getChannelData();
+                this.runtimeData.getChannelData(conn_id);
               const tenantInfo = this.runtimeData.getTenantInfo();
               await this.pbxCdrService.create({
                 tenantId,
@@ -836,27 +842,27 @@ export class CcqueueService {
           this.logger.error(null, 'findQueueMemberEvent Error:', agentInfo);
           // 寻找坐席异常的通知
           if (!this.isCallerHangup) {
-            await this.fsPbx.uuidTryKill(callId);
+            await this.fsPbx.uuidTryKill(conn_id, callId);
           }
         }
       }
     } catch (ex) {
       this.logger.error('onFindQueueMember:', ex);
       if (!this.isCallerHangup) {
-        await this.fsPbx.uuidTryKill(callId);
+        await this.fsPbx.uuidTryKill(conn_id, callId);
       }
     }
   }
 
-  async onFindQueueMemberByRedisPub(data:any) {
+  async onFindQueueMemberByRedisPub(conn_id:string, data:any) {
     try {
-      return await this.onFindQueueMember(this.queueJob.id, data);
+      return await this.onFindQueueMember(conn_id, this.queueJob.id, data);
     } catch (ex) {
       return Promise.resolve();
     }
   }
 
-  async onCallerHangupHandle(evt:any) {
+  async onCallerHangupHandle(conn_id:string, evt:any) {
     try {
       const {
         tenantId,
@@ -864,14 +870,14 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       const { queueName, queueNumber, queue: queueConf } = this.queue;
       this.isCallerHangup = true;
       if (this.queueAnswered) {
         // await this.callerHangupAnswered();
       } else {
         this.logger.debug('CCQueueService', '主叫在接听前挂机了!');
-        await this.callerHangupOnWaiting();
+        await this.callerHangupOnWaiting(conn_id);
       }
     } catch (ex) {
       this.logger.error('Done Caller Hangup ERROR:', ex);
@@ -882,14 +888,14 @@ export class CcqueueService {
   /**
    * 主叫在未应答前，挂机
    */
-  async callerHangupOnWaiting() {
+  async callerHangupOnWaiting(conn_id:string) {
     const {
       tenantId,
       callId,
       caller,
       callee: called,
       routerLine,
-    } = this.runtimeData.getRunData();
+    } = this.runtimeData.getRunData(conn_id);
     try {
       const { queueName, queueNumber, queue: queueConf } = this.queue;
       // result.callerHangup = true;
@@ -914,7 +920,7 @@ export class CcqueueService {
         this.logger.debug(null, `Tell Bull Queue Stop The Job :${jobState}`);
 
         if (jobState === 'active') {
-          await this.stopFindAgentJob(this.queueJob.id);
+          await this.stopFindAgentJob(conn_id, this.queueJob.id);
         } else {
           await this.queueJob.remove();
         }
@@ -947,7 +953,7 @@ export class CcqueueService {
         }),
       );
       tasks.push(
-        this.afterQueueEnd({
+        this.afterQueueEnd(conn_id, {
           answered: false,
           agentNumber: '',
           queueNumber: queueNumber,
@@ -977,7 +983,7 @@ export class CcqueueService {
     }
   }
 
-  async callerHangupAnswered() {
+  async callerHangupAnswered(conn_id:string) {
     try {
       this.logger.debug('CCQueueService', '主叫在接听后挂机了!');
       const {
@@ -986,7 +992,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       const { queueName, queueNumber, queue: queueConf } = this.queue;
       if (!this.queueDone) {
         this.queueDone = true;
@@ -1076,16 +1082,16 @@ export class CcqueueService {
     // }
   }
 
-  async playQueueMusic() {
+  async playQueueMusic(conn_id:string) {
     try {
-      const { tenantId, callId } = this.runtimeData.getRunData();
+      const { tenantId, callId } = this.runtimeData.getRunData(conn_id);
       await this.fsPbx.uuidBroadcast(callId, this.queueMusicFile, 'aleg');
     } catch (ex) {
       return Promise.reject(ex);
     }
   }
 
-  async dialQueueMember({
+  async dialQueueMember(conn_id:string, {
     agentInfo,
   }: {
     agentInfo: any;
@@ -1102,7 +1108,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       const { phoneNumber, accountCode, phoneLogin, agentId } = agentInfo;
       const { queueName, queueNumber, queue: queueConf } = this.queue;
       const {
@@ -1168,13 +1174,13 @@ export class CcqueueService {
       //     dialStr = `user/${accountCode}`;
       // }
 
-      this.originationUuid = await this.fsPbx.createUuid();
+      this.originationUuid = await this.fsPbx.createUuid(conn_id);
       this.runtimeData.addBleg(this.originationUuid, accountCode);
       // _this.R.agentLeg[`${accountCode}`] = _this.R.originationUuid;
       // _this.R.agentId = agentId;
 
       this.tryCallAgentTimes = this.tryCallAgentTimes + 1;
-      const { FSName, CoreUuid, sipCallId } = this.runtimeData.getChannelData();
+      const { FSName, CoreUuid, sipCallId } = this.runtimeData.getChannelData(conn_id);
       pubData = {
         tenantId,
         agentId,
@@ -1274,12 +1280,12 @@ export class CcqueueService {
 
       let start = new Date();
 
-      await this.fsPbx.uuidSetvar({
+      await this.fsPbx.uuidSetvar(conn_id, {
         uuid: callId,
         varname: 'sip_h_X-CID',
         varvalue: sipCallId as string,
       });
-      await this.fsPbx.filter('Unique-ID', this.originationUuid);
+      await this.fsPbx.filter(conn_id, 'Unique-ID', this.originationUuid);
       this.logger.debug('CCQueueService', 'dial a  member dialStr:', {dialStr});
       const oriResult = await this.fsPbx.originate(
         dialStr,
@@ -1311,13 +1317,14 @@ export class CcqueueService {
         // await _this.R.pbxApi.uuidDebugMedia(newId);
         // await _this.R.pbxApi.uuidDebugMedia(_this.R.callId);
         await this.fsPbx.wait(200);
-        await this.fsPbx.uuidSetvar({
+        await this.fsPbx.uuidSetvar(conn_id, {
           // "hangup_after_bridge": false, //无效很奇怪
           uuid: callId,
           varname: 'park_after_bridge',
           varvalue: 'true',
         });
         const dialResult = await this.fsPbx.uuidBridge(
+          conn_id,
           callId,
           this.originationUuid,
         );
@@ -1449,7 +1456,7 @@ export class CcqueueService {
     }
   }
 
-  async stopFindAgentJob(jobId: number | string) {
+  async stopFindAgentJob(conn_id:string, jobId: number | string) {
     try {
       const {
         tenantId,
@@ -1457,7 +1464,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       const data = {
         tenantId,
         callId,
@@ -1472,7 +1479,7 @@ export class CcqueueService {
     }
   }
 
-  async enterEmptyQueue() {
+  async enterEmptyQueue(conn_id:string) {
     try {
       const {
         tenantId,
@@ -1480,7 +1487,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       this.logger.debug('CCQueueService', 'Dial Queue When No Agent Login!');
       await this.fsPbx.uuidPlayback({
         uuid: callId,
@@ -1495,7 +1502,7 @@ export class CcqueueService {
     }
   }
 
-  async allBusyTip(options: any) {
+  async allBusyTip(conn_id:string, options: any) {
     try {
       const {
         tenantId,
@@ -1503,7 +1510,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       let {
         abtFile,
         abtKeyTimeOut,
@@ -1557,7 +1564,7 @@ export class CcqueueService {
           readArgs,
         );
 
-        const inputKey = await this.fsPbx.uuidRead(readArgs);
+        const inputKey = await this.fsPbx.uuidRead(conn_id, readArgs);
         this.logger.debug(null, `agent busy tip user input:${inputKey}`);
         if (inputKey === '1') {
           this.logger.debug('CCQueueService', 'abt-用户选择继续等待!');
@@ -1620,7 +1627,7 @@ export class CcqueueService {
     } catch (ex) {}
   }
 
-  async dialQueueTimeOut() {
+  async dialQueueTimeOut(conn_id:string) {
     try {
       const {
         tenantId,
@@ -1628,7 +1635,7 @@ export class CcqueueService {
         caller,
         callee: called,
         routerLine,
-      } = this.runtimeData.getRunData();
+      } = this.runtimeData.getRunData(conn_id);
       this.logger.info(null, `${tenantId} dial queue time out!`);
       const readArgs = {
         uuid: callId,
@@ -1654,7 +1661,7 @@ export class CcqueueService {
         reReadDigits = false;
         // 提示是否继续等待音
         this.logger.info(null, 'Tip Is Need To Continue Wait!');
-        const inputKey = await this.fsPbx.uuidRead(readArgs);
+        const inputKey = await this.fsPbx.uuidRead(conn_id, readArgs);
         if (inputKey === '1') {
           this.logger.info(null, 'User Choice Wait Again!');
           result.wait = true; // 再排队一次

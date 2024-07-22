@@ -37,10 +37,10 @@ export class FlowBaseService {
   /**
    * @description 拨打本地号码，包括分机，队列，IVR等
    */
-  async diallocal(number: string) {
+  async diallocal(conn_id:string, number: string) {
     try {
       this.logger.debug('FlowBaseService', `Dial A Local Number:${number}`);
-      const { tenantId, callId, caller } = this.runtimeData.getRunData();
+      const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
       if (/@/.test(number)) {
         return Promise.reject(`Can't Dial Other Tenand!Called Is:${number}.`);
       } else {
@@ -54,7 +54,7 @@ export class FlowBaseService {
         this.logger.debug('FlowBaseService', `Local Number Type:${localType}`);
         switch (localType) {
           case 'ivr': {
-            await this.dialIVR(number);
+            await this.dialIVR(conn_id,number);
             break;
           }
           case 'extension': {
@@ -66,11 +66,11 @@ export class FlowBaseService {
               processName: localType,
               passArgs: { number },
             });
-            await this.dialExtension(number);
+            await this.dialExtension(conn_id, number);
             break;
           }
           case 'queue': {
-            await this.dialQueue(number);
+            await this.dialQueue(conn_id, number);
             break;
           }
           case 'voicemail':
@@ -88,13 +88,13 @@ export class FlowBaseService {
   /**
    * @description 拨打出局电话
    * */
-  async dialout(number: string, args: any = {}) {
+  async dialout(conn_id:string, number: string, args: any = {}) {
     try {
       this.logger.debug('FlowBaseService', `Dial A Outer Number:${number}`);
       const { tenantId, callId, caller, transferCall, answered } =
-        this.runtimeData.getRunData();
+        this.runtimeData.getRunData(conn_id);
       const { FSName, useContext, clickOut } =
-        this.runtimeData.getChannelData();
+        this.runtimeData.getChannelData(conn_id);
 
       await this.pbxCdrService.updateCalled(tenantId, callId, number);
       const tenantInfo = await this.runtimeData.getTenantInfo();
@@ -146,7 +146,7 @@ export class FlowBaseService {
         return Promise.reject(`Can't Dial Other Tenand!Called Is:${number}.`);
       } else {
         if (gateway && gateway !== '') {
-          await this.fsPbx.uuidSetMutilVar(callId, setData);
+          await this.fsPbx.uuidSetMutilVar(conn_id, callId, setData);
           let dialStr = `${bLegCgrVars}sofia/external/${number}@${gateway}`;
           this.logger.debug('FlowBaseService', 'dialout dialStr:', { dialStr });
           // if (this.config..gg) {
@@ -172,6 +172,7 @@ export class FlowBaseService {
           };
 
           this.fsPbx.addConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_HANGUP::${callId}`,
             'once',
             onCallerHangup,
@@ -203,7 +204,7 @@ export class FlowBaseService {
           let answerTime = 0;
           let doneDTMFEvent = false;
 
-          const onAnswer = async ({
+          const onAnswer = async (conn_id:string,{
             bLegId,
             evt,
           }: {
@@ -211,14 +212,14 @@ export class FlowBaseService {
             evt: any;
           }) => {
             try {
-              await this.fsPbx.uuidSetvar({
+              await this.fsPbx.uuidSetvar(conn_id,{
                 uuid: bLegId,
                 varname: 'hangup_after_bridge',
                 varvalue: 'false',
               });
 
               if (!answered) {
-                this.runtimeData.setAnswered();
+                this.runtimeData.setAnswered(conn_id);
               }
               await this.pbxCallProcessService.create({
                 caller,
@@ -309,6 +310,7 @@ export class FlowBaseService {
           //const bridgeResult = await _this.bridgeAcallB(caller, number, onOriginate, onAnswer, onHangup)
 
           const bridgeResult = await this.bridgeACall(
+            conn_id,
             dialStr,
             number,
             onAnswer,
@@ -347,7 +349,7 @@ export class FlowBaseService {
       }
     } catch (ex) {
       const { tenantId, callId, caller, transferCall, answered } =
-        this.runtimeData.getRunData();
+        this.runtimeData.getRunData(conn_id);
       await this.pbxExtensionService.setAgentState(
         tenantId,
         caller as string,
@@ -374,12 +376,13 @@ export class FlowBaseService {
    * @description 拨打分机
    */
   async dialExtension(
+    conn_id: string,
     number: string,
     args?: any,
   ): Promise<{ answered: boolean; error: string }> {
     try {
       const { tenantId, callId, caller, answered, routerLine } =
-        this.runtimeData.getRunData();
+        this.runtimeData.getRunData(conn_id);
       let result = {
         answered: false,
         error: '',
@@ -397,7 +400,7 @@ export class FlowBaseService {
       //setData.call_timeout = 50 * 1000;
       setData['ringback'] = '${us-ring}';
 
-      await this.fsPbx.uuidSetMutilVar(callId, setData);
+      await this.fsPbx.uuidSetMutilVar(conn_id, callId, setData);
       let cgr_category = '';
       let cdrUid = '';
       //if (_this.R.clickOut === 'yes') {
@@ -421,9 +424,9 @@ export class FlowBaseService {
         callId,
       );
 
-      const onAnswer = async () => {
+      const onAnswer = async (conn_id:string) => {
         if (!answered) {
-          this.runtimeData.setAnswered();
+          this.runtimeData.setAnswered(conn_id);
         }
         await this.pbxCallProcessService.create({
           caller,
@@ -445,7 +448,7 @@ export class FlowBaseService {
         );
       };
 
-      const onHangup = async ({ evt, bLegId, hangupBy }: any) => {
+      const onHangup = async (conn_id:string, { evt, bLegId, hangupBy }: any) => {
         const transferInfo = {
           transferDisposition: evt.getHeader('variable_transfer_disposition'),
           transferTo: evt.getHeader('variable_transfer_to'),
@@ -468,7 +471,7 @@ export class FlowBaseService {
             `处理被叫分机挂机后的业务,默认是挂断通话!hangupBy:${hangupBy}`,
           );
           if (hangupBy === 'callee') {
-            this.runtimeData.setHangupBy(hangupBy);
+            this.runtimeData.setHangupBy(conn_id,hangupBy);
           }
         }
         await this.pbxCallProcessService.create({
@@ -533,7 +536,7 @@ export class FlowBaseService {
       }
       // const oriResult = await this.fsPbx.originate(dialStr, '&park()', blegArgs.join(','), originationUuid);
 
-      this.fsPbx.message({
+      this.fsPbx.message(conn_id, {
         sessionId: callId,
         msgType: 'call',
         from: 'system' + '@' + tenantId,
@@ -544,6 +547,7 @@ export class FlowBaseService {
       });
 
       const bridgeResult = await this.bridgeACall(
+        conn_id,
         dialStr,
         number,
         onAnswer,
@@ -573,7 +577,7 @@ export class FlowBaseService {
       if (!bridgeResult.success && args.failDone) {
         switch (args.failDone.type) {
           case 'ivr': {
-            await this.ivr.ivrAction({
+            await this.ivr.ivrAction(conn_id, {
               ivrNumber: args.failDone.gotoIvr,
               ordinal: args.failDone.gotoIvrActId || 1,
               uuid: callId,
@@ -604,6 +608,7 @@ export class FlowBaseService {
    * @return {*}
    */
   async bridgeACall(
+    conn_id: string,
     dialStr: string,
     calledNumber: string,
     onAnswer?: any,
@@ -612,9 +617,9 @@ export class FlowBaseService {
   ) {
     try {
       const { callId, tenantId, caller, routerLine } =
-        this.runtimeData.getRunData();
+        this.runtimeData.getRunData(conn_id);
       const { channelName, useContext, sipCallId, CallDirection, callType } =
-        this.runtimeData.getChannelData();
+        this.runtimeData.getChannelData(conn_id);
       let cdrUid = 0;
       let hasListenOutGoing = false;
       let BLegId = '';
@@ -629,6 +634,7 @@ export class FlowBaseService {
 
         if (aLegId === callId && !hasListenOutGoing) {
           this.fsPbx.removeConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_OUTGOING::**`,
             onOutGoing,
           );
@@ -639,7 +645,7 @@ export class FlowBaseService {
           let doneHangup = false;
           this.runtimeData.addBleg(bLegId, calledNumber);
 
-          await this.fsPbx.filter('Unique-ID', bLegId);
+          await this.fsPbx.filter(conn_id, 'Unique-ID', bLegId);
 
           const cdrCreateR = await this.pbxCdrService.create({
             tenantId: tenantId,
@@ -695,7 +701,7 @@ export class FlowBaseService {
               // if (_this.R.tenantInfo && _this.R.tenantInfo.recordCall !== false) {
               const recordFileName = `${callId}.${bLegId}`;
               this.fsPbx
-                .uuidRecord(callId, 'start', tenantId, '', recordFileName)
+                .uuidRecord(conn_id, callId, 'start', tenantId, '', recordFileName)
                 .then((res) => {
                   this.logger.debug(
                     'FlowBaseService',
@@ -755,12 +761,14 @@ export class FlowBaseService {
           };
 
           this.fsPbx.addConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_HANGUP::${callId}`,
             'once',
             onCallerHangup,
           );
 
           this.fsPbx.addConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_ANSWER::${bLegId}`,
             'once',
             onBlegAnswer,
@@ -769,6 +777,7 @@ export class FlowBaseService {
           // _this.R.pbxApi.filterDelete('Event-Name', 'CHANNEL_OUTGOING');
 
           this.fsPbx.addConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_HANGUP::${bLegId}`,
             'once',
             onBelgHangup,
@@ -777,17 +786,18 @@ export class FlowBaseService {
       };
 
       this.fsPbx.addConnLisenter(
+        conn_id,
         `esl::event::CHANNEL_OUTGOING::**`,
         'on',
         onOutGoing,
       );
 
-      await this.fsPbx.uuidSetMutilVar(callId, {
+      await this.fsPbx.uuidSetMutilVar(conn_id, callId, {
         hangup_after_bridge: 'false',
         sip_h_X: sipCallId,
       });
       // await _this.R.pbxApi.filter('Event-Name', 'CHANNEL_OUTGOING');
-      const bridgeResult = await this.fsPbx.bridge(callId, dialStr);
+      const bridgeResult = await this.fsPbx.bridge(conn_id, callId, dialStr);
       // bridge结束后才会执行下面的语句
       this.logger.debug('FlowBaseService', `PBX Bridge Result:`, bridgeResult);
       if (!bridgeResult.success) {
@@ -805,10 +815,10 @@ export class FlowBaseService {
     }
   }
 
-  async dialIVR(number: string) {
+  async dialIVR(conn_id:string, number: string) {
     try {
       const { answered, tenantId, callId, caller } =
-        this.runtimeData.getRunData();
+        this.runtimeData.getRunData(conn_id);
 
       if (!answered) {
         this.logger.debug('FlowBaseService', `dialIVR1:`, {
@@ -819,6 +829,7 @@ export class FlowBaseService {
         });
         await new Promise((resolve, reject) => {
           this.fsPbx.addConnLisenter(
+            conn_id,
             `esl::event::CHANNEL_ANSWER::${callId}`,
             'once',
             (evt: any) => {
@@ -826,7 +837,7 @@ export class FlowBaseService {
             },
           );
           this.fsPbx
-            .uuidTransfer(callId, 'ivr')
+            .uuidTransfer(conn_id, callId, 'ivr')
             .then((transferRes) => {})
             .catch((err) => {
               reject(err);
@@ -839,7 +850,7 @@ export class FlowBaseService {
           callId,
           caller,
         });
-        this.runtimeData.setAnswered();
+        this.runtimeData.setAnswered(conn_id);
         // await this.fsPbx.startDTMF();
       }
       const ivrInfo = await this.pbxIvrMenuService.getIVRByNumber(
@@ -854,7 +865,7 @@ export class FlowBaseService {
         processName: 'ivr',
         passArgs: { number, ivrName: ivrInfo ? ivrInfo.ivrName : `${number}` },
       });
-      const result = await this.ivr.ivrAction({
+      const result = await this.ivr.ivrAction(conn_id, {
         ivrNumber: number,
         ordinal: 1,
         uuid: callId,
@@ -862,7 +873,7 @@ export class FlowBaseService {
       // 下一步需要拨打一个本地号码
       if (result.nextType === 'diallocal') {
         this.logger.debug('FlowBaseService', '拨打IVR的结果是要继续拨打local');
-        await this.diallocal(result.nextArgs as string);
+        await this.diallocal(conn_id, result.nextArgs as string);
       }
       // 正常结束IVR
       else {
@@ -874,11 +885,11 @@ export class FlowBaseService {
     }
   }
 
-  async dialQueue(number: string) {
+  async dialQueue(conn_id:string, number: string) {
     try {
       const { answered, tenantId, callId, caller } =
-        this.runtimeData.getRunData();
-      const result = await this.ccQueue.dialQueue(number);
+        this.runtimeData.getRunData(conn_id);
+      const result = await this.ccQueue.dialQueue(conn_id, number);
       this.logger.debug(
         'FlowBaseService',
         `Dial Queue ${number} Result:`,
@@ -886,7 +897,7 @@ export class FlowBaseService {
       );
 
       if (result.gotoIvrNumber) {
-        await this.ivr.ivrAction({
+        await this.ivr.ivrAction(conn_id, {
           ivrNumber: result.gotoIvrNumber,
           ordinal: result.gotoIvrActId,
           uuid: callId,

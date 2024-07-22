@@ -136,13 +136,13 @@ export class AppModule implements NestModule {
     private readonly eslService: EslService,
   ) {}
 
-  configure(consumer: MiddlewareConsumer) {
+  async configure(consumer: MiddlewareConsumer) {
     this.loggerr.setContext('START APP');
     consumer.apply(CorsMiddleware).forRoutes('*'); // for all routes
     consumer.apply(WhiteListMiddleware).forRoutes('*');
     const dgramSocketServer = this.dgramService.createDgramSocket();
     this.processService.onMessage(dgramSocketServer);
-    BullModule.registerQueue({
+    await BullModule.registerQueueAsync({
       name: 'BullQueue,RedLock,PUB,SUB',
     });
     this.eslService

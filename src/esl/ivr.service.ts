@@ -48,9 +48,9 @@ export class IvrService {
    * @param action
    * @return {*}
    */
-      async ivrAction({ ivrNumber, ordinal, uuid }: { ivrNumber: string, ordinal: number, uuid: string }): Promise<TDoneIvrActionResult> {
+      async ivrAction(conn_id:string, { ivrNumber, ordinal, uuid }: { ivrNumber: string, ordinal: number, uuid: string }): Promise<TDoneIvrActionResult> {
         try {
-            const { tenantId, callId, caller, ivrCurrentDeep, ivrMaxDeep } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller, ivrCurrentDeep, ivrMaxDeep } = this.runtimeData.getRunData(conn_id);
             this.logger.debug('IVRService',`正在处理${tenantId}IVR:Number-${ivrNumber},Action-${ordinal},uuid:${uuid}`);
             if (ivrCurrentDeep < ivrMaxDeep) {
                 const actionDoc = await this.pbxIvrActionService.getIvrAction(tenantId, ivrNumber, ordinal);
@@ -66,8 +66,8 @@ export class IvrService {
                         passArgs: { ivrNumber, ordinal, actionType: actionTypeName }
                     });
                     await this.pbxCdrService.lastApp(callId, tenantId, `IVRAction:${ivrNumber}-Action:${ordinal}-Type:${actionTypeName}`);
-                    this.runtimeData.increaseIvrCurrentDeep(1);
-                    const result: TDoneIvrActionResult = await this.doneAction(ivrNumber, actionDoc.actionType, actionDoc.args, uuid);
+                    this.runtimeData.increaseIvrCurrentDeep(conn_id, 1);
+                    const result: TDoneIvrActionResult = await this.doneAction(conn_id, ivrNumber, actionDoc.actionType, actionDoc.args, uuid);
                     if (result.nextType === 'ivr') {
                         let gotoIvrNumber = ivrNumber;
                         let gotoIvrActId = ordinal + 1;
@@ -77,7 +77,7 @@ export class IvrService {
                             gotoIvrActId = +args2[1] ? +args2[1] : 1;
 
                         }
-                        return await this.ivrAction({ ivrNumber: gotoIvrNumber, ordinal: gotoIvrActId, uuid });
+                        return await this.ivrAction(conn_id, { ivrNumber: gotoIvrNumber, ordinal: gotoIvrActId, uuid });
                     } else {
                         return result;
                     }
@@ -96,19 +96,19 @@ export class IvrService {
         }
     }
 
-    async doneAction(ivrNumber: string, actionType: number, args: any, uuid: string): Promise<TDoneIvrActionResult> {
+    async doneAction(conn_id:string, ivrNumber: string, actionType: number, args: any, uuid: string): Promise<TDoneIvrActionResult> {
         try {
             let result: TDoneIvrActionResult;
             switch (actionType) {
                 case 1: {
                     this.logger.debug('IVRService','执行IVR-播放语音菜单。');
-                    result = await this.playback(ivrNumber, <ActionPlaybackArgs>args, uuid);
+                    result = await this.playback(conn_id, ivrNumber, <ActionPlaybackArgs>args, uuid);
                     break;
                 }
                 case 4:
                     {
                         this.logger.debug('IVRService','执行IVR-录制用户数字按键');
-                        result = await this.recordKeys(ivrNumber, args, uuid);
+                        result = await this.recordKeys(conn_id, ivrNumber, args, uuid);
                         break;
                     }
                 case 6:
@@ -116,7 +116,7 @@ export class IvrService {
                         let dialNumber = args.pbx.number;
                         this.logger.debug('IVRService',`执行IVR-拨打号码:${dialNumber}`);
                         if (args.pbx.var_name && args.pbx.var_name !== '') {
-                            const varNumber = await this.fsPbx.uuidGetvar({ varname: args.pbx.var_name, uuid });
+                            const varNumber = await this.fsPbx.uuidGetvar(conn_id,{ varname: args.pbx.var_name, uuid });
                             console.log('FFFFFFFFFFFuuid_getvar', varNumber);
                             dialNumber = varNumber;
                             // localNumber = _this.R.inputKeys[args.pbx.var_name];
@@ -145,20 +145,20 @@ export class IvrService {
                 case 9:
                     {
                         this.logger.debug('IVRService','执行IVR-日期时间检测');
-                        result = await this.checkDateTime(ivrNumber, args);
+                        result = await this.checkDateTime(conn_id, ivrNumber, args);
                         break;
                     }
                 case 16:
                     {
                         let { seconds = 1 } = args.logic;
-                        result = await this.waitAmoment(ivrNumber, +seconds);
+                        result = await this.waitAmoment(conn_id, ivrNumber, +seconds);
                         break;
                     }
                 case 14:
                     {
                         // WEB交互接口
                         this.logger.debug('IVRService','执行IVR-WEB交互接口');
-                        result = await this.webApi(uuid, ivrNumber, args);
+                        result = await this.webApi(conn_id, uuid, ivrNumber, args);
                         break;
                     }
                 case 18:
@@ -173,13 +173,13 @@ export class IvrService {
                 case 20: {
                     // 比较
                     this.logger.debug('IVRService','执行IVR-值比较');
-                    result = await this.compareValues(uuid, ivrNumber, args);
+                    result = await this.compareValues(conn_id, uuid, ivrNumber, args);
                     break;
                 }
                 case 21:
                     {
                         this.logger.debug('IVRService','执行IVR-设置通道变量');
-                        result = await this.setChannelVar(uuid, args);
+                        result = await this.setChannelVar(conn_id, uuid, args);
                         break;
                     }
                 case 22:
@@ -191,14 +191,14 @@ export class IvrService {
                 case 23:
                     {
                         this.logger.debug('IVRService','执行IVR-满意度');
-                        result = await this.satisfaction({ uuid, options: args.pbx });
+                        result = await this.satisfaction(conn_id, { uuid, options: args.pbx });
                         break;
                     }
 
                 case 24:
                     {
                         this.logger.debug('IVRService','执行IVR-黑名单');
-                        result = await this.blackListAction(uuid);
+                        result = await this.blackListAction(conn_id, uuid);
                         break;
                     }
                 case 25: {
@@ -219,19 +219,19 @@ export class IvrService {
         }
     }
 
-    async playback(ivrNumber: string, args: ActionPlaybackArgs, uuid: string): Promise<TDoneIvrActionResult> {
+    async playback(conn_id:string, ivrNumber: string, args: ActionPlaybackArgs, uuid: string): Promise<TDoneIvrActionResult> {
         try {
-            const { tenantId, callId, caller, ivrCurrentDeep, ivrMaxDeep } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller, ivrCurrentDeep, ivrMaxDeep } = this.runtimeData.getRunData(conn_id);
             let { input, doneGo, errorGo } = args.logic; // 不定义errorGo和doneGo默认会走IVR的下一步
             let result: TDoneIvrActionResult;
             const opsTmp = Object.assign({}, args.pbx);
             if (opsTmp.file_from_var) {
-                opsTmp.file = await this.fsPbx.getChannelVar(opsTmp.file_from_var, uuid);
+                opsTmp.file = await this.fsPbx.getChannelVar(conn_id, opsTmp.file_from_var, uuid);
             }
             if (input) {
                 const ops: uuidPlayAndGetDigitsOptions = <uuidPlayAndGetDigitsOptions>opsTmp;
                 this.logger.debug('IVRService','uuidPlayAndGetDigitsOptions:',ops);
-                const inputKey = await this.fsPbx.uuidPlayAndGetDigits({ options: ops, uuid: callId, includeLast: false });
+                const inputKey = await this.fsPbx.uuidPlayAndGetDigits(conn_id, { options: ops, uuid: callId, includeLast: false });
                 await this.pbxCallprocessService.create({
                     caller,
                     called: ivrNumber,
@@ -280,9 +280,9 @@ export class IvrService {
         }
     }
 
-    async checkDateTime(ivrNumber: string, args:any): Promise<TDoneIvrActionResult> {
+    async checkDateTime(conn_id:string, ivrNumber: string, args:any): Promise<TDoneIvrActionResult> {
         try {
-            const { tenantId, callId, caller } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
             let result: TDoneIvrActionResult;
             let workDayAndTime = true;
             const serverNow = new Date();
@@ -380,13 +380,13 @@ export class IvrService {
         }
     }
 
-    async recordKeys(ivrNumber:string, args:any, uuid:string): Promise<TDoneIvrActionResult> {
+    async recordKeys(conn_id:string, ivrNumber:string, args:any, uuid:string): Promise<TDoneIvrActionResult> {
         try {
             let file: string;
             let result: TDoneIvrActionResult;
-            const { tenantId, callId, caller } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
             if (args.pbx.file_from_var && args.pbx.file_from_var != '') {
-                const chelfile = await this.fsPbx.getChannelVar(args.pbx.file_from_var, uuid);
+                const chelfile = await this.fsPbx.getChannelVar(conn_id, args.pbx.file_from_var, uuid);
                 file = await this.fillSoundFilePath(chelfile);
 
             }
@@ -406,7 +406,7 @@ export class IvrService {
             ops.input_timeout_file = await this.fillSoundFilePath(ops.input_timeout_file);
             delete ops.var_name;
 
-            let inputs = await this.fsPbx.uuidPlayAndGetDigits({
+            let inputs = await this.fsPbx.uuidPlayAndGetDigits(conn_id, {
                 uuid: uuid,
                 options: <uuidPlayAndGetDigitsOptions>ops,
                 includeLast: args.logic.includeLast
@@ -428,7 +428,7 @@ export class IvrService {
                 processName: 'recordDigits',
                 passArgs: { inputs: inputs }
             })
-            await this.fsPbx.uuidSetvar({ uuid, varname: args.pbx.var_name, varvalue: inputs });
+            await this.fsPbx.uuidSetvar(conn_id, { uuid, varname: args.pbx.var_name, varvalue: inputs });
             result = { nextType: 'ivr', nextArgs: '' }
             return result;
         }
@@ -437,9 +437,9 @@ export class IvrService {
         }
     }
 
-    async waitAmoment(ivrNumber: string, seconds: number): Promise<TDoneIvrActionResult> {
+    async waitAmoment(conn_id:string, ivrNumber: string, seconds: number): Promise<TDoneIvrActionResult> {
         try {
-            const { tenantId, callId, caller } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
             await this.pbxCallprocessService.create({
                 caller,
                 called: ivrNumber,
@@ -455,9 +455,9 @@ export class IvrService {
         }
     }
 
-    async webApi(uuid: string, ivrNumber: string, args:any) {
+    async webApi(conn_id:string, uuid: string, ivrNumber: string, args:any) {
         try {
-            const { tenantId, callId, caller } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
             const { method, url, data = {}, channelVarData = {}, sendAgentMsg, successMsg } = args.logic;
             let result: TDoneIvrActionResult;
             const cvData:any = {};//存取从通道变量获取的
@@ -465,7 +465,7 @@ export class IvrService {
                 const ckeys = Object.keys(channelVarData)
                 for (let i = 0; i < ckeys.length; i++) {
                     const varName = ckeys[i];
-                    const varValue = await this.fsPbx.getChannelVar(channelVarData[varName], uuid);
+                    const varValue = await this.fsPbx.getChannelVar(conn_id, channelVarData[varName], uuid);
                     cvData[varName] = varValue === '_undef_' ? '' : varValue;
                 }
             }
@@ -534,7 +534,7 @@ export class IvrService {
                     }
                 }
 
-                await this.fsPbx.uuidSetvar({ uuid, varname: args.pbx.var_name, varvalue: channelVarValue })
+                await this.fsPbx.uuidSetvar(conn_id, { uuid, varname: args.pbx.var_name, varvalue: channelVarValue })
                 await this.pbxCallprocessService.create({
                     caller,
                     called: ivrNumber,
@@ -571,9 +571,9 @@ export class IvrService {
 
     }
 
-    async compareValues(uuid: string, ivrNumber: string, args:any): Promise<TDoneIvrActionResult> {
+    async compareValues(conn_id:string, uuid: string, ivrNumber: string, args:any): Promise<TDoneIvrActionResult> {
         try {
-            const { tenantId, callId, caller } = this.runtimeData.getRunData();
+            const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
             let {
                 varName,
                 valueType = 'string',
@@ -595,9 +595,9 @@ export class IvrService {
             } else {
                 const c = ['eq', 'ne', 'gt', 'lt', 'gth', 'lth'];
 
-                const varValue: string = await this.fsPbx.getChannelVar(varName, uuid);
+                const varValue: string = await this.fsPbx.getChannelVar(conn_id, varName, uuid);
                 if (compareChannelVar) {
-                    compareValue = await this.fsPbx.getChannelVar(compareChannelVar, uuid);
+                    compareValue = await this.fsPbx.getChannelVar(conn_id, compareChannelVar, uuid);
                 }
                 if (!compareValue) {
                     result = {
@@ -679,7 +679,7 @@ export class IvrService {
     }
 
 
-    async setChannelVar(uuid: string, args:any): Promise<TDoneIvrActionResult> {
+    async setChannelVar(conn_id:string, uuid: string, args:any): Promise<TDoneIvrActionResult> {
         try {
             const { varName, varValue, channelVarName, doneGo } = args.logic;
             let setValue = varValue || '';
@@ -687,13 +687,13 @@ export class IvrService {
                 nextType: 'ivr'
             };
             if (channelVarName) {
-                let channelVarValue = await this.fsPbx.getChannelVar(channelVarName, uuid) || '';
+                let channelVarValue = await this.fsPbx.getChannelVar(conn_id, channelVarName, uuid) || '';
                 channelVarValue = channelVarValue === '_undef_' ? '' : channelVarValue;
                 setValue = channelVarValue;
             }
             const data:any = {};
             data[varName] = setValue;
-            await this.fsPbx.uuidSetvar({ uuid, varname: varName, varvalue: setValue });
+            await this.fsPbx.uuidSetvar(conn_id, { uuid, varname: varName, varvalue: setValue });
             if (doneGo) {
                 result = {
                     nextType: 'ivr',
@@ -716,11 +716,11 @@ export class IvrService {
  *   "非常不满意":sd = 1;
  * @return {*}
  */
-    async satisfaction({ uuid, options }: { uuid: string, options: any }): Promise<TDoneIvrActionResult> {
+    async satisfaction(conn_id:string, { uuid, options }: { uuid: string, options: any }): Promise<TDoneIvrActionResult> {
         try {
             const { regexp, very_play } = options;
-            const { caller, callee: called, callId, tenantId } = this.runtimeData.getRunData();
-            const { hangup, agentId, sType, agentNumber, queueNumber, queueName } = this.runtimeData.getStatisData();
+            const { caller, callee: called, callId, tenantId } = this.runtimeData.getRunData(conn_id);
+            const { hangup, agentId, sType, agentNumber, queueNumber, queueName } = this.runtimeData.getStatisData(conn_id);
             let result: TDoneIvrActionResult = {
                 nextType: 'normal',
                 nextArgs: ''
@@ -740,16 +740,16 @@ export class IvrService {
                         this.logger.info('IVRService',`监听到被满意度方[${uuid}]挂机了!`);
                         isHangup = true;
                         this.runtimeData.setStatisData({ hangupCase: evt.getHeader('Hangup-Cause') })
-                        await this.saveSatisfaction(-1);
+                        await this.saveSatisfaction(conn_id, -1);
                     } catch (ex) {
                         this.logger.error('IVRService',ex);
                     }
 
                 }
-                this.fsPbx.addConnLisenter(`esl::event::CHANNEL_HANGUP::${uuid}`, 'once', onHangup);
+                this.fsPbx.addConnLisenter(conn_id, `esl::event::CHANNEL_HANGUP::${uuid}`, 'once', onHangup);
                 // options.file = await _this.tools.fillSoundFilePath(options.file);
 
-                let inputs = await this.fsPbx.uuidPlayAndGetDigits({ uuid, options, includeLast: false });
+                let inputs = await this.fsPbx.uuidPlayAndGetDigits(conn_id, { uuid, options, includeLast: false });
                 const indexOfKeys = regexp.split("|").indexOf(inputs);
 
                 let inputKey = inputs;
@@ -770,7 +770,7 @@ export class IvrService {
                     passArgs: { key: inputKey + '' }
                 })
                 if (!isHangup) {
-                    this.fsPbx.removeConnLisenter(`esl::event::CHANNEL_HANGUP::${uuid}`, onHangup);
+                    this.fsPbx.removeConnLisenter(conn_id, `esl::event::CHANNEL_HANGUP::${uuid}`, onHangup);
                     await this.pbxQueueStatisticService.updateSatisValue(tenantId, callId, queueNumber as string, +inputKey);
                     if (very_play) {
                         const playBackFile = await this.fillSoundFilePath(very_play);
@@ -791,7 +791,7 @@ export class IvrService {
                     processName: 'input',
                     passArgs: { key: '-1' }
                 })
-                await this.saveSatisfaction(-1);
+                await this.saveSatisfaction(conn_id, -1);
             }
             //_this.R.pbxApi.disconnect(`满意度结束!`);
             this.logger.debug('IVRService','satisfaction end:', result);
@@ -802,12 +802,12 @@ export class IvrService {
         }
     }
 
-    async saveSatisfaction(inputKey:number, isGlobal?: boolean): Promise<number> {
+    async saveSatisfaction(conn_id:string, inputKey:number, isGlobal?: boolean): Promise<number> {
         const _this = this;
         try {
 
-            const { caller, callee: called, callId, tenantId } = this.runtimeData.getRunData();
-            const { hangup, agentId, sType, agentNumber, queueNumber, queueName, agentLeg } = this.runtimeData.getStatisData();
+            const { caller, callee: called, callId, tenantId } = this.runtimeData.getRunData(conn_id);
+            const { hangup, agentId, sType, agentNumber, queueNumber, queueName, agentLeg } = this.runtimeData.getStatisData(conn_id);
             const statisCode = [5, 4, 2];
             const surveyResult = inputKey > 0 ? statisCode[inputKey - 1] : -1;
             const timestamp = new Date().getTime();
@@ -852,9 +852,9 @@ export class IvrService {
         }
     }
 
-    async blackListAction(uuid: string): Promise<TDoneIvrActionResult> {
+    async blackListAction(conn_id:string, uuid: string): Promise<TDoneIvrActionResult> {
         try {
-            const { caller, callee: called, callId, tenantId, routerLine } = this.runtimeData.getRunData();
+            const { caller, callee: called, callId, tenantId, routerLine } = this.runtimeData.getRunData(conn_id);
             const tenantInfo = this.runtimeData.getTenantInfo();
             let result: TDoneIvrActionResult = {
                 nextType: 'ivr'
@@ -886,7 +886,7 @@ export class IvrService {
 
             const chanData:any = {};
             chanData['isBlackNumber'] = String(isBlackNumber);
-            await this.fsPbx.uuidSetvar({ uuid, varname: 'isBlackNumber', varvalue: String(isBlackNumber) });
+            await this.fsPbx.uuidSetvar(conn_id,{ uuid, varname: 'isBlackNumber', varvalue: String(isBlackNumber) });
 
             this.logger.debug('IVRService',`${checkNumber}黑名单检测:${isBlackNumber}`);
             return result;

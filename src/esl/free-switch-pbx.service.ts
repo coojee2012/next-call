@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from 'src/logger/logger.service';
 import { Connection } from './NodeESL/Connection';
 import { Event } from './NodeESL/Event';
+import { RuntimeDataService } from './runtime-data.service';
 import moment = require('moment');
 
 export type uuidPlayAndGetDigitsOptions = {
@@ -61,16 +62,17 @@ export class FreeSwitchPbxService {
   private lastInputKey: string;
   private initEvent: Event;
   private conn: Connection;
-  constructor(private readonly logger: LoggerService) {
+  constructor(private readonly logger: LoggerService, private runtimeData:RuntimeDataService) {
     this.lastInputKey = '';
   }
   initData(event: Event) {
     this.initEvent = event;
   }
-  getConnInfo() {
-    const isInbound = this.conn.isInBound();
+  getConnInfo(conn_id:string) {
+    const conn = this.runtimeData.getConn(conn_id);
+    const isInbound = conn.isInBound();
     this.logger.info(null, 'isInbound', { isInbound });
-    return isInbound ? this.initEvent : this.conn.getInfo();
+    return isInbound ? this.initEvent : conn.getInfo();
   }
   /**
    * @description
@@ -86,10 +88,11 @@ export class FreeSwitchPbxService {
    * 最终会监听 DTMF 和 CHANNEL_ANSWER 两个事件
    * @param events
    */
-  async subscribe(events: string[]) {
+  async subscribe(conn_id:string, events: string[]) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.subscribe(events, (evt: Event) => {
+        conn.subscribe(events, (evt: Event) => {
           this.logger.debug('FreeSwitchPBXService','subscribe:', evt.getHeader('Reply-Text'));
           resolve('');
         });
@@ -98,16 +101,18 @@ export class FreeSwitchPbxService {
       this.logger.error('subscribe', ex);
     }
   }
-  message(data: any) {
-    this.conn.message(data, (e: any) => {
+  message(conn_id:string, data: any) {
+    const conn = this.runtimeData.getConn(conn_id);
+    conn.message(data, (e: any) => {
       console.log(e.headers);
     });
   }
 
-  async linger(time: Number) {
+  async linger(conn_id: string, time: Number) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.sendRecv(`linger ${time}`, (evt: Event) => {
+        conn.sendRecv(`linger ${time}`, (evt: Event) => {
           this.logger.debug('FreeSwitchPBXService','linger:', evt.getHeader('Reply-Text'));
           resolve(null);
         });
@@ -138,13 +143,14 @@ export class FreeSwitchPbxService {
    * @param header
    * @param value
    */
-  async filter(header: any, value: any) {
+  async filter(conn_id:string,header: any, value: any) {
     try {
-      if (this.conn.isInBound()) {
+      const conn = this.runtimeData.getConn(conn_id);
+      if (conn.isInBound()) {
         return;
       } else {
         const result = await new Promise((resolve, reject) => {
-          this.conn.filter(header, value, (evt: Event) => {
+          conn.filter(header, value, (evt: Event) => {
             this.logger.debug('FreeSwitchPBXService','filter:', evt.getHeader('Reply-Text'));
             resolve(null);
           });
@@ -174,10 +180,11 @@ export class FreeSwitchPbxService {
   /**
    * outbound模式下应答采用的uuid直接从通道变量获得
    */
-  async answer(uuid?: string): Promise<any> {
+  async answer(conn_id:string, uuid?: string): Promise<any> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.execute('answer', '', uuid, (evt: Event) => {
+        conn.execute('answer', '', uuid, (evt: Event) => {
           console.log('Answer -> ', evt);
           resolve(null);
         });
@@ -188,10 +195,11 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async unpark(uuid?: string): Promise<any> {
+  async unpark(conn_id:string, uuid?: string): Promise<any> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.execute('unpark', '', uuid, (evt: Event) => {
+        conn.execute('unpark', '', uuid, (evt: Event) => {
           console.log('unpark -> ', evt);
           resolve(null);
         });
@@ -205,10 +213,11 @@ export class FreeSwitchPbxService {
   /**
    * outbound模式下应答采用的uuid直接从通道变量获得
    */
-  async startDTMF(uuid?: string): Promise<any> {
+  async startDTMF(conn_id:string, uuid?: string): Promise<any> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.execute('start_dtmf', '', uuid, (evt: Event) => {
+        conn.execute('start_dtmf', '', uuid, (evt: Event) => {
           //  console.log('Answer -> ',evt);
           resolve(null);
         });
@@ -219,10 +228,11 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async getChannelVar(varname: string, uuid: string): Promise<string> {
+  async getChannelVar(conn_id:string, varname: string, uuid: string): Promise<string> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise<string>((resolve, reject) => {
-        this.conn.api('uuid_getvar', [uuid, varname], (evt: Event) => {
+        conn.api('uuid_getvar', [uuid, varname], (evt: Event) => {
           const value: string = evt.body;
           resolve(value);
         });
@@ -233,10 +243,11 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async getRegExtension(): Promise<string> {
+  async getRegExtension(conn_id:string): Promise<string> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise<string>((resolve, reject) => {
-        this.conn.api(
+        conn.api(
           'sofia',
           ['status', 'profile', 'internal', 'reg'],
           (evt: Event) => {
@@ -251,7 +262,7 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidPlayAndGetDigits({
+  async uuidPlayAndGetDigits(conn_id:string, {
     uuid,
     options,
     includeLast = false,
@@ -298,7 +309,7 @@ export class FreeSwitchPbxService {
           null,
           `uuidPlayAndGetDigits:input_err_retry[${input_err_retry}],input_timeout_retry${input_timeout_retry}`,
         );
-        const res = await this.uuidRead(readArgs);
+        const res = await this.uuidRead(conn_id, readArgs);
         regexp = regexp ? regexp : '\\d+';
         const reg = new RegExp(regexp);
         if (res && res !== 'timeout' && reg.test(res)) {
@@ -348,7 +359,7 @@ export class FreeSwitchPbxService {
       }
 
       if (var_name) {
-        await this.uuidSetvar({
+        await this.uuidSetvar(conn_id, {
           uuid,
           varname: var_name,
           varvalue: inputKeys,
@@ -409,10 +420,11 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async createUuid(): Promise<string> {
+  async createUuid(conn_id:string): Promise<string> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const newUuid: string = await new Promise<string>((resolve, reject) => {
-        this.conn.api('create_uuid', '', (evt:any) => {
+        conn.api('create_uuid', '', (evt:any) => {
           this.logger.debug('FreeSwitchPBXService','create_uuid', evt.getHeader('Application'));
           const body = evt.getBody();
           if (body != '') {
@@ -466,7 +478,7 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidRead({
+  async uuidRead(conn_id:string, {
     uuid,
     file,
     terminators = 'none',
@@ -477,6 +489,7 @@ export class FreeSwitchPbxService {
     legs = 'aleg',
   }: uuidReadOptions) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       let inputs = '';
       let playStoped = false;
       let isTimeOut = false;
@@ -512,10 +525,10 @@ export class FreeSwitchPbxService {
       this.conn.once(`esl::event::CHANNEL_HANGUP::${uuid}`, onCallHangup);
 
       // PLAYBACK_START
-      this.conn.once(`esl::event::PLAYBACK_START::${uuid}`, (evt) => {
+      conn.once(`esl::event::PLAYBACK_START::${uuid}`, (evt) => {
         this.logger.debug(null, `uuidPlay start ${uuid}!`);
       });
-      this.conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
+      conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
       await this.uuidBroadcast(uuid, file, legs);
       await new Promise((resolve, reject) => {
         const startOnHangup = () => {
@@ -588,7 +601,7 @@ export class FreeSwitchPbxService {
       if (variableName) {
         this.logger.debug('FreeSwitchPBXService',`uuidRead设置通道变量${variableName}=${inputs}`);
         if (!channelHangup) {
-          await this.uuidSetvar({
+          await this.uuidSetvar(conn_id, {
             uuid,
             varname: variableName,
             varvalue: inputs,
@@ -635,7 +648,7 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidSetvar({
+  async uuidSetvar(conn_id:string, {
     uuid,
     varname,
     varvalue,
@@ -646,7 +659,8 @@ export class FreeSwitchPbxService {
   }) {
     try {
       const result = await new Promise((resolve, reject) => {
-        this.conn.api('uuid_setvar', [uuid, varname, varvalue], (evt:any) => {
+        const conn = this.runtimeData.getConn(conn_id);
+        conn.api('uuid_setvar', [uuid, varname, varvalue], (evt:any) => {
           const body = evt.getBody();
           this.logger.debug('FreeSwitchPBXService','uuid_setvar result:', body);
           if (/^\+OK/.test(body)) {
@@ -667,7 +681,7 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidGetvar({
+  async uuidGetvar(conn_id:string, {
     uuid,
     varname,
   }: {
@@ -675,8 +689,9 @@ export class FreeSwitchPbxService {
     varname: string;
   }): Promise<string> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise<string>((resolve, reject) => {
-        this.conn.api('uuid_getvar', [uuid, varname], (evt:any) => {
+        conn.api('uuid_getvar', [uuid, varname], (evt:any) => {
           const body = evt.getBody();
           this.logger.debug('FreeSwitchPBXService',' uuid_getvar result:', body);
           resolve(body);
@@ -689,13 +704,15 @@ export class FreeSwitchPbxService {
   }
 
   async uuidKill(
+    conn_id:string, 
     uuid: string,
     cause: string = 'NORMAL_CLEARING',
   ): Promise<string | undefined> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       await new Promise((resolve, reject) => {
         if (this.conn.socket) {
-          this.conn.api('uuid_kill', [uuid, cause], (evt:any) => {
+          conn.api('uuid_kill', [uuid, cause], (evt:any) => {
             const body:string = evt.getBody();
             if (/^\+OK/.test(body)) {
               this.logger.debug('FreeSwitchPBXService',`UUID Kill [ ${uuid} ] OK`);
@@ -715,13 +732,15 @@ export class FreeSwitchPbxService {
   }
 
   async uuidTryKill(
+    conn_id:string, 
     uuid: string,
     cause: string = 'NORMAL_CLEARING',
   ): Promise<string | undefined> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       await new Promise((resolve, reject) => {
         if (this.conn.socket) {
-          this.conn.api('uuid_kill', [uuid, cause], (evt:any) => {
+          conn.api('uuid_kill', [uuid, cause], (evt:any) => {
             const body = evt.getBody();
             if (/^\+OK/.test(body)) {
               this.logger.debug('FreeSwitchPBXService',`UUID Kill [ ${uuid} ] OK!`);
@@ -754,10 +773,11 @@ export class FreeSwitchPbxService {
    * uuid_broadcast 336889f2-1868-11de-81a9-3f4acc8e505e playback!user_busy::sorry.wav aleg
    * @param uuid
    */
-  async uuidBroadcast(uuid:string, pathOrAppStr:any, legs = 'both') {
+  async uuidBroadcast(conn_id:string, uuid:string, pathOrAppStr:any, legs = 'both') {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
-        this.conn.api('uuid_broadcast', [uuid, pathOrAppStr, legs], (evt:any) => {
+        conn.api('uuid_broadcast', [uuid, pathOrAppStr, legs], (evt:any) => {
           // this.logger.debug('FreeSwitchPBXService','uuid_broadcast:', evt);
           const body = evt.getBody();
           // this.logger.debug('FreeSwitchPBXService','uuid_broadcast result:', body);
@@ -780,11 +800,12 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidBridge(callerLegId:any, agentLegId:any): Promise<uuidBridgeReturn> {
+  async uuidBridge(conn_id:string, callerLegId:any, agentLegId:any): Promise<uuidBridgeReturn> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result: uuidBridgeReturn = await new Promise<uuidBridgeReturn>(
         (resolve, reject) => {
-          this.conn.api('uuid_bridge', [callerLegId, agentLegId], (evt:any) => {
+          conn.api('uuid_bridge', [callerLegId, agentLegId], (evt:any) => {
             const body = evt.getBody();
             this.logger.debug('FreeSwitchPBXService','uuid_bridge result:', body);
             if (/^\+OK/.test(body)) {
@@ -810,17 +831,19 @@ export class FreeSwitchPbxService {
   }
 
   async bridge(
+    conn_id:string, 
     uuid:string,
     dialStr:string,
   ): Promise<{ success: boolean; cause: string; evt: Event }> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise<{
         success: boolean;
         cause: string;
         evt: Event;
       }>((resolve, reject) => {
         // const dialStr = `sofia/external/${number}@${domain}`;
-        this.conn.executeAsync('bridge', dialStr, uuid, (evt: Event) => {
+        conn.executeAsync('bridge', dialStr, uuid, (evt: Event) => {
           this.logger.debug('FreeSwitchPBXService','PBX Bridge A Call:', evt.getHeader('Event-Name'));
           const dialstatus = evt.getHeader('variable_DIALSTATUS');
           if (dialstatus == 'SUCCESS') {
@@ -861,25 +884,27 @@ export class FreeSwitchPbxService {
     }
   }
 
-  addConnLisenter(evetName: string, eventType: string = 'once', cb?: any) {
+  addConnLisenter(conn_id:string, evetName: string, eventType: string = 'once', cb?: any) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       if (!cb || typeof cb !== 'function') cb = () => {};
       if (eventType === 'once') {
-        this.conn.once(evetName, cb);
+        conn.once(evetName, cb);
       } else {
-        this.conn.on(evetName, cb);
+        conn.on(evetName, cb);
       }
     } catch (ex) {
       this.logger.error('addConnLisenter error', ex);
     }
   }
 
-  removeConnLisenter(evetName: string, cb?: any) {
+  removeConnLisenter(conn_id:string, evetName: string, cb?: any) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       if (!cb || typeof cb !== 'function') {
-        this.conn.removeAllListeners(evetName);
+        conn.removeAllListeners(evetName);
       } else {
-        this.conn.off(evetName, cb);
+        conn.off(evetName, cb);
       }
     } catch (ex) {
       this.logger.error('addConnLisenter error', ex);
@@ -897,6 +922,7 @@ export class FreeSwitchPbxService {
    * @return {Promise}
    */
   async uuidRecord(
+    conn_id:string, 
     uuid: string,
     opt: string,
     tenantId: number,
@@ -904,7 +930,9 @@ export class FreeSwitchPbxService {
     fileName?: string,
   ) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       await this.uuidSetMutilVar(
+        conn_id,
         uuid,
         `RECORD_TITLE=YunKeFu;RECORD_COPYRIGHT=YunKeFu;RECORD_SOFTWARE=YunKeFu;RECORD_STEREO=true`,
       );
@@ -920,7 +948,7 @@ export class FreeSwitchPbxService {
         name: string;
         success: boolean;
       }>((resolve, reject) => {
-        this.conn.bgapi('uuid_record', [uuid, opt, recordFileName], (evt:any) => {
+          conn.bgapi('uuid_record', [uuid, opt, recordFileName], (evt:any) => {
           this.logger.debug('FreeSwitchPBXService',recordFileName);
           const body = evt.getBody();
           if (/^\+OK/.test(body)) {
@@ -937,11 +965,12 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidSetMutilVar(uuid:string, kv:any) {
+  async uuidSetMutilVar(conn_id:string, uuid:string, kv:any) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       await this.checkUuid(uuid);
       const result = await new Promise((resolve, reject) => {
-        this.conn.api('uuid_setvar_multi', [uuid, kv], (evt:any) => {
+        conn.api('uuid_setvar_multi', [uuid, kv], (evt:any) => {
           const body = evt.getBody();
           this.logger.debug('FreeSwitchPBXService',' uuid_setvar_multi result:', body);
           if (/^\+OK/.test(body)) {
@@ -976,14 +1005,16 @@ export class FreeSwitchPbxService {
   }
 
   async uuidTransfer(
+    conn_id:string, 
     uuid: string,
     extension: string,
     leg?: string,
   ): Promise<any> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       leg = leg || '-bleg';
       const result = await new Promise((resolve, reject) => {
-        this.conn.api(
+        conn.api(
           'uuid_transfer',
           [uuid, leg, extension, 'xml', 'default'],
           (evt:any) => {
@@ -997,7 +1028,7 @@ export class FreeSwitchPbxService {
     }
   }
 
-  async uuidDualTransfer({
+  async uuidDualTransfer(conn_id:string, {
     uuid,
     aExten,
     aDialplan = 'xml',
@@ -1007,8 +1038,9 @@ export class FreeSwitchPbxService {
     bContext = 'default',
   }: IUUIDDualTransfer) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       return new Promise((resolve, reject) => {
-        this.conn.api(
+        conn.api(
           'uuid_dual_transfer',
           [
             uuid,
