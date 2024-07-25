@@ -16,6 +16,6 @@ export class PbxCallProcess extends BaseEntity {
   processName: string;
   @Column('simple-json')
   passArgs: {};
-  @Column()
+  @Column({default: false})
   isHide: boolean;
 }

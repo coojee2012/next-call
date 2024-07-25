@@ -22,12 +22,12 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   async create(data: Partial<T>): Promise<T> {
-    const entity = await this.repository.create(data as DeepPartial<T>);
-    return await this.repository.create(entity);
+    const entity = await this.repository.save(data as DeepPartial<T>);
+    return entity;
   }
 
   async bulkCreate(entityLikeArray: DeepPartial<T>[]): Promise<T[]> {
-    const entities = await this.repository.create(entityLikeArray as DeepPartial<T>[]);
+    const entities = await this.repository.save(entityLikeArray as DeepPartial<T>[]);
     return entities;
   }
 

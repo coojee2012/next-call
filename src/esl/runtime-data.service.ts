@@ -64,7 +64,7 @@ export class RuntimeDataService {
   private channelData: { [key: string]: IChannelData } = {};
   private runData: { [key: string]: IRunData } = {};
   private statisData: { [key: string]: ISatisData } = {};
-  private tenantInfo: { [key: string]: any };
+  private tenantInfo: { [key: string]: any } = {};
   private blegIds: string[];
   private blegUsers: string[]; //可以使用extension,外线号码
   private connections: { [key: string]: Connection } = {};
@@ -79,14 +79,22 @@ export class RuntimeDataService {
   initData(conn: Connection, conn_id: string, connEvent?: Event) {
     this.connections[conn_id] = conn;
     const isInbound = conn.isInBound();
-    this.logger.info(null, 'isInbound', { isInbound });
-    if (isInbound) {
+    this.logger.info('RuntimeDataService', 'isInbound', { isInbound });
+    if (!isInbound) {
       connEvent = conn.getInfo();
     }
+    this.channelData[conn_id] = {};
+    this.runData[conn_id] = {
+      tenantId:0,
+      callId: '',
+      ivrMaxDeep: 100,
+      ivrCurrentDeep: 0
+    };
     if (connEvent) {
       this.connEvents[conn_id] = connEvent;
 
-      this.logger.debug('RuntimeDataService', 'Init Runtime Data!1');
+      this.logger.debug('RuntimeDataService', 'Init Runtime Data!');
+      
       this.channelData[conn_id].FSName = connEvent.getHeader(
         'FreeSWITCH-Switchname',
       );
@@ -158,9 +166,7 @@ export class RuntimeDataService {
         'variable_originate_callee',
       );
 
-      this.runData[conn_id].tenantId = connEvent.getHeader(
-        'variable_sip_to_host',
-      );
+      this.runData[conn_id].tenantId = 1; //connEvent.getHeader('variable_sip_to_host',);
       this.runData[conn_id].callId = connEvent.getHeader('Unique-ID');
     }
     this.runData[conn_id].routerLine = this.getRouterLine(
@@ -211,7 +217,7 @@ export class RuntimeDataService {
         this.runData[conn_id].tenantId as number,
       );
       if (!tenant) {
-        throw new Error(`Can't find tenant: ${this.runData.tenantId}!!!`);
+        throw new Error(`Can't find tenant: ${this.runData[conn_id].tenantId}!!!`);
       }
       this.tenantInfo[conn_id] = tenant;
     } catch (ex) {
@@ -219,8 +225,8 @@ export class RuntimeDataService {
     }
   }
 
-  getTenantInfo() {
-    return this.tenantInfo;
+  getTenantInfo(conn_id: string) {
+    return this.tenantInfo[conn_id];
   }
 
   setCaller(conn_id: string) {
@@ -281,6 +287,6 @@ export class RuntimeDataService {
   }
 
   getCallId(conn_id:string): string {
-    return this.connEvents[conn_id].getHeader('Unique-ID');
+    return this.runData[conn_id].callId;
   }
 }

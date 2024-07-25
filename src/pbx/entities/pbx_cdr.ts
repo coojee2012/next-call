@@ -60,7 +60,7 @@ export class PbxCdr extends BaseEntity {
   alive: string;
   @Column({ default: 'web' })
   loginType: string;
-  @Column()
+  @Column({default: null, nullable:true})
   starTime: Date;
   @Column({ default: '' })
   lastServiceId: string;
@@ -74,7 +74,9 @@ export class PbxCdr extends BaseEntity {
   hangupBy: string;
   @Column({ default: '' })
   routerLine: string;
-  @Column("simple-array")
+  @Column({
+    type: 'simple-array',
+  })
   extData: string[]; // 扩展参数，用于记录一些特殊业务需要的数据
   @Column({ default: '' })
   lastApp: string;

@@ -12,6 +12,7 @@ import { Connection } from './NodeESL/Connection';
 import { Event } from './NodeESL/Event';
 import { FlowBaseService } from './flow-base.service';
 import { RouterLineType } from 'src/pbx/entities/pbx_router';
+import { error } from 'console';
 
 export enum ESLUserEvents {
     hangup = 'esl::user::hangup',
@@ -43,10 +44,12 @@ export class FreeSwitchCallFlowService {
    */
   async start(conn: Connection, conn_id: string, initEvent?:Event) {
     try {
-      const callId = initEvent?.getHeader('Unique-ID');
-      this.logger.debug('FreeSwitchCallFlowService','Begin Call Flow!', {callId: callId});
+      let callId = initEvent?.getHeader('Unique-ID');
+      
 
       this.runtimeData.initData(conn, conn_id, initEvent)  
+      callId = this.runtimeData.getCallId(conn_id);
+      this.logger.debug('FreeSwitchCallFlowService','Begin Call Flow!', {callId: callId});
       // 没有租户的用户是非法的用户
       await this.runtimeData.setTenantInfo(conn_id);
       if (!conn.isInBound()) {
@@ -72,7 +75,7 @@ export class FreeSwitchCallFlowService {
       await this.fsPbx.uuidTryKill(conn_id, callId);
       this.logger.debug('FreeSwitchCallFlowService','Call Flow Exec END!');
     } catch (ex) {
-      this.logger.error('In Call Flow Sart:', ex);
+      this.logger.error('FreeSwitchCallFlowService','In Call Flow Sart', {error: ex});
     }
   }
 
@@ -95,7 +98,7 @@ export class FreeSwitchCallFlowService {
         this.runtimeData.getRunData(conn_id);
       const { sipCallId, channelName, useContext } =
         this.runtimeData.getChannelData(conn_id);
-      await this.pbxCdrService.create({
+      await this.pbxCdrService.createCdr({
         tenantId: tenantId,
         routerLine: routerLine,
         srcChannel: channelName,
@@ -121,6 +124,7 @@ export class FreeSwitchCallFlowService {
       };
       await this.pbxCallprocessService.create(callProcessData);
     } catch (ex) {
+      
       return Promise.reject(ex);
     }
   }
@@ -158,6 +162,7 @@ export class FreeSwitchCallFlowService {
     try {
       const { tenantId, routerLine, callId } = this.runtimeData.getRunData(conn_id);
       let { caller: caller, callee: called } = this.runtimeData.getRunData(conn_id);
+      this.logger.debug('FreeSwitchCallFlowService', 'getRoute', {caller,called,routerLine})
       const result : any = {
         processmode: '',
         processdefined: null,
@@ -306,8 +311,9 @@ export class FreeSwitchCallFlowService {
    */
   async route(conn_id:string, callId: string) {
     try {
-      this.logger.debug('FreeSwitchCallFlowService',`route->callId:`, {callId});
+      
       let { processmode, processdefined, routerLine } = await this.getRoute(conn_id);
+      this.logger.debug('FreeSwitchCallFlowService',`route->callId:`, {callId,routerLine,processmode,processdefined});
       switch (processmode) {
         case 'diallocal':
           // result = await _this.flowBase.dialLocal(processdefined);
@@ -335,6 +341,8 @@ export class FreeSwitchCallFlowService {
           break;
       }
     } catch (ex) {
+      this.logger.debug('FreeSwitchCallFlowService', 'route', {ex})
+      await this.fsPbx.uuidTryKill(conn_id, callId);
       return Promise.reject(ex);
     }
   }

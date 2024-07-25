@@ -11,7 +11,7 @@ export class PbxLocalNumber extends BaseEntity {
     number:string;
     @Column()
     localType:string;
-    @Column()
+    @Column({default:''})
     assign:string;
 }
 

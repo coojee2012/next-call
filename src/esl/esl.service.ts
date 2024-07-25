@@ -133,9 +133,9 @@ export class EslService {
 
   async onEslConnOpen(conn: Connection, id: string) {
     try {
-      this.logger.debug(`onEslConnOpen->${id}:`, conn.getInfo());
+      this.logger.debug('ESLService', `onEslConnOpen->${id}:`, conn.getInfo());
     } catch (ex) {
-      this.logger.error('onEslConnOpen Error:', ex);
+      this.logger.error('ESLService', 'onEslConnOpen Error:', {error: ex});
     }
   }
 
@@ -151,7 +151,7 @@ export class EslService {
         await this.handleOutbound(conn, id);
       }
     } catch (ex) {
-      this.logger.error('onEslConnReady Error:', ex);
+      this.logger.error('ESLService', 'onEslConnReady Error:', {error: ex});
     }
   }
 
@@ -187,7 +187,7 @@ export class EslService {
       const result = await this.callFlowService.start(conn, id);
       this.logger.info('ESLService', `${id} handle result:`, { result });
     } catch (ex) {
-      this.logger.error('ESLService', 'handleOutbound Error:', ex);
+      this.logger.error('ESLService', 'handleOutbound Error:', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -208,7 +208,7 @@ export class EslService {
       );
       this.logger.info('ESLService', `Inbound handle call result:`, { result });
     } catch (ex) {
-      this.logger.error('inboud handle call error:', ex);
+      this.logger.error('ESLService', 'inboud handle call error:', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -249,7 +249,7 @@ export class EslService {
         });
       }
     } catch (ex) {
-      this.logger.error('handle agent events error:', ex);
+      this.logger.error('ESLService','handle agent events error:', {error: ex});
     }
   }
 }

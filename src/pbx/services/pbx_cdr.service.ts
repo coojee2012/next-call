@@ -44,8 +44,10 @@ export class PbxCdrService extends BaseService<PbxCdr> {
     }
   }
 
-  async create(data: any): Promise<PbxCdr> {
+  async createCdr(data: any): Promise<PbxCdr> {
     try {
+      data.starTime = new Date();
+      data.extData = ['a'];
       const newDoc = await this.create(data);
       return newDoc;
     } catch (ex) {

@@ -30,28 +30,28 @@ export class PbxRouter extends BaseEntity {
     @Column({default: false})
     createMode:boolean; //系统默认
     @Column({type: 'enum', enum: RouterLineType})
-    routerLine:RouterLineType;
+    routerLine:RouterLineType; //路由方式，呼出，呼入,本地
     @Column()
-    routerName:string; //路由方式，呼出，呼入,本地
-    @Column()
+    routerName:string; 
+    @Column({default:''})
     optExtra:string; //扩展属性
     @Column({default: false})
     lastWhenDone:boolean; //最终匹配规则
-    @Column()
+    @Column({default:'all'})
     callerGroup:string; //匹配主叫组（呼出对应分机分组，呼入对应中继分组）
-    @Column()
+    @Column({default:''})
     callerId:string; //匹配主叫以什么开头
     @Column({default: 0})
     callerLen:number; //匹配主叫长度
-    @Column()
+    @Column({default:''})
     calledNum:string; //匹配被叫以什么开头
     @Column({default:0})
     calledLen:number; //匹配被叫长度
-    @Column()
+    @Column({default:''})
     replaceCallerId:string; //匹配后主叫替换
     @Column({default: 0})
     replaceCalledTrim:number; //匹配后删除被叫前几位
-    @Column()
+    @Column({default:''})
     replaceCalledAppend:string; //匹配后补充被叫前几位
     @Column({type: 'enum', enum: ProcessMode})
     processMode:ProcessMode; //处理方式 【黑名单，本地处理，拨打外线】

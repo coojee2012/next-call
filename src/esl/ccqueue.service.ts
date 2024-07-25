@@ -107,7 +107,7 @@ export class CcqueueService {
         routerLine,
       } = this.runtimeData.getRunData(conn_id);
       const { CallDirection, callType } = this.runtimeData.getChannelData(conn_id);
-      const tenantInfo = await this.runtimeData.getTenantInfo();
+      const tenantInfo = await this.runtimeData.getTenantInfo(conn_id);
       this.agentEndState = 'idle';
       const bullQueueName = `esl_q_queue::${tenantId}::${queueNumber}`;
       this.bullQueue = (await this.queueWorker.add(
@@ -182,7 +182,7 @@ export class CcqueueService {
         if (enterTipFile) {
           this.logger.debug(null, `进入队列提醒:${enterTipFile}`);
           const enterTipFile2 = await this.fillSoundFilePath(enterTipFile);
-          await this.fsPbx.uuidPlayback({
+          await this.fsPbx.uuidPlayback(conn_id, {
             uuid: callId,
             terminators: 'none',
             file: enterTipFile2,
@@ -596,7 +596,7 @@ export class CcqueueService {
         !this.isDoneBusyTip
       ) {
         this.isDoneTimeoutTip = true;
-        await this.fsPbx.uuidBreak(callId);
+        await this.fsPbx.uuidBreak(conn_id, callId);
         const res = await this.dialQueueTimeOut(conn_id);
         // 客户选择继续等待
         if (res && res.wait) {
@@ -627,7 +627,7 @@ export class CcqueueService {
           abtTimeoutRetry = 2,
           abtInputErrRetry = -1,
         } = this.queue?.queue as PbxQueueOption;
-        await this.fsPbx.uuidBreak(callId);
+        await this.fsPbx.uuidBreak(conn_id, callId);
         const res = await this.allBusyTip(conn_id, {
           abtFile,
           abtKeyTimeOut,
@@ -805,8 +805,8 @@ export class CcqueueService {
             if (agentInfo.phoneLogin === 'yes') {
               const { channelName, useContext } =
                 this.runtimeData.getChannelData(conn_id);
-              const tenantInfo = this.runtimeData.getTenantInfo();
-              await this.pbxCdrService.create({
+              const tenantInfo = this.runtimeData.getTenantInfo(conn_id);
+              await this.pbxCdrService.createCdr({
                 tenantId,
                 routerLine: routerLine,
                 srcChannel: channelName,
@@ -1306,7 +1306,7 @@ export class CcqueueService {
           passArgs: { number: accountCode, agentId },
         });
         // EE3.emit(`queue::busytip::findagent::${callId}`);
-        await this.fsPbx.uuidBreak(callId);
+        await this.fsPbx.uuidBreak(conn_id, callId);
         this.agentId = agentId;
         await this.pbxExtensionService.setAgentState(
           tenantId,
@@ -1489,7 +1489,7 @@ export class CcqueueService {
         routerLine,
       } = this.runtimeData.getRunData(conn_id);
       this.logger.debug('CCQueueService', 'Dial Queue When No Agent Login!');
-      await this.fsPbx.uuidPlayback({
+      await this.fsPbx.uuidPlayback(conn_id,{
         uuid: callId,
         terminators: 'none',
         file: 'ivr/8000/ivr-thank_you_for_calling.wav',
@@ -1573,7 +1573,7 @@ export class CcqueueService {
           // 输出超时音
 
           if (abtTimeoutRetry > 0) {
-            await this.fsPbx.uuidPlayback({
+            await this.fsPbx.uuidPlayback(conn_id, {
               terminators: 'none',
               file: abtInputTimeoutFile,
               uuid: callId,
@@ -1587,7 +1587,7 @@ export class CcqueueService {
         } else {
           // 输入错误音
           if (abtInputErrRetry > 0) {
-            await this.fsPbx.uuidPlayback({
+            await this.fsPbx.uuidPlayback(conn_id, {
               terminators: 'none',
               file: abtInputErrFile,
               uuid: callId,
@@ -1656,7 +1656,7 @@ export class CcqueueService {
       //     agentAnswered = true;
       //     _this.R.logger.debug('CCQueueService','在超时提示的时候找到坐席且坐席已经接听！');
       // })
-      await this.fsPbx.uuidBreak(callId);
+      await this.fsPbx.uuidBreak(conn_id, callId);
       while (reReadDigits && !agentAnswered) {
         reReadDigits = false;
         // 提示是否继续等待音
@@ -1668,7 +1668,7 @@ export class CcqueueService {
         } else if (inputKey === 'timeout') {
           // 输出超时音
           this.logger.info(null, 'Tip When Wait Input A key Timeout!');
-          await this.fsPbx.uuidPlayback({
+          await this.fsPbx.uuidPlayback(conn_id, {
             uuid: callId,
             terminators: 'none',
             file: 'demo/timeoutandhangup.wav',

@@ -32,12 +32,12 @@ export class FlowBaseService {
     private tenantService: TenantService,
     private fsPbx: FreeSwitchPbxService,
     private runtimeData: RuntimeDataService,
-    private ccQueue: CcqueueService
+    private ccQueue: CcqueueService,
   ) {}
   /**
    * @description 拨打本地号码，包括分机，队列，IVR等
    */
-  async diallocal(conn_id:string, number: string) {
+  async diallocal(conn_id: string, number: string) {
     try {
       this.logger.debug('FlowBaseService', `Dial A Local Number:${number}`);
       const { tenantId, callId, caller } = this.runtimeData.getRunData(conn_id);
@@ -54,7 +54,7 @@ export class FlowBaseService {
         this.logger.debug('FlowBaseService', `Local Number Type:${localType}`);
         switch (localType) {
           case 'ivr': {
-            await this.dialIVR(conn_id,number);
+            await this.dialIVR(conn_id, number);
             break;
           }
           case 'extension': {
@@ -88,7 +88,7 @@ export class FlowBaseService {
   /**
    * @description 拨打出局电话
    * */
-  async dialout(conn_id:string, number: string, args: any = {}) {
+  async dialout(conn_id: string, number: string, args: any = {}) {
     try {
       this.logger.debug('FlowBaseService', `Dial A Outer Number:${number}`);
       const { tenantId, callId, caller, transferCall, answered } =
@@ -97,7 +97,7 @@ export class FlowBaseService {
         this.runtimeData.getChannelData(conn_id);
 
       await this.pbxCdrService.updateCalled(tenantId, callId, number);
-      const tenantInfo = await this.runtimeData.getTenantInfo();
+      const tenantInfo = await this.runtimeData.getTenantInfo(conn_id);
 
       const setData: any = {
         call_timeout: 30, // 呼叫超时
@@ -204,15 +204,18 @@ export class FlowBaseService {
           let answerTime = 0;
           let doneDTMFEvent = false;
 
-          const onAnswer = async (conn_id:string,{
-            bLegId,
-            evt,
-          }: {
-            bLegId: string;
-            evt: any;
-          }) => {
+          const onAnswer = async (
+            conn_id: string,
+            {
+              bLegId,
+              evt,
+            }: {
+              bLegId: string;
+              evt: any;
+            },
+          ) => {
             try {
-              await this.fsPbx.uuidSetvar(conn_id,{
+              await this.fsPbx.uuidSetvar(conn_id, {
                 uuid: bLegId,
                 varname: 'hangup_after_bridge',
                 varvalue: 'false',
@@ -424,7 +427,7 @@ export class FlowBaseService {
         callId,
       );
 
-      const onAnswer = async (conn_id:string) => {
+      const onAnswer = async (conn_id: string) => {
         if (!answered) {
           this.runtimeData.setAnswered(conn_id);
         }
@@ -448,7 +451,10 @@ export class FlowBaseService {
         );
       };
 
-      const onHangup = async (conn_id:string, { evt, bLegId, hangupBy }: any) => {
+      const onHangup = async (
+        conn_id: string,
+        { evt, bLegId, hangupBy }: any,
+      ) => {
         const transferInfo = {
           transferDisposition: evt.getHeader('variable_transfer_disposition'),
           transferTo: evt.getHeader('variable_transfer_to'),
@@ -471,7 +477,7 @@ export class FlowBaseService {
             `处理被叫分机挂机后的业务,默认是挂断通话!hangupBy:${hangupBy}`,
           );
           if (hangupBy === 'callee') {
-            this.runtimeData.setHangupBy(conn_id,hangupBy);
+            this.runtimeData.setHangupBy(conn_id, hangupBy);
           }
         }
         await this.pbxCallProcessService.create({
@@ -647,7 +653,7 @@ export class FlowBaseService {
 
           await this.fsPbx.filter(conn_id, 'Unique-ID', bLegId);
 
-          const cdrCreateR = await this.pbxCdrService.create({
+          const cdrCreateR = await this.pbxCdrService.createCdr({
             tenantId: tenantId,
             routerLine: routerLine,
             srcChannel: channelName,
@@ -701,7 +707,14 @@ export class FlowBaseService {
               // if (_this.R.tenantInfo && _this.R.tenantInfo.recordCall !== false) {
               const recordFileName = `${callId}.${bLegId}`;
               this.fsPbx
-                .uuidRecord(conn_id, callId, 'start', tenantId, '', recordFileName)
+                .uuidRecord(
+                  conn_id,
+                  callId,
+                  'start',
+                  tenantId,
+                  '',
+                  recordFileName,
+                )
                 .then((res) => {
                   this.logger.debug(
                     'FlowBaseService',
@@ -815,7 +828,7 @@ export class FlowBaseService {
     }
   }
 
-  async dialIVR(conn_id:string, number: string) {
+  async dialIVR(conn_id: string, number: string) {
     try {
       const { answered, tenantId, callId, caller } =
         this.runtimeData.getRunData(conn_id);
@@ -836,12 +849,15 @@ export class FlowBaseService {
               resolve(null);
             },
           );
-          this.fsPbx
-            .uuidTransfer(conn_id, callId, 'ivr')
-            .then((transferRes) => {})
-            .catch((err) => {
-              reject(err);
-            });
+          // this.fsPbx
+          //   .uuidTransfer(conn_id, callId, 'ivr')
+          //   .then((transferRes) => {})
+          //   .catch((err) => {
+          //     reject(err);
+          //   });
+          this.fsPbx.answer(conn_id, callId).then(res=>{}).catch(err=>{
+            reject(err);
+          })
         });
 
         this.logger.debug('FlowBaseService', `dialIVR2:`, {
@@ -885,7 +901,7 @@ export class FlowBaseService {
     }
   }
 
-  async dialQueue(conn_id:string, number: string) {
+  async dialQueue(conn_id: string, number: string) {
     try {
       const { answered, tenantId, callId, caller } =
         this.runtimeData.getRunData(conn_id);

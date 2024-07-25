@@ -153,13 +153,13 @@ export class AppModule implements NestModule {
       .catch((err) => {
         this.loggerr.error(null, 'ESL Outbound Server Started Error!', err);
       });
-    this.eslService
-      .startInbound()
-      .then((res) => {
-        this.loggerr.info(null, 'ESL Inbound Server Started OK!');
-      })
-      .catch((err) => {
-        this.loggerr.info(null, 'ESL Inbound Server Started Error!', err);
-      });
+    // this.eslService
+    //   .startInbound()
+    //   .then((res) => {
+    //     this.loggerr.info(null, 'ESL Inbound Server Started OK!');
+    //   })
+    //   .catch((err) => {
+    //     this.loggerr.info(null, 'ESL Inbound Server Started Error!', err);
+    //   });
   }
 }

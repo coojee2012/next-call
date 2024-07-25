@@ -267,7 +267,7 @@ export class IvrService {
                 }
             }
             else {
-                await this.fsPbx.uuidPlayback({ uuid: callId, file: opsTmp.file, terminators: 'none' });
+                await this.fsPbx.uuidPlayback(conn_id, { uuid: callId, file: opsTmp.file, terminators: 'none' });
                 result = {
                     nextType: 'ivr',
                     nextArgs: doneGo
@@ -774,7 +774,7 @@ export class IvrService {
                     await this.pbxQueueStatisticService.updateSatisValue(tenantId, callId, queueNumber as string, +inputKey);
                     if (very_play) {
                         const playBackFile = await this.fillSoundFilePath(very_play);
-                        await this.fsPbx.uuidPlayback({ uuid, terminators: 'none', file: playBackFile });
+                        await this.fsPbx.uuidPlayback(conn_id, { uuid, terminators: 'none', file: playBackFile });
                     }
                     this.logger.info('IVRService',`满意度完毕[${uuid},${indexOfKeys},${inputs},${very_play}]执行挂机!`);
                     await this.fsPbx.uuidKill(uuid, 'NORMAL_CLEARING');
@@ -855,7 +855,7 @@ export class IvrService {
     async blackListAction(conn_id:string, uuid: string): Promise<TDoneIvrActionResult> {
         try {
             const { caller, callee: called, callId, tenantId, routerLine } = this.runtimeData.getRunData(conn_id);
-            const tenantInfo = this.runtimeData.getTenantInfo();
+            const tenantInfo = this.runtimeData.getTenantInfo(conn_id);
             let result: TDoneIvrActionResult = {
                 nextType: 'ivr'
             };

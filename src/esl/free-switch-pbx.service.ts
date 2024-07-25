@@ -4,6 +4,7 @@ import { Connection } from './NodeESL/Connection';
 import { Event } from './NodeESL/Event';
 import { RuntimeDataService } from './runtime-data.service';
 import moment = require('moment');
+import { error } from 'console';
 
 export type uuidPlayAndGetDigitsOptions = {
   transfer_on_failure?: string;
@@ -93,12 +94,12 @@ export class FreeSwitchPbxService {
       const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
         conn.subscribe(events, (evt: Event) => {
-          this.logger.debug('FreeSwitchPBXService','subscribe:', evt.getHeader('Reply-Text'));
+          this.logger.debug('FreeSwitchPBXService','subscribe:', {replyText: evt.getHeader('Reply-Text') });
           resolve('');
         });
       });
     } catch (ex) {
-      this.logger.error('subscribe', ex);
+      this.logger.error('FreeSwitchPBXService','subscribe', {error: ex});
     }
   }
   message(conn_id:string, data: any) {
@@ -113,13 +114,13 @@ export class FreeSwitchPbxService {
       const conn = this.runtimeData.getConn(conn_id);
       const result = await new Promise((resolve, reject) => {
         conn.sendRecv(`linger ${time}`, (evt: Event) => {
-          this.logger.debug('FreeSwitchPBXService','linger:', evt.getHeader('Reply-Text'));
+          this.logger.debug('FreeSwitchPBXService','linger:', {replyText: evt.getHeader('Reply-Text') });
           resolve(null);
         });
       });
       return result;
     } catch (ex) {
-      this.logger.error('linger', ex);
+      this.logger.error('FreeSwitchPBXService', 'linger', {error: ex});
     }
   }
 
@@ -151,14 +152,14 @@ export class FreeSwitchPbxService {
       } else {
         const result = await new Promise((resolve, reject) => {
           conn.filter(header, value, (evt: Event) => {
-            this.logger.debug('FreeSwitchPBXService','filter:', evt.getHeader('Reply-Text'));
+            this.logger.debug('FreeSwitchPBXService','filter:', {replyText: evt.getHeader('Reply-Text') } );
             resolve(null);
           });
         });
         return result;
       }
     } catch (ex) {
-      this.logger.error('filter', ex);
+      this.logger.error('FreeSwitchPBXService','filter', {error:ex});
     }
   }
 
@@ -306,7 +307,7 @@ export class FreeSwitchPbxService {
       while (input_err_retry > 0 && input_timeout_retry > 0) {
         tries--;
         this.logger.debug(
-          null,
+          'FreeSwitchPBXService',
           `uuidPlayAndGetDigits:input_err_retry[${input_err_retry}],input_timeout_retry${input_timeout_retry}`,
         );
         const res = await this.uuidRead(conn_id, readArgs);
@@ -321,13 +322,13 @@ export class FreeSwitchPbxService {
         } else {
           let tipFile;
           if (res == 'timeout') {
-            this.logger.debug(null, `uuidPlayAndGetDigits:timeout`);
+            this.logger.debug('FreeSwitchPBXService', `uuidPlayAndGetDigits:timeout`);
             tipFile = input_timeout_file
               ? input_timeout_file
               : 'demo/timeout.wav';
             input_timeout_retry--;
           } else {
-            this.logger.debug(null, `uuidPlayAndGetDigits:inputerror`);
+            this.logger.debug('FreeSwitchPBXService', `uuidPlayAndGetDigits:inputerror`);
             tipFile = input_err_file ? input_err_file : 'demo/inputerror.wav';
             input_err_retry--;
           }
@@ -336,7 +337,7 @@ export class FreeSwitchPbxService {
             input_err_retry > 0 &&
             input_timeout_retry > 0
           ) {
-            await this.uuidPlayback({
+            await this.uuidPlayback(conn_id, {
               uuid,
               terminators: 'none',
               file: tipFile,
@@ -365,15 +366,15 @@ export class FreeSwitchPbxService {
           varvalue: inputKeys,
         });
       }
-      this.logger.debug(null, `uuidPlayAndGetDigits inputKeys:${inputKeys}`);
+      this.logger.debug('FreeSwitchPBXService', `uuidPlayAndGetDigits inputKeys:${inputKeys}`);
       return inputKeys;
     } catch (ex) {
-      this.logger.error('uuidReadDigits', ex);
+      this.logger.error('FreeSwitchPBXService','uuidReadDigits', {error: ex});
       return Promise.reject(ex);
     }
   }
 
-  async uuidPlayback({
+  async uuidPlayback(conn_id:string, {
     uuid,
     file,
     terminators = 'none',
@@ -387,35 +388,36 @@ export class FreeSwitchPbxService {
     async?: boolean;
   }) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const getTerminatorsKey = (evt:any) => {
         const input = evt.headers.get('DTMF-Digit');
-        this.logger.debug('FreeSwitchPBXService','DTMF-Digit:', evt);
+        this.logger.debug('FreeSwitchPBXService','DTMF-Digit:', {evt});
         if (input == terminators) {
-          this.uuidBreak(uuid);
+          this.uuidBreak(conn_id, uuid);
         }
       };
       await this.uuidBroadcast(uuid, file, legs);
 
       const playResult = await new Promise((resolve, reject) => {
         if (terminators && terminators !== 'none') {
-          this.conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
+          conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
         }
         // PLAYBACK_START
-        this.conn.once(`esl::event::PLAYBACK_START::${uuid}`, (evt) => {
-          this.logger.debug('FreeSwitchPBXService','uuidPlay start:', evt);
+        conn.once(`esl::event::PLAYBACK_START::${uuid}`, (evt) => {
+          this.logger.debug('FreeSwitchPBXService','uuidPlay start:', {evt});
         });
-        this.conn.once(`esl::event::PLAYBACK_STOP::${uuid}`, (evt) => {
+        conn.once(`esl::event::PLAYBACK_STOP::${uuid}`, (evt) => {
           const stopReason = evt.headers.get('Playback-Status');
-          this.logger.debug('FreeSwitchPBXService','uuidPlay stop:', evt);
+          this.logger.debug('FreeSwitchPBXService','uuidPlay stop:', {evt});
           resolve(stopReason);
         });
       });
       if (terminators && terminators !== 'none') {
-        this.conn.off(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
+        conn.off(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
       }
       return playResult;
     } catch (ex) {
-      this.logger.error('uuidPlayback', ex);
+      this.logger.error('FreeSwitchPBXService','uuidPlayback', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -436,26 +438,28 @@ export class FreeSwitchPbxService {
       });
       return newUuid;
     } catch (ex) {
-      this.logger.error('createUuid error:', ex);
+      this.logger.error('FreeSwitchPBXService','createUuid error:', {error: ex});
       return Promise.reject(ex);
     }
   }
 
   async originate(
+    conn_id:string,
     dialStr: string,
     appOrExten: string = 'park',
     argStrs?: string,
     originationUuid?: string,
   ): Promise<originateReturn> {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const result: originateReturn = await new Promise<originateReturn>(
         (resolve, reject) => {
-          this.conn.bgapi(
+          conn.bgapi(
             'originate',
             [`{${argStrs}}${dialStr}`, appOrExten],
             (evt:any) => {
               const body = evt.getBody();
-              this.logger.debug('FreeSwitchPBXService','after originate:', body);
+              this.logger.debug('FreeSwitchPBXService','after originate:', {body});
               if (/^\+OK/.test(body)) {
                 const newId = body.split(/\s+/)[1];
                 resolve({
@@ -497,17 +501,17 @@ export class FreeSwitchPbxService {
       let channelHangup = false;
       const getTerminatorsKey = async (evt:any) => {
         const input = evt.headers.get('DTMF-Digit');
-        this.logger.debug(null, `DTMF-Digit:${input},playStoped:${playStoped}`);
+        this.logger.debug('FreeSwitchPBXService', `DTMF-Digit:${input},playStoped:${playStoped}`);
         // 一旦接收到按键信息,立即终止播放音乐
         if (!playStoped) {
-          await this.uuidBreak(uuid);
+          await this.uuidBreak(conn_id, uuid);
         }
         if (input == terminators) {
           isOver = true;
         } else if (inputs == 'timeout') {
           isOver = true;
         } else if (isOver) {
-          this.logger.debug(null, '按键接收已完毕多余按键将忽略！');
+          this.logger.debug('FreeSwitchPBXService', '按键接收已完毕多余按键将忽略！');
           return;
         } else {
           inputs = `${inputs}${input}`;
@@ -518,15 +522,15 @@ export class FreeSwitchPbxService {
       };
 
       const onCallHangup = () => {
-        this.logger.debug(null, ` uuidRead CHANNEL_HANGUP  ${uuid}!`);
+        this.logger.debug('FreeSwitchPBXService', ` uuidRead CHANNEL_HANGUP  ${uuid}!`);
         isOver = true;
         channelHangup = true;
       };
-      this.conn.once(`esl::event::CHANNEL_HANGUP::${uuid}`, onCallHangup);
+      conn.once(`esl::event::CHANNEL_HANGUP::${uuid}`, onCallHangup);
 
       // PLAYBACK_START
       conn.once(`esl::event::PLAYBACK_START::${uuid}`, (evt) => {
-        this.logger.debug(null, `uuidPlay start ${uuid}!`);
+        this.logger.debug('FreeSwitchPBXService', `uuidPlay start ${uuid}!`);
       });
       conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
       await this.uuidBroadcast(uuid, file, legs);
@@ -536,23 +540,23 @@ export class FreeSwitchPbxService {
             playStoped = true;
             isOver = true;
             inputs = 'hangup';
-            this.logger.debug(null, `uuidPlay when hangup ${uuid}`);
+            this.logger.debug('FreeSwitchPBXService', `uuidPlay when hangup ${uuid}`);
             resolve(null);
           }
         };
-        this.conn.once(`esl::event::PLAYBACK_STOP::${uuid}`, (evt) => {
+        conn.once(`esl::event::PLAYBACK_STOP::${uuid}`, (evt) => {
           if (!playStoped) {
             playStoped = true;
-            this.conn.removeListener(
+            conn.removeListener(
               `esl::event::CHANNEL_HANGUP::${uuid}`,
               startOnHangup,
             );
             const stopReason = evt.headers.get('Playback-Status');
-            this.logger.debug(`uuidPlay stop ${uuid}:`, stopReason);
+            this.logger.debug('FreeSwitchPBXService', `uuidPlay stop ${uuid}:`, {stopReason});
             resolve(stopReason);
           }
         });
-        this.conn.once(`esl::event::CHANNEL_HANGUP::${uuid}`, startOnHangup);
+        conn.once(`esl::event::CHANNEL_HANGUP::${uuid}`, startOnHangup);
       });
 
       await this.wait(1 * 1000);
@@ -593,8 +597,8 @@ export class FreeSwitchPbxService {
 
       this.logger.debug('FreeSwitchPBXService',`uuidRead等待超时处理完毕:${inputs}`);
 
-      this.conn.removeListener(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
-      this.conn.removeListener(
+      conn.removeListener(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
+      conn.removeListener(
         `esl::event::CHANNEL_HANGUP::${uuid}`,
         onCallHangup,
       );
@@ -612,19 +616,20 @@ export class FreeSwitchPbxService {
       }
       return inputs;
     } catch (ex) {
-      this.logger.error('uuidRead', ex);
+      this.logger.error('FreeSwitchPBXService','uuidRead', {error: ex});
       return Promise.reject(ex);
     }
   }
 
-  async uuidBreak(uuid: string, flag?: string) {
+  async uuidBreak(conn_id:string, uuid: string, flag?: string) {
     try {
+      const conn = this.runtimeData.getConn(conn_id);
       const args = [uuid];
       if (flag && flag === 'all') {
         args.push(flag);
       }
       await new Promise((resolve, reject) => {
-        this.conn.api('uuid_break', args, (evt:any) => {
+        conn.api('uuid_break', args, (evt:any) => {
           // this.logger.debug('FreeSwitchPBXService','uuid_break result:', evt, evt.headers);
           const body = evt.getBody();
           if (/^\+OK/.test(body)) {
@@ -662,7 +667,7 @@ export class FreeSwitchPbxService {
         const conn = this.runtimeData.getConn(conn_id);
         conn.api('uuid_setvar', [uuid, varname, varvalue], (evt:any) => {
           const body = evt.getBody();
-          this.logger.debug('FreeSwitchPBXService','uuid_setvar result:', body);
+          this.logger.debug('FreeSwitchPBXService','uuid_setvar result:', {body});
           if (/^\+OK/.test(body)) {
             resolve({
               success: true,
@@ -693,7 +698,7 @@ export class FreeSwitchPbxService {
       const result = await new Promise<string>((resolve, reject) => {
         conn.api('uuid_getvar', [uuid, varname], (evt:any) => {
           const body = evt.getBody();
-          this.logger.debug('FreeSwitchPBXService',' uuid_getvar result:', body);
+          this.logger.debug('FreeSwitchPBXService',' uuid_getvar result:', {body});
           resolve(body);
         });
       });
@@ -711,7 +716,7 @@ export class FreeSwitchPbxService {
     try {
       const conn = this.runtimeData.getConn(conn_id);
       await new Promise((resolve, reject) => {
-        if (this.conn.socket) {
+        if (conn.socket) {
           conn.api('uuid_kill', [uuid, cause], (evt:any) => {
             const body:string = evt.getBody();
             if (/^\+OK/.test(body)) {
@@ -739,7 +744,7 @@ export class FreeSwitchPbxService {
     try {
       const conn = this.runtimeData.getConn(conn_id);
       await new Promise((resolve, reject) => {
-        if (this.conn.socket) {
+        if (conn.socket) {
           conn.api('uuid_kill', [uuid, cause], (evt:any) => {
             const body = evt.getBody();
             if (/^\+OK/.test(body)) {
@@ -795,7 +800,7 @@ export class FreeSwitchPbxService {
       });
       return result;
     } catch (ex) {
-      console.log('uuidBroadcast error ', ex);
+      this.logger.error('FreeSwitchPBXService', 'uuidBroadcast error ', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -807,7 +812,7 @@ export class FreeSwitchPbxService {
         (resolve, reject) => {
           conn.api('uuid_bridge', [callerLegId, agentLegId], (evt:any) => {
             const body = evt.getBody();
-            this.logger.debug('FreeSwitchPBXService','uuid_bridge result:', body);
+            this.logger.debug('FreeSwitchPBXService','uuid_bridge result:', {body});
             if (/^\+OK/.test(body)) {
               const bridgeId = body.split(/\s+/)[1];
               resolve({
@@ -825,7 +830,7 @@ export class FreeSwitchPbxService {
       );
       return result;
     } catch (ex) {
-      this.logger.error('uuidBridge error:', ex);
+      this.logger.error('FreeSwitchPBXService','uuidBridge error:', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -854,7 +859,7 @@ export class FreeSwitchPbxService {
               evt,
             });
           } else {
-            this.logger.debug('FreeSwitchPBXService','Bridge FAIL:', dialstatus);
+            this.logger.debug('FreeSwitchPBXService','Bridge FAIL:', {dialstatus});
             resolve({
               success: false,
               cause: dialstatus,
@@ -960,7 +965,7 @@ export class FreeSwitchPbxService {
       });
       return Promise.resolve(result);
     } catch (ex) {
-      this.logger.error('uuidRecord error:', ex);
+      this.logger.error('FreeSwitchPBXService','uuidRecord error:', {error: ex});
       return Promise.reject(ex);
     }
   }
@@ -972,7 +977,7 @@ export class FreeSwitchPbxService {
       const result = await new Promise((resolve, reject) => {
         conn.api('uuid_setvar_multi', [uuid, kv], (evt:any) => {
           const body = evt.getBody();
-          this.logger.debug('FreeSwitchPBXService',' uuid_setvar_multi result:', body);
+          this.logger.debug('FreeSwitchPBXService',' uuid_setvar_multi result:', {body});
           if (/^\+OK/.test(body)) {
             resolve({
               success: true,
@@ -1018,7 +1023,7 @@ export class FreeSwitchPbxService {
           'uuid_transfer',
           [uuid, leg, extension, 'xml', 'default'],
           (evt:any) => {
-            this.logger.debug('FreeSwitchPBXService','uuid_transfer result:', evt);
+            this.logger.debug('FreeSwitchPBXService','uuid_transfer result:', {evt});
             resolve(null);
           },
         );

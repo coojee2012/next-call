@@ -1,0 +1,318 @@
+A test mail should be sent to the manual mail recipients, please check.
+Access Count
+Access Count Time Type
+Access Different Scenario
+Activity Code
+Activity Definition Settings
+AD Users Sync Setting
+Add Permission Rule
+Add Users
+Address
+Advance Report
+Allowed Actions
+API Key Management
+ApiKey Management
+Are you sure you want to delete project associated data by permanently?
+Assign Mapped Service
+Assign Other Area
+Assign Other System
+Auto LookUp
+Auto Map and Sync for one specific Package when opening the Package dialog
+Auto-Map
+Before setup job scheduler for project deletion, you need go \"ProjectDeletion\" tab to choose project which is you want to deleting, those projects will be unavailable immediately.
+Breakdown Scope
+Breakdown Structure Level
+Breakdown Structure Level Option
+Bust Facility POC Max Flow
+Bust Segment Capacity
+By
+Cc
+Change State
+Check Grid Column Permissions
+CHeck Grid Column Permissions
+Check Permissions
+Column Mapping
+Commissioning Activities
+Commissioning Components
+Commissioning Schedule
+Compare Snapshot Report
+Confirm Name
+Copy Permission
+Copy Role
+Copy Users
+Credential Name
+Custom Import - Upload
+Data Exception
+Data Exceptions
+Data Header Line Number
+Data Name
+Data Row Start Number
+Database
+Debug
+Default Value
+Delete
+Delete Permanently
+Denied
+Design Dashboard
+Destination Project
+Disable Create
+Do you want to exit edit mode without saving changes?
+Document Revision
+Document Url
+does not have permission to view this page.
+does not have permission visit this site.
+Domain Name
+Edit Role
+E-Mail Address
+E-Mail Address(es)
+E-Mail Body
+E-Mail Subject
+EMP Entity Type
+EMP is currently unavailable
+EMP is currently unavailable, Please refresh the page and wait for a minutes
+EMP utilizes Active Directory to pull key user information, such as
+Enable Cache
+Error Code
+Error Log Detail
+Error Occurred
+Excel Bulk Export
+Excel Bulk Import
+Excel Report Generate
+Expiration Date
+Export Tracker Report
+Extended Properties
+Exyte Group EMP
+Facility Equipment
+Facility Facility Poc Location
+Facility Poc
+Facility Poc Assignment
+Facility Report
+Facility Segment
+Facility Segment Name
+Facility System
+False
+File save completed
+File save failed
+Filter Type
+Forbidden
+Formula Editor
+Go to the
+Grid Project Views
+Group Membership for permissions assigned to a CPP group
+Home Page
+Import File
+Import Value
+Integration Type
+Interface Report
+IP Address
+Jobs will be run normally
+LDAP Integration
+LDAP Path
+Level Options
+Level Start No.
+Locked Scope Group Item Editor
+Logger Name
+LookUp Editor
+Lookup For Commissionings
+Lookup For Deliverables
+Lookup For Design Packages
+Lookup For Documents
+Lookup For Equipments
+Lookup For Matrix
+Lookup For Methodology
+Lookup For Project Role
+Lookup For Scope Items
+Lookup For Segments
+Lookup For System Entities
+Lookup For Tools
+Lookup For Work Packages
+Machine Name
+Mail Log
+Mail Server
+Main Details
+Manage Roles
+Manual E-mail
+Match Rule
+Memo
+Message
+Milestone Schedule
+Missed Milestone Confirm
+Modify
+Modify Roles
+Multiple Schedule
+Naming Schema
+New Status
+New User(s)
+No jobs will be run for any projects
+No Release note for now.
+Not Found
+OData White List
+Only Bulk Edit Failed Rows
+Override
+Override Earned Credit
+Override Facility Units
+Override History Revision
+Override Name
+Override Schedule Type
+Override Tool Units
+P 6Milestone
+P6 Instance Name
+Packages Responsibility Matrix
+Packages Roles And Responsibilities
+Password
+Permission Rules Count
+Permissions
+Please enter words to search project
+Please enter words to search role
+Please input selected project name to confirm
+Please select a destination project.
+Please select a existing template
+Please select a source project.
+Please select a template.
+Please select at least one reference lookups or entities item.
+Please select filter value.
+Please select project
+Please type in the project name
+Please type in the user name
+Port
+Port Number
+PPCS Integration
+Primary
+Primavera P6 Schedule Integration
+Proceeding...
+Project Data Copy
+Project Deletion
+Project Deletion Setting
+Project Schedule Integration Settings
+Project Setting Breakdown Structure
+Project Setting Ecard Report
+Project Setting Formulas
+Project Setting HealthCheck
+Project Setting Tool Install
+Project User Management
+Project User Replacement
+Project Views Settings
+Qaqc
+Reference Entities
+Reference Lookups
+Reference Other Project
+Reference Project
+Release Notes
+Released on
+Replace User
+Report Template Type
+Request Facility Poc Assignment
+Request failed with status {0}.
+Request Url
+Reset to Default Formulas
+Restore Deleted
+Review in Excel
+Role Mapped
+Role Name
+Role Types
+RoleType
+Saved Import Template
+Schedule Phase
+Scope Level Hide
+Segment Demand Cache Setting
+Select Source
+Send a test mail at once to above recipients with the SMTP settings on the left.
+Send An Immediate Test Mail
+Send Test Mail
+Sender Display Name
+Sender E-mail Address
+Sending test mail ...
+Sent
+Separate with comma ',' for multiple recipients.
+Server Address
+Server Instance
+Sheet Name
+Show Tour First Login
+Similar to the Segment Demand Cache service, EMP will automatically update Calculated Tool Milestones whenever there are changes to tools or tool templates. However, data can changed based on date. For example,
+SMTP Settings
+Sorry, the object does not exist.
+Sorry, your account
+Source Project
+Start Date cannot greater than End Date.
+Subject
+Submission Approve
+Submission Review
+Submissions
+Submit
+Submit Chosen Rows
+Summary View
+System Log
+System Value
+Target Field
+Test
+Test Connection
+The Address field is required.
+The confirm name is different with selected project
+The destination project must be different with source project.
+The Password field is required.
+The role has no permissions to apply.
+The Segment Demand is cached in the system to help improve performance. This cache is automatically updated whenever changes are made in the project. However, data can changed based on the date. For example, when the day changes there may be some tools that should be turning on and some tools that should be turning off. Because these changes are caused by time, and not by an action (editing a tool), we need this service to run to update the data
+The User Name field is required.
+There is already a record with the same Instance Name
+There is no option selected for Allowed Actions.
+There is no option selected for Scopes
+There is no REST API Audit data need to be approved
+This data relies on
+This form data will not be saved by clicking this button.
+This page allows configuring the data services running inside of EMP
+This service helps EMP to keep this information up-to-date
+This setting is used for setup job scheduler for project deletion, the job will deleting projects associated data by permanently, maybe this action will take a long time(depends on data size), please executing it at system free time.
+Timestamp
+To
+Token
+Tool Assignment Frozen
+Tool Auto Assign
+Tool Bulk Assign
+Tool Install Report
+Tool Install Segment Mapping
+Tool Install Share Any Component
+Tool Install Tool
+Tool Install Tool Component Mark Required
+Tool Install Tool Location
+Tool Install Tool Modify Template
+Tool Install Tool PocLocation
+Tool Install Tool Template
+Tool Install Tool Template Budget
+Tool Install Tool Template Poc Location
+Tool Milestone Calculation Setting
+Tool Modifier
+Tool Poc Manifold
+Tool PreAssign
+Tool Role Assignment
+Tool Schedule
+True
+Turn on AD users sync for all projects
+Turn on Project Deletion for all projects
+Turn on Segment Demand Cache for all projects
+Turn on tool milestone calculation for all projects
+Upload Source
+Uploading...
+Use SSL
+User And Permission Check Grid Column Permissions
+User And Permission Check Permissions
+User And Permission Roles
+User And Permission Users
+User Count
+User Identity
+User Name
+View Admin
+View Deleted
+View Developer
+View Overview With Duration
+View Schedule Filter
+View Snapshot
+WBS Configuration
+Web Get API
+Web Post API
+When Test
+when the day changes tasks may now be late and trigger a different calculation. Because these changes are caused by time, and not by an action (editing a tool), we need this service to run to update the data.
+Windows Identity
+Would you like to copy the related data as well?
+WP Activity Code
+WP Activity Code(Base Line)
+Your selected project is not found.
