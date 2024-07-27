@@ -1,318 +1,356 @@
-A test mail should be sent to the manual mail recipients, please check.
-Access Count
-Access Count Time Type
-Access Different Scenario
-Activity Code
-Activity Definition Settings
-AD Users Sync Setting
-Add Permission Rule
-Add Users
-Address
-Advance Report
-Allowed Actions
-API Key Management
-ApiKey Management
-Are you sure you want to delete project associated data by permanently?
-Assign Mapped Service
-Assign Other Area
-Assign Other System
-Auto LookUp
-Auto Map and Sync for one specific Package when opening the Package dialog
-Auto-Map
-Before setup job scheduler for project deletion, you need go \"ProjectDeletion\" tab to choose project which is you want to deleting, those projects will be unavailable immediately.
-Breakdown Scope
-Breakdown Structure Level
-Breakdown Structure Level Option
-Bust Facility POC Max Flow
-Bust Segment Capacity
-By
-Cc
-Change State
-Check Grid Column Permissions
-CHeck Grid Column Permissions
-Check Permissions
-Column Mapping
-Commissioning Activities
-Commissioning Components
-Commissioning Schedule
-Compare Snapshot Report
-Confirm Name
-Copy Permission
-Copy Role
-Copy Users
-Credential Name
-Custom Import - Upload
-Data Exception
-Data Exceptions
-Data Header Line Number
-Data Name
-Data Row Start Number
-Database
-Debug
-Default Value
-Delete
-Delete Permanently
-Denied
-Design Dashboard
-Destination Project
-Disable Create
-Do you want to exit edit mode without saving changes?
-Document Revision
-Document Url
-does not have permission to view this page.
-does not have permission visit this site.
-Domain Name
-Edit Role
-E-Mail Address
-E-Mail Address(es)
-E-Mail Body
-E-Mail Subject
-EMP Entity Type
-EMP is currently unavailable
-EMP is currently unavailable, Please refresh the page and wait for a minutes
-EMP utilizes Active Directory to pull key user information, such as
-Enable Cache
-Error Code
-Error Log Detail
-Error Occurred
-Excel Bulk Export
-Excel Bulk Import
-Excel Report Generate
-Expiration Date
-Export Tracker Report
-Extended Properties
-Exyte Group EMP
-Facility Equipment
-Facility Facility Poc Location
-Facility Poc
-Facility Poc Assignment
-Facility Report
-Facility Segment
-Facility Segment Name
-Facility System
+#Row {0}: The Actual Start Date can't be later than the Actual End Date;
+#Row {0}: The Forecast Start Date can't be later than the Forecast End Date;
+#Row {0}: The Planned Start Date can't be later than the Planned End Date;
+%0 assigned to equipment poc, please un-assign %1 in equipment assignment.
+%0 assigned to tool poc, please un-assign %1 in tool assignment.
+%0 status %1 Unassigned.
+a
+a tool poc
+AC
+Activity Name
+Actual Finish
+Actual ManHours
+Additional Filter
+After
+After Days
+After Or On
+After Weeks
+Alert Level
+an
+an equipment poc
+And
+Applicable
+are
+Are you sure you want to %0 them?
+Are you sure you want to delete this item?
+Are you sure you want to proceed?
+Are you sure you want to reset poc configuration to template poc's?
+Are you sure you want to Un-Assign the tool poc?
+assign
+Assignment Status
+Auto-Assign
+Average flow should be greater than or equal with minimum flow
+Before
+Before Days
+Before Or On
+Before Weeks
+Bucket
+Budget
+Budget Template ID
+Bulk Assign
+Bulk Formula Mode
+Bulk Reset Milestones
+Can't add new document revision in Edit Sheet.
+Can't change to un-assignable, there are other pocs be manifolded to it
+Can't modify the Document Number.
+Can't modify the Revision.
+Capacities
+Capacities Count
+Category
+Change By
+Change Time
+Changed Components
+Changed POCs
+changed row(s) found;
+Click Proceed button to save.
+Commissioning Group Tempalte Name
+Complexity
+Component
+Component Name
+Construction Company
+Create Missed Milestone
+Created Time
+Current
+Current Exists
+Current Pedestal
+Current POC Count
+Current Required
+CustomColumns
+Data ID
+Datum X
+Datum Y
+Datum Z
+DCN Number
+Decision
+Default Alert Level
+Default Tool DF Calculation
+Deliverable Array
+Design Company
+Design Type
+Dictionary
+Dimension Height
+Dimension Length
+Dimension Unit
+Dimension Width
+Disable Edit
+Discipline & Service
+Discipline / Service
+Discipline > SubDiscipline
+Distance
+Do you want to skip the lookup confirmation? You are going to ignore some of the lookups, and those rows will not be imported.
+Document Process Logs
+Documents Location
+Done
+Drawing Name
+Drawings
+Dynamic Columns
+Edit Document Revisions
+Edit Milestones
+Edit Tool Location
+Edit Tool Matrix
+Edit Tool POC Location
+Edit Tools
+End Actual Date
+End Forecast Date
+End Planned Date
+Equipment POC Name
+EquipmentAllPoc_Add
+EquipmentAllPoc_Edit
+Error Message
+Error Type
+error(s);
+Event Type
+EventType
+Excel Index
+Excel Index No
+Exception Status
+Export Errors
+Extensions
+Extensions Json Data
+Externally Managed
+Extra Columns
+Extra Data
+FA
+Facility Capacities
+Facility Capacity
+Facility Install Scope
+Facility Poc Comments
+Facility POC Name
+Facility Poc Names
+Facility POC Point X
+Facility POC Point Y
+Facility Points X
+Facility Points Y
+FacilityCategory
+FacilityPocId
+FacilityType
 False
-File save completed
-File save failed
-Filter Type
-Forbidden
-Formula Editor
-Go to the
-Grid Project Views
-Group Membership for permissions assigned to a CPP group
-Home Page
-Import File
-Import Value
-Integration Type
-Interface Report
-IP Address
-Jobs will be run normally
-LDAP Integration
-LDAP Path
-Level Options
-Level Start No.
-Locked Scope Group Item Editor
-Logger Name
-LookUp Editor
-Lookup For Commissionings
-Lookup For Deliverables
-Lookup For Design Packages
-Lookup For Documents
-Lookup For Equipments
-Lookup For Matrix
-Lookup For Methodology
-Lookup For Project Role
-Lookup For Scope Items
-Lookup For Segments
-Lookup For System Entities
-Lookup For Tools
-Lookup For Work Packages
-Machine Name
-Mail Log
-Mail Server
-Main Details
-Manage Roles
-Manual E-mail
-Match Rule
-Memo
-Message
-Milestone Schedule
-Missed Milestone Confirm
-Modify
-Modify Roles
-Multiple Schedule
-Naming Schema
-New Status
-New User(s)
-No jobs will be run for any projects
-No Release note for now.
-Not Found
-OData White List
-Only Bulk Edit Failed Rows
-Override
-Override Earned Credit
-Override Facility Units
-Override History Revision
-Override Name
-Override Schedule Type
-Override Tool Units
-P 6Milestone
-P6 Instance Name
-Packages Responsibility Matrix
-Packages Roles And Responsibilities
-Password
-Permission Rules Count
-Permissions
-Please enter words to search project
-Please enter words to search role
-Please input selected project name to confirm
-Please select a destination project.
-Please select a existing template
-Please select a source project.
-Please select a template.
-Please select at least one reference lookups or entities item.
-Please select filter value.
-Please select project
-Please type in the project name
-Please type in the user name
-Port
-Port Number
-PPCS Integration
-Primary
-Primavera P6 Schedule Integration
-Proceeding...
-Project Data Copy
-Project Deletion
-Project Deletion Setting
-Project Schedule Integration Settings
-Project Setting Breakdown Structure
-Project Setting Ecard Report
-Project Setting Formulas
-Project Setting HealthCheck
-Project Setting Tool Install
-Project User Management
-Project User Replacement
-Project Views Settings
-Qaqc
-Reference Entities
-Reference Lookups
-Reference Other Project
-Reference Project
-Release Notes
-Released on
-Replace User
-Report Template Type
-Request Facility Poc Assignment
-Request failed with status {0}.
-Request Url
-Reset to Default Formulas
-Restore Deleted
-Review in Excel
-Role Mapped
-Role Name
-Role Types
-RoleType
-Saved Import Template
-Schedule Phase
-Scope Level Hide
-Segment Demand Cache Setting
-Select Source
-Send a test mail at once to above recipients with the SMTP settings on the left.
-Send An Immediate Test Mail
-Send Test Mail
-Sender Display Name
-Sender E-mail Address
-Sending test mail ...
-Sent
-Separate with comma ',' for multiple recipients.
-Server Address
-Server Instance
-Sheet Name
-Show Tour First Login
-Similar to the Segment Demand Cache service, EMP will automatically update Calculated Tool Milestones whenever there are changes to tools or tool templates. However, data can changed based on date. For example,
-SMTP Settings
-Sorry, the object does not exist.
-Sorry, your account
-Source Project
-Start Date cannot greater than End Date.
-Subject
-Submission Approve
-Submission Review
-Submissions
-Submit
-Submit Chosen Rows
-Summary View
-System Log
-System Value
-Target Field
-Test
-Test Connection
-The Address field is required.
-The confirm name is different with selected project
-The destination project must be different with source project.
-The Password field is required.
-The role has no permissions to apply.
-The Segment Demand is cached in the system to help improve performance. This cache is automatically updated whenever changes are made in the project. However, data can changed based on the date. For example, when the day changes there may be some tools that should be turning on and some tools that should be turning off. Because these changes are caused by time, and not by an action (editing a tool), we need this service to run to update the data
-The User Name field is required.
-There is already a record with the same Instance Name
-There is no option selected for Allowed Actions.
-There is no option selected for Scopes
-There is no REST API Audit data need to be approved
-This data relies on
-This form data will not be saved by clicking this button.
-This page allows configuring the data services running inside of EMP
-This service helps EMP to keep this information up-to-date
-This setting is used for setup job scheduler for project deletion, the job will deleting projects associated data by permanently, maybe this action will take a long time(depends on data size), please executing it at system free time.
-Timestamp
-To
-Token
-Tool Assignment Frozen
-Tool Auto Assign
-Tool Bulk Assign
-Tool Install Report
-Tool Install Segment Mapping
-Tool Install Share Any Component
-Tool Install Tool
-Tool Install Tool Component Mark Required
-Tool Install Tool Location
-Tool Install Tool Modify Template
-Tool Install Tool PocLocation
-Tool Install Tool Template
-Tool Install Tool Template Budget
-Tool Install Tool Template Poc Location
-Tool Milestone Calculation Setting
-Tool Modifier
-Tool Poc Manifold
-Tool PreAssign
-Tool Role Assignment
-Tool Schedule
+File upload completed
+For all roles, please see \"Roles\" tab
+Forecast Date WW
+Forecast Finish
+Forecast Methodology Name
+Forecast Methodology Setting
+From
+From Deliverable
+Funding Approved
+Group Extensions
+Group ID
+Group Total Weight
+Hierarchy Name
+Holiday Date
+Holiday Name
+Ignore Segment DF
+import.
+import?
+In Deliverables
+Inactive Module
+Include
+Internal/External
+Invalid template. Please re-download the templates.
+is
+Is Facility Install Scope
+Is Forecast Calculation Frozen
+Is HideIn Report
+Is Lateral
+Is Methodology
+Is Planned Calculation Frozen
+it
+Keep All Possible
+Key Roles
+Laterals
+Layout Change
+Level Type
+Life
+Local Project Tools
+Look Ahead
+Mail To
+Manifold POC can't be assignable
+Manufacturer
+Manufacturing Process
+Mapped
+Matrix ID
+Max Pressure
+Maximum flow should be greater than or equal with average flow
+Maximum Pressure
+Maximum pressure should be greater than or equal with minimum presure
+Mep Composite
+Mfg Process
+Min Pressure
+Minimum Pressure
+Miss Bucket
+Missed Count
+Missed Milestone
+Missed Milestone Tracker
+Modules
+Multiple Selected
+No
+Notes
+Old Actual
+Old Forecast
+Old Planned
+Open Issues?
+Or
+Other Area (Mapped)
+Other Project Tools
+Override Capacity
+Overwrite Target Size
+Owner Group
+Parents
+Parsing completed.
+Pedistal
+Plan Date
+Planned Finish
+Planned Methodology Name
+Planned Methodology Setting
+Please create drawing first.
+Please enter words to search %0s
+Please enter words to search segments
+Please go to the 'ManualCapacity' tab to fill in capacity
+Please release the assignment before change the poc to un-assignable!
+Please select %0
+Please select %0 %1 poc first
+Please select a tool Poc
+Please select facility Pocs
+Please upload the latest reviewed Excel.
+Please upload the reviewed Excel.
+PMTs
+POC
+POC Count
+Poc Dates Plan
+Poc Name
+Pocs
+POCs
+Point X
+Point Y
+Point Z
+pre-assign
+Pressure Unit
+Previous
+Previous Exists
+Previous Pedestal
+Previous POC Count
+Previous Required
+Proceed
+Process Logs
+Processing...
+Project Creation
+Data ID
+Property Type
+Reference Tool Template
+Reision Description
+Remove All Assignments
+Remove Status
+Reset To Default Formula
+Resolved By
+Resolved Status
+Resolved Time
+Restriction
+RestrictionType
+Result
+Review file save completed
+Review in Web
+Revision Dat
+Revision Date
+Revision Description
+Revision Number
+Role Users
+RoleUsers Json Data
+Room
+Rotation
+Row Status
+row(s) pending to check and save.
+Same Area (Mapped)
+Same System
+Schedule Based On
+Scope Type
+Segment Mapping
+Segments Comment
+Segments Install Date
+Segments Location
+SegmentType
+Selected Deliverables
+Sequence No
+Share
+Shown Role Columns
+Size Unit
+Size2
+Skip
+Slip
+Specific Role Title
+Start Actual Date
+Start Change Adjustment
+Start Forecast Date
+Start Planned Date
+Start Up Date
+StartUp Date
+Submission Document Map Dic View
+Successful. All changes have been saved from this uploading.
+Target Connection Type
+Target ConnectionType
+Target Material
+Target Size
+The data source of Manifold POC: Equipment name or poc name was changed
+The tool is in frozen, You are able to use your override permission to do this.
+them
+This POC is assigned, please un-assigned it firstly.
+This will also prevent any automatic manifold updates for these POCs from future tool template changes
+TO
+to do this.
+Tool Area
+Tool Building
+Tool Complexity
+Tool Design Type
+Tool DF Calc
+Tool Id
+Tool Level
+Tool Poc
+Tool POC
+Tool Poc ID
+Tool POC Name
+Tool POC Point X
+Tool POC Point Y
+Tool Room
+Tool Size
+Tool Status
+Tool Template Change Workflow
+Tool Template Identifier
+Tool Template Name
+Tool Template Revision ID
+Tool Wafer Start Tie
+ToolDesignType
+ToolTemplate
+Treemap
 True
-Turn on AD users sync for all projects
-Turn on Project Deletion for all projects
-Turn on Segment Demand Cache for all projects
-Turn on tool milestone calculation for all projects
-Upload Source
-Uploading...
-Use SSL
-User And Permission Check Grid Column Permissions
-User And Permission Check Permissions
-User And Permission Roles
-User And Permission Users
-User Count
-User Identity
-User Name
-View Admin
-View Deleted
-View Developer
-View Overview With Duration
-View Schedule Filter
-View Snapshot
-WBS Configuration
-Web Get API
-Web Post API
-When Test
-when the day changes tasks may now be late and trigger a different calculation. Because these changes are caused by time, and not by an action (editing a tool), we need this service to run to update the data.
-Windows Identity
-Would you like to copy the related data as well?
-WP Activity Code
-WP Activity Code(Base Line)
-Your selected project is not found.
+Unit of Pressure
+Unit Of Size
+UnitSize of Dimension
+upload page but trying to upload a
+Uploading Successfully. Please refers to the downloaded excel for more details.
+User Roles
+View Exception Logs
+Wafer Start Tie
+Wafer StartTie
+WaferStartTie
+warning(s).
+Wbs Number
+WeekHours
+WeekHours Count
+Weeks
+Weight Unit
+Workstation
+Would you like to proceed with the
+Yes
+You are about to override the POC configuration for this tool
+You are on the
+Your account does not have permission

@@ -10,7 +10,7 @@ export class PbxIvrActionsService extends BaseService<PbxIvrActions> {
   ) {
     super(repository);
   }
-  async getIvrAction(tenantId: number, ivrNumber:string, ordinal:number): Promise<any> {
-
+  async getIvrAction(tenantId: number, ivrNumber:string, ordinal:number): Promise<PbxIvrActions | null> {
+    return await this.findOne({tenantId, ivrNumber, ordinal })
   }
 }

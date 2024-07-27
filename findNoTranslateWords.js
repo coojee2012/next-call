@@ -22,8 +22,7 @@ function readLinesFromFile(filePath) {
                 const words = msgids.join(" ").slice(1, -2);
                 console.log(words)
                 noTrans.push(words)
-            }
-            
+            }            
         }
         
     }

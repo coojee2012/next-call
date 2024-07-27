@@ -396,7 +396,7 @@ export class FreeSwitchPbxService {
           this.uuidBreak(conn_id, uuid);
         }
       };
-      await this.uuidBroadcast(uuid, file, legs);
+      await this.uuidBroadcast(conn_id, uuid, file, legs);
 
       const playResult = await new Promise((resolve, reject) => {
         if (terminators && terminators !== 'none') {
@@ -533,7 +533,7 @@ export class FreeSwitchPbxService {
         this.logger.debug('FreeSwitchPBXService', `uuidPlay start ${uuid}!`);
       });
       conn.on(`esl::event::DTMF::${uuid}`, getTerminatorsKey);
-      await this.uuidBroadcast(uuid, file, legs);
+      await this.uuidBroadcast(conn_id, uuid, file, legs);
       await new Promise((resolve, reject) => {
         const startOnHangup = () => {
           if (!playStoped) {
