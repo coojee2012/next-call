@@ -17,10 +17,16 @@ export class PbxQueueService extends BaseService<PbxQueue> {
     queueNumber: string,
   ): Promise<PbxQueue | null> {
     try {
-      return this.queueRepository.findOneBy({
-        tenantId: tenantId,
-        queueNumber: queueNumber,
-      });
+      const queue = await this.queueRepository.createQueryBuilder('queue')
+      .leftJoinAndSelect("queue.queueOption", "queueOption")
+      .leftJoinAndSelect("queue.agentOption", "agentOption")
+      .where("queue.tenantId=:tenantId and queue.queueNumber=:queueNumber",{tenantId,queueNumber})
+      .getOne();
+      // return this.queueRepository.findOneBy({
+      //   tenantId: tenantId,
+      //   queueNumber: queueNumber,
+      // });
+      return queue;
     } catch (ex) {
       return Promise.reject(ex);
     }

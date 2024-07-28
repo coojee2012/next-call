@@ -196,6 +196,22 @@ export class FreeSwitchPbxService {
     }
   }
 
+
+  async pre_answer(conn_id:string, uuid?: string): Promise<any> {
+    try {
+      const conn = this.runtimeData.getConn(conn_id);
+      const result = await new Promise((resolve, reject) => {
+        conn.execute('pre_answer', '', uuid, (evt: Event) => {
+          console.log('pre_answer -> ', evt);
+          resolve(null);
+        });
+      });
+      return Promise.resolve(result);
+    } catch (ex) {
+      return Promise.reject(ex);
+    }
+  }
+  
   async unpark(conn_id:string, uuid?: string): Promise<any> {
     try {
       const conn = this.runtimeData.getConn(conn_id);
@@ -894,9 +910,9 @@ export class FreeSwitchPbxService {
       const conn = this.runtimeData.getConn(conn_id);
       if (!cb || typeof cb !== 'function') cb = () => {};
       if (eventType === 'once') {
-        conn.once(evetName, cb);
+        conn.once(evetName, (evt) => {cb(conn_id, evt)});
       } else {
-        conn.on(evetName, cb);
+        conn.on(evetName, (evt) => {cb(conn_id, evt)});
       }
     } catch (ex) {
       this.logger.error('addConnLisenter error', ex);
@@ -909,7 +925,7 @@ export class FreeSwitchPbxService {
       if (!cb || typeof cb !== 'function') {
         conn.removeAllListeners(evetName);
       } else {
-        conn.off(evetName, cb);
+        conn.off(evetName, (evt) => {cb(conn_id, evt)});
       }
     } catch (ex) {
       this.logger.error('addConnLisenter error', ex);

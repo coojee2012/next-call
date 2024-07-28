@@ -44,12 +44,9 @@ export class PbxQueueStatisticService extends BaseService<PbxQueueStatistic> {
     }
   }
 
-  async findOne(query:any): Promise<PbxQueueStatistic> {
+  async findOne(query:any): Promise<PbxQueueStatistic |null> {
     try {
-      const doc: PbxQueueStatistic =
-        await this.findOne(
-          query
-        );
+      const doc = await super.findOne( query );
       return doc;
     } catch (ex) {
       return Promise.reject(ex);

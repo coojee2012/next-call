@@ -39,10 +39,10 @@ export class PbxQueue extends BaseEntity {
   announceFrequency: number; //每隔多少秒将向队列等待者播放提示录音
   @OneToOne(() => PbxQueueOption)
   @JoinColumn()
-  queue: PbxQueueOption;
+  queueOption: PbxQueueOption;
   @OneToOne(() => PbxQueueAgentOption)
   @JoinColumn()
-  agent: PbxQueueAgentOption; // 'callback' will try to reach the agent via the contact fields value. 'uuid-standby' will try to bridge the call directly using the agent uuid.
+  agentOption: PbxQueueAgentOption; // 'callback' will try to reach the agent via the contact fields value. 'uuid-standby' will try to bridge the call directly using the agent uuid.
   @Column()
   hasNew: boolean;
 }

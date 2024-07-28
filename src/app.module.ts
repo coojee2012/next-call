@@ -65,6 +65,7 @@ import { Connection } from './esl/NodeESL/Connection';
         retryDelay: 3,
         synchronize: true, // live need to false
         autoLoadEntities: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),
@@ -91,9 +92,10 @@ import { Connection } from './esl/NodeESL/Connection';
         redis: {
           host: configService.get('redis.host'),
           port: configService.get('redis.port'),
+          db: 10,
           password: configService.get('redis.password', undefined),
         },
-        prefix: 'ESL'
+        prefix: 'esl_bull',
       }),
       inject: [ConfigService],
     }),
@@ -142,9 +144,9 @@ export class AppModule implements NestModule {
     consumer.apply(WhiteListMiddleware).forRoutes('*');
     const dgramSocketServer = this.dgramService.createDgramSocket();
     this.processService.onMessage(dgramSocketServer);
-    await BullModule.registerQueueAsync({
-      name: 'BullQueue,RedLock,PUB,SUB',
-    });
+    // await BullModule.registerQueueAsync({
+    //   name: 'BullQueue,RedLock,PUB,SUB',
+    // });
     this.eslService
       .startOutbound()
       .then((res) => {

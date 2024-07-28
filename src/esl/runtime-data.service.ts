@@ -4,6 +4,8 @@ import { FreeSwitchPbxService } from './free-switch-pbx.service';
 import { TenantService } from 'src/tenant/tenant.service';
 import { Connection } from './NodeESL/Connection';
 import { Event } from './NodeESL/Event';
+import { Job, Queue } from 'bull';
+import { PbxQueue } from 'src/pbx/entities/pbx_queue';
 
 export interface IChannelData {
   FSName?: string;
@@ -59,6 +61,35 @@ export interface ISatisData {
   agentLeg?: string;
 }
 
+export type QueueData = {
+  cgrReqType: string;
+  originationUuid: string;
+  hangupBySystem: string;
+  agentId: number;
+
+  setIntervalTimeout?: NodeJS.Timer;
+  startTime: number;
+  ringTime: number;
+  answerTime: number;
+  queueJob?: Job;
+  queueMusicFile: string;
+  queueAnswered: boolean;
+  queueDone: boolean;
+
+  vipLevel: number;
+  maxLevel: number;
+  priority: number;
+  queue: PbxQueue | null;
+  findQueueMemberExec: boolean;
+  isCallerHangup: boolean;
+  agentEndState: string;
+  tryCallAgentTimes: number;
+  addInQueueJobTimes: number;
+
+  isDoneBusyTip: boolean;
+  isDoneTimeoutTip: boolean;
+};
+
 @Injectable()
 export class RuntimeDataService {
   private channelData: { [key: string]: IChannelData } = {};
@@ -69,6 +100,9 @@ export class RuntimeDataService {
   private blegUsers: string[]; //可以使用extension,外线号码
   private connections: { [key: string]: Connection } = {};
   private connEvents: { [key: string]: Event } = {};
+  private bullQueues: { [key: string]: Queue } = {};
+  private pbxQueues: { [key: string]: QueueData } = {};
+
   constructor(
     private readonly logger: LoggerService,
     private tenantService: TenantService,
@@ -85,16 +119,16 @@ export class RuntimeDataService {
     }
     this.channelData[conn_id] = {};
     this.runData[conn_id] = {
-      tenantId:0,
+      tenantId: 0,
       callId: '',
       ivrMaxDeep: 100,
-      ivrCurrentDeep: 0
+      ivrCurrentDeep: 0,
     };
     if (connEvent) {
       this.connEvents[conn_id] = connEvent;
 
       this.logger.debug('RuntimeDataService', 'Init Runtime Data!');
-      
+
       this.channelData[conn_id].FSName = connEvent.getHeader(
         'FreeSWITCH-Switchname',
       );
@@ -217,7 +251,9 @@ export class RuntimeDataService {
         this.runData[conn_id].tenantId as number,
       );
       if (!tenant) {
-        throw new Error(`Can't find tenant: ${this.runData[conn_id].tenantId}!!!`);
+        throw new Error(
+          `Can't find tenant: ${this.runData[conn_id].tenantId}!!!`,
+        );
       }
       this.tenantInfo[conn_id] = tenant;
     } catch (ex) {
@@ -286,7 +322,54 @@ export class RuntimeDataService {
     return this.statisData[conn_id];
   }
 
-  getCallId(conn_id:string): string {
+  getCallId(conn_id: string): string {
     return this.runData[conn_id].callId;
+  }
+
+  setBullQueue(conn_id: string, queue: Queue) {
+    this.bullQueues[conn_id] = queue;
+  }
+
+  getBullQueue(conn_id: string): Queue | undefined {
+    return this.bullQueues[conn_id];
+  }
+
+  initQueueData(conn_id: string) {
+    this.pbxQueues[conn_id] = {
+      cgrReqType: '',
+      originationUuid: '',
+      hangupBySystem: '',
+      agentId: 0,
+      startTime: 0,
+      ringTime: 0,
+      answerTime: 0,
+      queueJob: undefined,
+      queueMusicFile: '',
+      queueAnswered: false,
+      queueDone: false,
+      vipLevel: 0,
+      maxLevel: 0,
+      priority: 0,
+      queue: null,
+      findQueueMemberExec: false,
+      isCallerHangup: false,
+      agentEndState: '',
+      tryCallAgentTimes: 0,
+      addInQueueJobTimes: 0,
+      isDoneBusyTip: false,
+      isDoneTimeoutTip: false,
+    };
+  }
+
+  getQueueData(conn_id: string) {
+    return this.pbxQueues[conn_id];
+  }
+
+  setQueueData(conn_id: string, data: Partial<QueueData>) {
+    this.pbxQueues[conn_id] = Object.assign(
+      {},
+      this.pbxQueues[conn_id],
+      data,
+    );      
   }
 }

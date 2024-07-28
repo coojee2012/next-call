@@ -23,9 +23,9 @@ export class PbxQueueStatistic extends BaseEntity {
   queueNumber: string;
   @Column('simple-array')
   onDutyAgents: string[];
-  @Column()
+  @Column({default: null, nullable:true})
   answerAgent: string; //最终服务坐席分机号
-  @Column()
+  @Column({default: null, nullable:true})
   answerAgentId: number;
   @CreateDateColumn()
   incomeTime: Date; //进入队列时间

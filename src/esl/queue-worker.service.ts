@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import BullQueue, { Queue, Job, QueueOptions } from 'bull';
+import BullQueue = require('bull');
+import { Queue, Job, QueueOptions } from 'bull';
 import { RedisOptions, Redis } from 'ioredis';
 import Redlock, { RedlockAbortSignal } from 'redlock';
 import { LoggerService } from 'src/logger/logger.service';
@@ -9,7 +10,7 @@ import { PbxExtensionnService } from 'src/pbx/services/pbx_extensionn.service';
 import { RedisService } from './redis/redis.service';
 import { EventService } from './event/event.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InjectQueue } from '@nestjs/bull';
+// import { BullModule, InjectQueue } from '@nestjs/bull';
 
 export interface IQUeueWorkerParams {
   members: string[];
@@ -89,6 +90,10 @@ export class QueueWorkerService {
   add(tenantId: number, queueNumber: string): Queue | undefined {
     const qNameTopic = `esl_q_queue::${tenantId}::${queueNumber}`;
     if (this.queueTopics.indexOf(qNameTopic) < 0) {
+      // await BullModule.registerQueueAsync({
+      //   name: qNameTopic,
+      // });
+      
       const queue = new BullQueue(qNameTopic, this.queueOptions);
       this.queueTopics.push(qNameTopic);
       this.queues.push(queue);
@@ -202,7 +207,7 @@ export class QueueWorkerService {
     }
   }
 
-  setCacheBullKey(name: any) {
+  setCacheBullKey(name: string) {
     this.logger.debug('Cache Bull Key : ', name);
     this.bullQueueClient
       .set(`bullQueueCache::${name}`, 1)
@@ -211,7 +216,7 @@ export class QueueWorkerService {
         this.logger.error(
           'QueueWorkerService',
           'bullQueue set cache key error:',
-          name,
+          {name},
         );
       });
   }
@@ -477,7 +482,7 @@ export class QueueWorkerService {
             break;
           }
           let data = null;
-          switch (queue.queue.strategy) {
+          switch (queue.queueOption.strategy) {
             case 'round-robin': {
               data = await this.roundRobinStrategy({
                 members,

@@ -70,6 +70,7 @@ export class FlowBaseService {
             break;
           }
           case 'queue': {
+            this.runtimeData.initQueueData(conn_id);
             await this.dialQueue(conn_id, number);
             break;
           }

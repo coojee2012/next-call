@@ -63,7 +63,7 @@ export class FreeSwitchCallFlowService {
           }
         });
         // 当A-leg结束之后，还允许esl socket驻留的最长时间s
-        await this.fsPbx.linger(conn_id, 3);
+        await this.fsPbx.linger(conn_id, 30);
         const subRes = await this.fsPbx.subscribe(conn_id, ['ALL']);
         await this.fsPbx.filter(conn_id, 'Unique-ID', callId);
         await this.fsPbx.filter(conn_id, 'Other-Leg-Unique-ID', callId);
