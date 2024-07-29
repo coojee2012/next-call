@@ -101,21 +101,21 @@ export class QueueWorkerService {
       queue
         .on('error', function (error: any) {
           // An error occured.
-          console.log('bullqueue', error);
+          console.log('bullqueue error:', error);
         })
         .on('active', function (job: any, jobPromise: any) {
           // A job has started. You can use `jobPromise.cancel()`` to abort it.
-          console.log('bullqueue active', job.id, new Date());
+          console.log('bullqueue active:', job.id, new Date());
         })
 
         .on('stalled', function (job: any) {
           // A job has been marked as stalled. This is useful for debugging job
           // workers that crash or pause the event loop.
-          console.log('bullqueue stalled', job.id, new Date());
+          console.log('bullqueue stalled:', job.id, new Date());
         })
         .on('progress', function (job: any, progress: any) {
           // A job's progress was updated!
-          console.log('bullqueue progress', job.id, new Date());
+          console.log('bullqueue progress:', job.id, new Date());
         })
         .on('global:progress', function (jobId: any, progress: any) {
           console.log(`Job ${jobId} is ${progress * 100}% ready!`);
@@ -127,7 +127,7 @@ export class QueueWorkerService {
 
         .on('failed', function (job: any, err: any) {
           // A job failed with reason `err`!
-          console.log('bullqueue failed', job.id);
+          console.log('bullqueue failed:', job.id, err);
           // seneca.act({ role: 'pubsub', path: 'queue_job_fail', data: JSON.stringify({ id:job.id, data:job.data }) }, (err, rsp) => {
           //                console.log('bullqueue failed pubsub',err,rsp)
           //     })
@@ -157,7 +157,7 @@ export class QueueWorkerService {
             this.logger.debug(
               'QueueWorkerService',
               'doneInComeCall  res:',
-              res,
+              {res},
             );
             done(null, res);
           })
@@ -165,7 +165,7 @@ export class QueueWorkerService {
             this.logger.error(
               'QueueWorkerService',
               'doneInComeCall  error:',
-              err,
+              {err},
             );
             done(err);
           });
@@ -335,7 +335,7 @@ export class QueueWorkerService {
         const agent = finds[0];
 
         if (agent && agent.agentNumber) {
-          const index = members.indexOf(Number(agent.agentNumber));
+          const index = members.indexOf(agent.agentNumber);
           if (index > -1) {
             const firstArray = members.slice(index + 1);
             const lastArray = members.slice(0, index + 1);
@@ -365,10 +365,11 @@ export class QueueWorkerService {
       const member = this.cycleFind({ members: unlockedMember, tenantId });
       return Promise.resolve(member);
     } catch (ex) {
-      this.logger.error('QueueWorkerService', ex);
+      this.logger.error('QueueWorkerService', 'roundRobinStrategy error:', {ex});
       return Promise.reject(ex);
     }
   }
+
   async getLockedMembers({
     tenantId,
   }: {
@@ -546,7 +547,7 @@ export class QueueWorkerService {
         return Promise.resolve({ success: true, data: pubData });
       }
     } catch (ex) {
-      this.logger.error('doneInComeCall  Error:', ex);
+      this.logger.error('QueueWorkerService', 'doneInComeCall  Error:', {ex});
       return Promise.reject(ex);
     }
   }

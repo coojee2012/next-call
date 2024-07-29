@@ -8,12 +8,30 @@ export class PbxAgentService extends BaseService<PbxAgent> {
   constructor(@InjectRepository(PbxAgent) repository: Repository<PbxAgent>) {
     super(repository);
   }
-  getRoundRobinAgents(tenantId: number, queueNumber: string): PbxAgent[] {
+  async getRoundRobinAgents(
+    tenantId: number,
+    queueNumber: string,
+  ): Promise<PbxAgent[]> {
+    const sort: { lastBridgeStart: number; position: number } = {
+      lastBridgeStart: -1,
+      position: -1,
+    };
+    const agents = await this.repository.find({
+      where: {
+        tenantId,
+        queueNumber,
+      },
+      order: {
+        lastBridgeStart: 'DESC',
+        position: 'DESC',
+      },
+    });
+    if (agents.length > 0) {
+      return agents;
+    }
     return [];
   }
-  newCall(data:any) {
-
-  }
-  answerCall(data:any) {}
-  noAnsweredCall(data:any) {}
+  newCall(data: any) {}
+  answerCall(data: any) {}
+  noAnsweredCall(data: any) {}
 }

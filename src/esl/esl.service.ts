@@ -38,6 +38,7 @@ export class EslService {
   async initServer() {
     try {
       await this.readyRedisClients();
+      this.eventService.initRedisPub();
       this.eventService.initRedisSub();
       this.eventService.addARedisSub('stopFindAgent');
       this.eventService.addARedisSub('esl::callcontrol::queue::finded::member');

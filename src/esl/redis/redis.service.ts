@@ -11,7 +11,6 @@ export class RedisService {
     private redisOptions: RedisOptions;
     private namePrefix: string;
     constructor(private logger: LoggerService, private config: ConfigService) {
-        this.logger.setContext(RedisService.name);
         this.clientsNames = [];
         this.clients = [];
         this.namePrefix = '';
@@ -26,7 +25,7 @@ export class RedisService {
         try {
             const clientName = `${this.namePrefix}-${name}`;
             if (this.clientsNames.includes(clientName)) {
-                this.logger.warn(null,`Redis Client [${clientName}] Is Aready Exists!`);
+                this.logger.warn('RedisService',`Redis Client [${clientName}] Is Aready Exists!`);
                 return;
             }
             const opts: RedisOptions = Object.assign({}, this.redisOptions, { db })
@@ -62,28 +61,28 @@ export class RedisService {
             }
             const clientName = this.clientsNames[index];
             this.clients[index].once('connect', () => {
-                this.logger.debug(null,`Redis Client [${clientName}] Connected.`);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Connected.`);
             })
             this.clients[index].on('ready', () => {
-                this.logger.debug(null,`Redis Client [${clientName}] Is Ready.`);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Is Ready.`);
             })
             this.clients[index].on('error', (err) => {
-                this.logger.debug(null,`Redis Client [${clientName}] Error:`, err);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Error:`, err);
             })
             this.clients[index].on('close', () => {
-                this.logger.debug(null,`Redis Client [${clientName}] Is Closed.`);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Is Closed.`);
             })
             this.clients[index].on('reconnecting', () => {
-                this.logger.debug(null,`Redis Client [${clientName}] Is Reconnecting.....`);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Is Reconnecting.....`);
             })
             this.clients[index].on('end', () => {
-                this.logger.debug(null,`Redis Client [${clientName}] Is Ended.`);
+                this.logger.debug('RedisService',`Redis Client [${clientName}] Is Ended.`);
                 this.clientsNames.splice(index, 1);
                 this.clients.splice(index, 1);
             })
 
         } catch (ex) {
-            this.logger.error('listenClientEvents Error:', ex)
+            this.logger.error('RedisService','listenClientEvents Error:', {ex})
         }
     }
     setNamePrefix(prefix: string) {

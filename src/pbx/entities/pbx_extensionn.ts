@@ -63,9 +63,9 @@ export class PbxExtensionn extends BaseEntity {
   phoneNumber: string;
   @Column({default: ''})
   lastCallId: string; // 最后一次参与的callID
-  @Column()
-  logicType: string;
-  @Column()
+  @Column({default: ''})
+  logicType: string; // 处于的业务逻辑
+  @Column({type: 'simple-json'})
   logicOptions: string; // 处于的业务逻辑的参数
   @Column({default: 'no'})
   phoneLogin: string;
@@ -73,8 +73,8 @@ export class PbxExtensionn extends BaseEntity {
   dndInfo: string; //示忙状态 off/on
   @Column({default: 'deailway=hangup&number='})
   failed: string; // deailway-呼叫失败处理方式:hangup,ivr,voicemail,fllowme,transfer
-  @Column()
+  @Column({default: null, nullable:true})
   stateLastModified:Date;
-  @Column()
+  @Column({default: null, nullable:true})
   statusLastModified:Date;
 }

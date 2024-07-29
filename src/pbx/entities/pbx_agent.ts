@@ -2,6 +2,8 @@ import { Exclude, Expose, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany,ManyToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
 
+
+
 @Entity('pbx_agent')
 export class PbxAgent extends BaseEntity {
   @Column()
@@ -10,30 +12,30 @@ export class PbxAgent extends BaseEntity {
   queueNumber: string;
   @Column()
   agentNumber: string;
-  @Column()
+  @Column({default: ''})
   callId: string;
-  @Column()
+  @Column({default:0})
   position: number;
-  @Column()
+  @Column({default:0})
   lastBridgeEnd: number;
-  @Column()
+  @Column({default:0})
   lastBridgeStart: number;
-  @Column()
+  @Column({default:0})
   warpUpTime: number;
-  @Column()
+  @Column({default:0})
   lastOfferedCall: number;
-  @Column()
+  @Column({default:0})
   answeredCalls: number;
-  @Column()
+  @Column({default:0})
   noAnsweredCalls: number;
-  @Column()
+  @Column({default:0})
   busyDelayTime: number;
-  @Column()
+  @Column({default:0})
   noAnswerDelayTime: number;
-  @Column()
+  @Column({default:0})
   maxNoAnswer: number;
-  @Column()
+  @Column({default:0})
   rejectDelayTime: number;
-  @Column()
+  @Column({default:0})
   talkTime: number;
 }

@@ -196,7 +196,16 @@ export class FreeSwitchPbxService {
     }
   }
 
-
+  /*
+  预应答命令会在通道建立SDP之前发送，这样可以减少通道建立时间。
+  预应答命令的格式为：
+  <action> <args> [uuid]
+  其中action为pre_answer，args为空，uuid为通道的uuid。
+  示例：
+  pre_answer
+  预应答命令执行成功后，通道的状态会变为pre_answering。
+  然后，可以发送answer命令，通道的状态会变为answering。
+  ****/
   async pre_answer(conn_id:string, uuid?: string): Promise<any> {
     try {
       const conn = this.runtimeData.getConn(conn_id);
@@ -211,7 +220,7 @@ export class FreeSwitchPbxService {
       return Promise.reject(ex);
     }
   }
-  
+
   async unpark(conn_id:string, uuid?: string): Promise<any> {
     try {
       const conn = this.runtimeData.getConn(conn_id);
@@ -915,7 +924,7 @@ export class FreeSwitchPbxService {
         conn.on(evetName, (evt) => {cb(conn_id, evt)});
       }
     } catch (ex) {
-      this.logger.error('addConnLisenter error', ex);
+      this.logger.error('FreeSwitchPBXService', 'addConnLisenter error:', {ex});
     }
   }
 

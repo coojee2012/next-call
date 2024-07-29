@@ -86,19 +86,19 @@ import { Connection } from './esl/NodeESL/Connection';
       // disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
     }),
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        redis: {
-          host: configService.get('redis.host'),
-          port: configService.get('redis.port'),
-          db: 10,
-          password: configService.get('redis.password', undefined),
-        },
-        prefix: 'esl_bull',
-      }),
-      inject: [ConfigService],
-    }),
+    // BullModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     redis: {
+    //       host: configService.get('redis.host'),
+    //       port: configService.get('redis.port'),
+    //       db: 10,
+    //       password: configService.get('redis.password', undefined),
+    //     },
+    //     prefix: 'esl_bull',
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     UserModule,
     LoggerModule,
     RoleModule,
