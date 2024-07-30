@@ -1,356 +1,322 @@
-#Row {0}: The Actual Start Date can't be later than the Actual End Date;
-#Row {0}: The Forecast Start Date can't be later than the Forecast End Date;
-#Row {0}: The Planned Start Date can't be later than the Planned End Date;
-%0 assigned to equipment poc, please un-assign %1 in equipment assignment.
-%0 assigned to tool poc, please un-assign %1 in tool assignment.
-%0 status %1 Unassigned.
-a
-a tool poc
-AC
-Activity Name
-Actual Finish
-Actual ManHours
-Additional Filter
-After
-After Days
-After Or On
-After Weeks
-Alert Level
-an
-an equipment poc
-And
-Applicable
-are
-Are you sure you want to %0 them?
-Are you sure you want to delete this item?
-Are you sure you want to proceed?
-Are you sure you want to reset poc configuration to template poc's?
-Are you sure you want to Un-Assign the tool poc?
-assign
-Assignment Status
-Auto-Assign
-Average flow should be greater than or equal with minimum flow
-Before
-Before Days
-Before Or On
-Before Weeks
-Bucket
-Budget
-Budget Template ID
-Bulk Assign
-Bulk Formula Mode
-Bulk Reset Milestones
-Can't add new document revision in Edit Sheet.
-Can't change to un-assignable, there are other pocs be manifolded to it
-Can't modify the Document Number.
-Can't modify the Revision.
-Capacities
-Capacities Count
-Category
-Change By
-Change Time
-Changed Components
-Changed POCs
-changed row(s) found;
-Click Proceed button to save.
-Commissioning Group Tempalte Name
-Complexity
-Component
-Component Name
-Construction Company
-Create Missed Milestone
-Created Time
-Current
-Current Exists
-Current Pedestal
-Current POC Count
-Current Required
-CustomColumns
-Data ID
-Datum X
-Datum Y
-Datum Z
-DCN Number
-Decision
-Default Alert Level
-Default Tool DF Calculation
-Deliverable Array
-Design Company
-Design Type
-Dictionary
-Dimension Height
-Dimension Length
-Dimension Unit
-Dimension Width
-Disable Edit
-Discipline & Service
-Discipline / Service
-Discipline > SubDiscipline
-Distance
-Do you want to skip the lookup confirmation? You are going to ignore some of the lookups, and those rows will not be imported.
-Document Process Logs
-Documents Location
-Done
-Drawing Name
-Drawings
-Dynamic Columns
-Edit Document Revisions
-Edit Milestones
-Edit Tool Location
-Edit Tool Matrix
-Edit Tool POC Location
-Edit Tools
-End Actual Date
-End Forecast Date
-End Planned Date
-Equipment POC Name
-EquipmentAllPoc_Add
-EquipmentAllPoc_Edit
-Error Message
-Error Type
-error(s);
-Event Type
-EventType
-Excel Index
-Excel Index No
-Exception Status
-Export Errors
-Extensions
-Extensions Json Data
-Externally Managed
-Extra Columns
-Extra Data
-FA
-Facility Capacities
-Facility Capacity
-Facility Install Scope
-Facility Poc Comments
-Facility POC Name
-Facility Poc Names
-Facility POC Point X
-Facility POC Point Y
-Facility Points X
-Facility Points Y
-FacilityCategory
-FacilityPocId
-FacilityType
+ %0 dose not exist in AD directory.
+%0 can not be empty.
+%0 does not exist
+%0 Formula '%1' - formula parameters type mismatched
+%0 Minimum priority is 1.
+%0 must be an enumerated type
+%0 not implement the feature.
+%0 Priority is invalid.
+(<span id=\"filterSegmentCount\">All</span> Segments selected)
+(<span id=\"filterToolCount\">All</span> Tools selected)
+(Tool Templates)[#%0#] %1
+(Tool Templates)[#%0#] Capacity unit '%1' exists in [%2], but doesn't exist [%3].
+(Tool Templates)[#%0#] Service '%1' exists in [%2], but doesn't exist [%3].
+(Tool Templates)[#%0#] This data cannot be modified，some active tools are associated with this template.
+<%0>[Row #%1] [%2]:%3 is an invalid week hour.
+<%0>[Row #%1] [Template Name], [Event Type], [Tool Design Type], [Tool Complexity] can't be empty at the same time.
+<%0>[Row #%1] Can not find the root level setting.
+<%0>[Row #%1] Cannot find related level settings.
+<%0>[Row #%1] duplicated [Event Type], [Tool Design Type], [Tool Complexity].
+<%0>[Row #%1] duplicated [Role]: %2
+<%0>[Row #%1] duplicated [Template Name]: %2.
+<%0>[Row #%1] Scope group has been locked for this item, but you have the permission to edit it. Do you want to continue?
+<%0>[Row #%1] The '%2' does not have valid parent WBS item.
+<%0>[Row #%1] The data hierarchy (%2) is wrong. the correct hierarchy is '%3'
+<%0>[Row #%1] The first step is invalid.
+<%0>[Row #%1] The Level '%2' is invalid.
+<%0>[Row #%1] The Level field is required.
+<%0>[Row #%1] The levels hierarchy is invalid, the correct hierarchy is '%2'.
+<%0>[Row #%1] The next step group is not match exist scope group.
+<%0>[Row #%1] The next step is invalid. it cannot be the same as the current step.
+<%0>[Row #%1] The next step is invalid. the step is not in the same transaction flow.
+<%0>[Row #%1] The value of %2 '%3' is out of range.
+<%0>[Row #%1] The value of %2 is required.
+<%0>[Row #%1] There are multiple parent '%2' found.
+<%0>[Row #%1] There are multiple WBS items found. Please check in %2
+<%0>[Row #%1] There are multiple WBS items found. please check in DB items.
+<%0>[Row #%1] This item is in a locked Scope Group and cannot be edited. You may move this item to a scope group that is not locked to make changes.
+<%0>[Row #%1] When [Template Name] has value, [Event Type], [Tool Design Type], [Tool Complexity] should be empty.
+<Row #%0> [%1]: Name '%2' is not match the option name '%3' in Levels
+<Row #%0> The comment ('%1','%2','%3') is not unique. Entries must be unique based on Drawing, Component and Comment.
+<Row(s) %0> %1
+<ToolTemplate>[Row #%0] Sub-Process '%1' is not belong to Process: '%2'
+\"%0\" is invalid, can't convert to datetime
+<%0>[Row%1] \"%2:%3\" %4
+<Row %0> %1
+<Template Name>, <Event Type>, <Tool Design Type>, <Tool Complexity> can't be empty at the same time.
+Actual date is later than Planned or Forecast date.
+All changes have been changed.
+An element with the same key '%0' already exists in the source
+An error occurred while syncing work packages. Please contact the administrator
+Are you sure you want to delete this component\"
+BustBoth
+BustPoc
+BustSegment
+Cache has been expired, please refresh this page.
+Call PPCS Api was failed, please check the configuration. marke sure the root of PPCS API is correct.%0
+Can not access DPPSTemplate file. Please contact the administrator.
+can not find ScenarioSetting in db
+Can not find the template in server
+Can not find the WBSStructureId, please contact administrator
+Can not load DPPSTemplate file. Please contact the administrator.
+Can not open DPPSTemplate file. Please contact the administrator.
+cannot find the template.
+Cannot find tool's information.
+Cant change 'Is Multiple' for other type of role, we dont support except WorkPackage.
+Cant change 'Is Multiple' for WorkPackage , it only support for Internal & AutoDetect.
+Can't change scope group from \"%0\" to \"%1\", because \"%2\" doesn't have first step.
+Can't change scope group from \"%0\" to \"%1\", because \"%2\" doesn't have step \"%3\", continue to use the first step?
+Cant change 'Visiable In Module' for other type of role, we dont support except WorkPackage.
+Cant convert %0 to the Enum Type '%1'.
+Cant convert to PocStatus from string %0
+Can't delete submission with documents assigned.
+Can't find any column in file.
+Can't find any data in file.
+Can't find any data rows, please re-upload file.
+Can't find any sheet in filed.
+Can't find Excel data cache.
+Can't find Excel sheet.
+Can't find field: %0
+Can't find Header Line Number in template, please ignore this template.
+Can't find relate history information.
+Can't find Row Start Number in template, please ignore this template.
+Can't find Sheet Name in template, please ignore this template.
+Can't find the Regex %0
+Can't find the rule
+Can't find the sheet.
+Can't found the selected segment
+Can't get the file data
+Change Resolve status fail %0
+Change Resolve status fail, please contact the administrator.
+Check to see if there is a circular reference to the document.
+context
+cookie
+Credential Name is required
+Current excel sheet type \"%0\" is not supported
+Custom Type \"%0\" is not supported
+Date Formating is invalid.
+DocumentId Is Empty.
+Don't support the unit Type %0
+DPPSTemplate file is not found. Please contact the administrator
+DPPSTemplate.xlsx is not found. Please contact the administrator
+Duplicated [Event Type], [Tool Design Type], [Tool Complexity] in the database.
+Duplicated [Event Type], [Tool Design Type], [Tool Complexity] in the Excel.
+Duplicated [Role]: %0
+Duplicated [Template Name]:%0.
+duplicated option \"%0\"
+Duration can not be negative.
+EmailTemplate.html is not found. Please contact the administrator
+Empty collection
+encoded
+Entity type Not found for %0
+Entity Validation Failed - errors follow:\n
+EntityType \"%0\" is not supported
+Error attempting to manifold with a service that is not mapped. No mapping exists between %0 and %1.
+Error occurred.
+exists
+expression
+expression can't be parsed to ModelMetadata
+Faield to execute migration caused by capacity unit missing
+Faield to execute migration caused by service missing
+Failed to connect to the database with the given settings.
+Failed to create Discipline: 
+Failed to create DocumentScale: 
+Failed to create DocumentSheetSize: 
+Failed to create DocumentType: 
+Failed to create Facility: 
+Failed to create WorkPackage: 
 False
-File upload completed
-For all roles, please see \"Roles\" tab
-Forecast Date WW
-Forecast Finish
-Forecast Methodology Name
-Forecast Methodology Setting
-From
-From Deliverable
-Funding Approved
-Group Extensions
-Group ID
-Group Total Weight
-Hierarchy Name
-Holiday Date
-Holiday Name
-Ignore Segment DF
-import.
-import?
-In Deliverables
-Inactive Module
-Include
-Internal/External
-Invalid template. Please re-download the templates.
-is
-Is Facility Install Scope
-Is Forecast Calculation Frozen
-Is HideIn Report
-Is Lateral
-Is Methodology
-Is Planned Calculation Frozen
-it
-Keep All Possible
-Key Roles
-Laterals
-Layout Change
-Level Type
-Life
-Local Project Tools
-Look Ahead
-Mail To
-Manifold POC can't be assignable
-Manufacturer
-Manufacturing Process
-Mapped
-Matrix ID
-Max Pressure
-Maximum flow should be greater than or equal with average flow
-Maximum Pressure
-Maximum pressure should be greater than or equal with minimum presure
-Mep Composite
-Mfg Process
-Min Pressure
-Minimum Pressure
-Miss Bucket
-Missed Count
-Missed Milestone
-Missed Milestone Tracker
-Modules
-Multiple Selected
-No
-Notes
-Old Actual
-Old Forecast
-Old Planned
-Open Issues?
-Or
-Other Area (Mapped)
-Other Project Tools
-Override Capacity
-Overwrite Target Size
-Owner Group
-Parents
-Parsing completed.
-Pedistal
-Plan Date
-Planned Finish
-Planned Methodology Name
-Planned Methodology Setting
-Please create drawing first.
-Please enter words to search %0s
-Please enter words to search segments
-Please go to the 'ManualCapacity' tab to fill in capacity
-Please release the assignment before change the poc to un-assignable!
-Please select %0
-Please select %0 %1 poc first
-Please select a tool Poc
-Please select facility Pocs
-Please upload the latest reviewed Excel.
-Please upload the reviewed Excel.
-PMTs
-POC
-POC Count
-Poc Dates Plan
-Poc Name
-Pocs
-POCs
-Point X
-Point Y
-Point Z
-pre-assign
-Pressure Unit
-Previous
-Previous Exists
-Previous Pedestal
-Previous POC Count
-Previous Required
-Proceed
-Process Logs
-Processing...
-Project Creation
-Data ID
-Property Type
-Reference Tool Template
-Reision Description
-Remove All Assignments
-Remove Status
-Reset To Default Formula
-Resolved By
-Resolved Status
-Resolved Time
-Restriction
-RestrictionType
-Result
-Review file save completed
-Review in Web
-Revision Dat
-Revision Date
-Revision Description
-Revision Number
-Role Users
-RoleUsers Json Data
-Room
-Rotation
-Row Status
-row(s) pending to check and save.
-Same Area (Mapped)
-Same System
-Schedule Based On
-Scope Type
-Segment Mapping
-Segments Comment
-Segments Install Date
-Segments Location
-SegmentType
-Selected Deliverables
-Sequence No
-Share
-Shown Role Columns
-Size Unit
-Size2
-Skip
-Slip
-Specific Role Title
-Start Actual Date
-Start Change Adjustment
-Start Forecast Date
-Start Planned Date
-Start Up Date
-StartUp Date
-Submission Document Map Dic View
-Successful. All changes have been saved from this uploading.
-Target Connection Type
-Target ConnectionType
-Target Material
-Target Size
-The data source of Manifold POC: Equipment name or poc name was changed
-The tool is in frozen, You are able to use your override permission to do this.
-them
-This POC is assigned, please un-assigned it firstly.
-This will also prevent any automatic manifold updates for these POCs from future tool template changes
-TO
-to do this.
-Tool Area
-Tool Building
-Tool Complexity
-Tool Design Type
-Tool DF Calc
-Tool Id
-Tool Level
-Tool Poc
-Tool POC
-Tool Poc ID
-Tool POC Name
-Tool POC Point X
-Tool POC Point Y
-Tool Room
-Tool Size
-Tool Status
-Tool Template Change Workflow
-Tool Template Identifier
-Tool Template Name
-Tool Template Revision ID
-Tool Wafer Start Tie
-ToolDesignType
-ToolTemplate
-Treemap
+Finish date can't be earlier than startup date
+Forecast date is in the past.
+Forecast date is moved to a later date.
+formula parameters type mismatched
+has no role permission to access.
+httpContext
+Id cannot be empty
+identity
+Identity Carrier
+Interface methods 'GetEntityModels' are not implemented.
+Invalid {0}: \"{1}\"
+Invalid {0}: \"{1}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
+Invalid Expression Parameter Type 
+Invalid name: \"{0}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
+Invalid name: \"{0}\", can't end with Start or End
+Invalid name: \"{0}\", it is for internal using
+invalid parameter
+Invalid short name: \"{0}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
+Invalid short name: \"{0}\": It is the same as short name \"{1}\" in \"{2}\". Example: ABC_def_123 = ABCdef123
+Invalid short name: \"{0}\": It is the same as short name \"{1}\". Example: ABC_def_123 = ABCdef123
+'Is Multiple' for WorkPackage only support for Internal & AutoDetect.
+key
+MetaType:'%0' does not implement EntitySnapShot.
+Mismatched '%0' column
+Missing the following activity headers: %0
+Missing the following required headers: %0
+modelMetadata does not contain a ModelType
+Name '%0' is duplicated
+No bulk file path entered!
+No property name is provided.
+Not a submission or already been submitted
+Not found the specified project!
+obj
+Only supports classes that inherit IFacade
+Oops, EMP is currently unavailable, Please refresh the page and wait for a minutes
+Oops, something has gone wrong. Error code: '%0', please contact the administrator.
+Parameter(s) %0 are not implemented for dynamic DropdownListData
+Password is required
+Phase must be a number
+Planned date is in the past.
+Planned date is moved to a later date.
+Please enter student name.
+Please provide correct formula type
+Please provide encrypt key.
+Please provide password to encrypt.
+please select a template.
+Please select at least one project role type.
+Please setup %0 of %1
+Please setup the correct id/text property of current provider
+Please setup the id property of current provider
+Please setup the text property of current provider
+Plesae choose a file to upload.
+POC '%0' has invalid Manifold POC '%1'
+Poc \"\" + e.model.Name + \"\" is duplicated under the tool, please check again.
+Poc Number (%0) has been assigned, please un-assign it firstly.
+POC(%0)'s flow or diversity factor changed. %1
+POC(s) \"%0\": %1
+Port Number is required
+Process cannot be empty.
+Progress should be in the range of 0 - 100%
+Project number must be entered!
+propName
+Provided bulk file does not exist!
+reached the access count limit.
+Release
+Role '%0' is required.
+Segment does not exist.
+Segment type hierarchy  are wrong for the below segments: %0
+Sender E-Mail Address is required
+Service group \"{0}\" had been used in target service of poc, autoMapping can not be unchecked
+source
+Start Date %0 can not be after End Date %1.
+Start Date %0 must before End Date %1.
+Start Time %0 can not be after End Time %1.
+Success to connect to P6 database with the setting
+Sync the users of group %0 failed.
+T must be an enumerated type
+Template %0 file does not exist
+Template rule name already exists
+Template%0 file does not exist
+The %0 custom report already exist.
+The %0 is required
+The <%0>:%1 is an invalid week hour.
+The Capacity Unit of the POC is invalid.
+The cell field is required.
+The cell is readonly
+The cell is required.
+The combination of Name: %0, Life: %1, Revision: %2 is already exists.
+The discipline (%0) not include the Sub-Discipline (%1).
+The Discipline field is required.
+The discipline must be supplied if Sub-Discipline supplied.
+The document revision '%0' is not the last revision, can't be removed.
+The document revision is being used, there is other data that depends on this.
+The Earned Credit must be between 0% to 100%.
+The field %0 is invalid.
+The field Revision must be higher than 0.
+The filter value '%0' is invalid.
+The filter value \"%0\" is invalid
+the 'GridQueryCriteria.PreFilters' can not be null
+The group %0 not found.
+The input value \"%0\" is invalid for \"%1\"
+the 'LinkType' can not be null or empty
+The matrix: \"{0}\" is for internal use and cannot be modified.
+The Milestone.Name field is required.
+The name %0 is invalid
+The new value of RevisionNumber '%0' is invalid, you can only use value(s) '%1' to create the next Revision.
+The parameters fromUnitName and toUnitName can not be empty
+The parsed data is expired, please refresh the dialog and redo the steps.
+The POC (%0) is currently assigned. You must remove all assignments before you can proceed.
+The Process field is required.
+The query project doesn't setup p6 integration, please contact admin
+The query project doesn't setup p6 payment milestone activity names, please contact admin
+The remaining key combinations will be repeated, continue will keep first combinations( %0 ) and delete others. Do you want to continue?
+The replaced user can not be empty.
+The replaced user is not found.
+The replaced user name can not be empty.
+The Report Template Type does not match.
+The ReportTemplatePath does not exist. Please contact your administrator.
+The same column names exist in the file.
+the ScenarioSetting can not be null
+the ScenarioSettingId can not be null
+The SegmentIds can not be null
+The Service field is required.
+The stage or state of this document has been changed by other users, please download the latest data.
+The step is being used, there are other steps depends on this.
+the 'TemplateLinkId' can not be null or empty
+The Tool ID value {0} already exists
+The ToolRoleUser.Name field is required.
+The TPOC Capacity Unit is invalid.
+The type of %0 does not contain the 'Contains' operation.
+The type of %0 does not contain the 'Does Not Contains' operation.
+The type of %0 does not contain the 'Equal' operation.
+The type of %0 does not contain the 'Greater Than' operation.
+The type of %0 does not contain the 'Greater Than Or Equal' operation.
+The type of %0 does not contain the 'IsEmpty' operation.
+The type of %0 does not contain the 'IsNotEmpty' operation.
+The type of %0 does not contain the 'Less Than' operation.
+The type of %0 does not contain the 'Less Than Or Equal' operation.
+The type of %0 does not contain the 'Not Equal' operation.
+The type of matrix: \"{0}\" can't be modified.
+The uploaded file is out of date. Please re-download the file
+The user name can not be empty.
+The value %0 is invalid for field %1.
+The value of %0 '%1' is out of range
+The value of \"%0\" is not valid
+The value of \"%0\" is not valid.
+The value of \"{0}\" is greater than \"{1}\"
+The value of \"{0}\" is less than \"{1}\"
+The view %0 does not exist, please refresh grid.
+There already have a template with the same name.
+There is already and schedule on the same time.
+There is already have a breakdown structure set as primary.
+There is another matrix for custom column options of entity type : \"{0}\"
+There is tool keys for entity type : \"{0}\"
+This item '%0' level don't allow new.
+This item may cause cycle reference to item '%0'.
+This Level has children, can't be remove now.
+This Level used by some Level Options, can't be remove now.
+This Level used by some WBS items, can't be remove now.
+This POC (%0) has a manifold POC
+This role field is required.
+This step is being used by a scope item and cannot be deleted
+This system does not exist.
+This tool template was modified by someone else, please refresh the page and try again.
+This view is not created by yourself, you can not delete it.
+token
+Tool Id can not be null
+Total progress can't be greater than 100%
 True
-Unit of Pressure
-Unit Of Size
-UnitSize of Dimension
-upload page but trying to upload a
-Uploading Successfully. Please refers to the downloaded excel for more details.
-User Roles
-View Exception Logs
-Wafer Start Tie
-Wafer StartTie
-WaferStartTie
-warning(s).
-Wbs Number
-WeekHours
-WeekHours Count
-Weeks
-Weight Unit
-Workstation
-Would you like to proceed with the
-Yes
-You are about to override the POC configuration for this tool
-You are on the
-Your account does not have permission
+Type \"%0\" is not supported
+Unable to find connection setting, please contact administrator.
+Unable to proceed. You already have a pending same operation for this project. If you think this is an error please contact your administrator.
+Unit %0's multiplier is 0
+Unknown DB configuration
+Unknown Error
+Unknown Error!
+Unsupported data type %0
+User %0 doesn't have any project role for %1.
+value \"%0\" is over the max length(%1) of field
+Waiting read lock overtime
+Waiting write lock overtime
+WBS item '%0' is invalid data.
+When [Template Name] has value, [Event Type], [Tool Design Type], [Tool Complexity] should be empty.
+You account does not have permission to take this action
+You are assigned as the owner for the following overdue activities. Please propose a new forecast date in EMP or work with the project scheduler directly.:<br /><br />
+You are not allowed to delete project view.
+You can't delete the first step when we have more than one steps.
+You can't go to next step because the scope group %0 had been locked, please change to another group and save first
+You haven't selected a submission or the submission is in review or reviewed
+Your cannot update the actual dates as it is linked or synced with P6.
+Your cannot update the forcast dates as it is linked or synced with P6.
+Your setting did not allow to sync.
+Your setting did not config which column need to sync.
+Your setting did not config which step need to sync.
