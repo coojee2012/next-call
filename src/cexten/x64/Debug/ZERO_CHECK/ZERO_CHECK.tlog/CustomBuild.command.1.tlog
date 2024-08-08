@@ -1,0 +1,10 @@
+^D:\XCODE\N-DEMO\SRC\CEXTEN\CMAKEFILES\8BB232D7FE6528BD82416A72139B2985\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/xcode/n-demo/src/cexten -BD:/xcode/n-demo/src/cexten --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/xcode/n-demo/src/cexten/CExten.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

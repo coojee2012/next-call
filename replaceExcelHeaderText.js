@@ -210,5 +210,88 @@ const replaceException = (directoryPath) => {
  };
 
 
- replaceMessage('D:/xcode/emps');
+ const replaceResult = (directoryPath) => {   
+  fs.readdir(directoryPath, function (err, files) {
+      if (err) {
+        return console.log('Unable to scan directory: ' + err);
+      }
+      files.forEach(function (file) {
+        if (file === '.gitkeep') {
+          return;
+        }
+        
+        var filePath = path.join(directoryPath, file);
+        if(isDirectory(filePath)) {
+          replaceResult(filePath);
+          return;
+        }
+
+        const extension = path.extname(filePath);
+        //console.log(filePath);
+        if (extension !== '.cs') {
+          return;
+        }
+        fs.readFile(filePath, 'utf8', function (err, data) {
+          if (err) {
+            return console.log('Unable to read file: ' + err);
+          }
+    
+          const lines = data.split('\n');
+          const newLines = [];
+          let changed = 0;
+          for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+           
+            if (/Failure\("\["\s\+\s\$"([\{|#].*)"/.test(line)) {
+        
+              console.log(line);
+              let str = line.match(/\$"(.*)"/)[1];
+              console.log(str);
+              const regex = /\{([^}]+)\}/g;
+    
+              // 替换函数
+              let index = 0;
+              if (!str.match(regex)) {
+                line = line.replace(/\$"(.*)"/, '$"[[[' + str + ']]]"');
+                changed++;
+                console.log(line);
+                newLines.push(line);
+                continue;
+              }
+              let str2 =
+                '|||' +
+                str
+                  .match(regex)
+                  .map((m) => '{' + m.slice(1, -1) + '}')
+                  .join('|||');
+              // console.log(str2);
+              str = str.replace(regex, (match, p1) => {
+                return `%${index++}`;
+              });
+             
+    
+              const s3 = '[[[' + str + str2 + ']]]';
+              line = line.replace(/\$"(.*)"/, '$"' + s3 + '"');
+              changed++;
+              console.log(line);
+            }
+            newLines.push(line);
+          }
+          const newdata = newLines.join('\n');
+          if(changed>0) {
+            fs.writeFile(filePath, newdata, 'utf8', function (err) {
+              if (err) {
+                return console.log('Unable to write file: ' + err);
+              }
+              console.log('File replaced: ' + filePath);
+            });
+          }
+          
+        });
+      });
+    });
+};
+
+
+//replaceResult('D:/xcode/emps');
 

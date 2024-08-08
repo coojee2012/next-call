@@ -1,4 +1,5 @@
 {
+    "cmake.configureOnOpen": false,
     "files.associations": {
         "*.embeddedhtml": "html",
         "array": "cpp",
@@ -42,5 +43,8 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "D:/xcode/n-demo/src/cexten",
+    "cmake.buildDirectory": "${workspaceFolder}/build_cexten",
+    
 }

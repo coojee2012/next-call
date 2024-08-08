@@ -1,322 +1,412 @@
- %0 dose not exist in AD directory.
-%0 can not be empty.
-%0 does not exist
-%0 Formula '%1' - formula parameters type mismatched
-%0 Minimum priority is 1.
-%0 must be an enumerated type
-%0 not implement the feature.
-%0 Priority is invalid.
-(<span id=\"filterSegmentCount\">All</span> Segments selected)
-(<span id=\"filterToolCount\">All</span> Tools selected)
-(Tool Templates)[#%0#] %1
-(Tool Templates)[#%0#] Capacity unit '%1' exists in [%2], but doesn't exist [%3].
-(Tool Templates)[#%0#] Service '%1' exists in [%2], but doesn't exist [%3].
-(Tool Templates)[#%0#] This data cannot be modified，some active tools are associated with this template.
-<%0>[Row #%1] [%2]:%3 is an invalid week hour.
-<%0>[Row #%1] [Template Name], [Event Type], [Tool Design Type], [Tool Complexity] can't be empty at the same time.
-<%0>[Row #%1] Can not find the root level setting.
-<%0>[Row #%1] Cannot find related level settings.
-<%0>[Row #%1] duplicated [Event Type], [Tool Design Type], [Tool Complexity].
-<%0>[Row #%1] duplicated [Role]: %2
-<%0>[Row #%1] duplicated [Template Name]: %2.
-<%0>[Row #%1] Scope group has been locked for this item, but you have the permission to edit it. Do you want to continue?
-<%0>[Row #%1] The '%2' does not have valid parent WBS item.
-<%0>[Row #%1] The data hierarchy (%2) is wrong. the correct hierarchy is '%3'
-<%0>[Row #%1] The first step is invalid.
-<%0>[Row #%1] The Level '%2' is invalid.
-<%0>[Row #%1] The Level field is required.
-<%0>[Row #%1] The levels hierarchy is invalid, the correct hierarchy is '%2'.
-<%0>[Row #%1] The next step group is not match exist scope group.
-<%0>[Row #%1] The next step is invalid. it cannot be the same as the current step.
-<%0>[Row #%1] The next step is invalid. the step is not in the same transaction flow.
-<%0>[Row #%1] The value of %2 '%3' is out of range.
-<%0>[Row #%1] The value of %2 is required.
-<%0>[Row #%1] There are multiple parent '%2' found.
-<%0>[Row #%1] There are multiple WBS items found. Please check in %2
-<%0>[Row #%1] There are multiple WBS items found. please check in DB items.
-<%0>[Row #%1] This item is in a locked Scope Group and cannot be edited. You may move this item to a scope group that is not locked to make changes.
-<%0>[Row #%1] When [Template Name] has value, [Event Type], [Tool Design Type], [Tool Complexity] should be empty.
-<Row #%0> [%1]: Name '%2' is not match the option name '%3' in Levels
-<Row #%0> The comment ('%1','%2','%3') is not unique. Entries must be unique based on Drawing, Component and Comment.
-<Row(s) %0> %1
-<ToolTemplate>[Row #%0] Sub-Process '%1' is not belong to Process: '%2'
+#Tool %0] Can't find milestones for tool '%1'
+#Tool %0] Please provide milestones for tool '%1'
+#Tool %0][#Milestone %1] %2
+#Tool %0][#Milestone %1] All milestone dates are unchanged
+#Tool %0][#Milestone %1] Can't find milestone, please provide correct milestone definition id or name
+#Tool %0][#Milestone %1] Please provide milestone definition id or name
+% Completion should be in the range of 0 - 100 for revision(s) %0
+'%0' already exists.
+%0 does not exist in current project
+'%0' has different discipline with its parent / child.
+%0][Row #%1] The level 'Allow New' is false, you cannot change the code(%2). It is calculated based on formula
+%0][Row #%1] The value '%2' is out of range.
+%0][Row #%1]%2
+%0][Row%1] %2
+%0's activities - 
+(Tool Templates)[#%0#] 
+'.
 \"%0\" is invalid, can't convert to datetime
 <%0>[Row%1] \"%2:%3\" %4
-<Row %0> %1
-<Template Name>, <Event Type>, <Tool Design Type>, <Tool Complexity> can't be empty at the same time.
-Actual date is later than Planned or Forecast date.
-All changes have been changed.
-An element with the same key '%0' already exists in the source
-An error occurred while syncing work packages. Please contact the administrator
+A project with the same name already exists
+A project with the same shortname already exists
+Activitives(%0) -  
+Activity '%0'(%1) - 
+An project with the same name alreay exists
+An project with the same shortname alreay exists
 Are you sure you want to delete this component\"
-BustBoth
-BustPoc
-BustSegment
-Cache has been expired, please refresh this page.
-Call PPCS Api was failed, please check the configuration. marke sure the root of PPCS API is correct.%0
-Can not access DPPSTemplate file. Please contact the administrator.
-can not find ScenarioSetting in db
-Can not find the template in server
-Can not find the WBSStructureId, please contact administrator
-Can not load DPPSTemplate file. Please contact the administrator.
-Can not open DPPSTemplate file. Please contact the administrator.
-cannot find the template.
-Cannot find tool's information.
-Cant change 'Is Multiple' for other type of role, we dont support except WorkPackage.
-Cant change 'Is Multiple' for WorkPackage , it only support for Internal & AutoDetect.
+Assignment][Row %0] The value of AssignmentStatus '%1' is out of range.
+Authorization has been denied for this request.
+Available capacity insufficient.
+Body data is required
+Can not add same key-combination
+Can not config one level have multiple children.
+Can not find the facility.
+Cannot find '%0' in selected rows and in db.
+cannot find the template
+Cannot remove item '%0' as it has active child item.
+Cannot show service area and service with no demand on the same time.
+Can't calculate the default formula, please check
 Can't change scope group from \"%0\" to \"%1\", because \"%2\" doesn't have first step.
 Can't change scope group from \"%0\" to \"%1\", because \"%2\" doesn't have step \"%3\", continue to use the first step?
-Cant change 'Visiable In Module' for other type of role, we dont support except WorkPackage.
-Cant convert %0 to the Enum Type '%1'.
-Cant convert to PocStatus from string %0
-Can't delete submission with documents assigned.
-Can't find any column in file.
-Can't find any data in file.
-Can't find any data rows, please re-upload file.
-Can't find any sheet in filed.
-Can't find Excel data cache.
-Can't find Excel sheet.
-Can't find field: %0
-Can't find Header Line Number in template, please ignore this template.
-Can't find relate history information.
-Can't find Row Start Number in template, please ignore this template.
-Can't find Sheet Name in template, please ignore this template.
-Can't find the Regex %0
-Can't find the rule
-Can't find the sheet.
-Can't found the selected segment
-Can't get the file data
-Change Resolve status fail %0
-Change Resolve status fail, please contact the administrator.
-Check to see if there is a circular reference to the document.
-context
-cookie
-Credential Name is required
+Can't change workflow from \"%0\" to \"%1\", because \"%2\" doesn't have first step.
+can't find the tool to create the new revision
+Can't set self as manifold poc
+Change Log][Row #%0] Confirmed status cannot be empty.
+Child of Deliverable cann't contain current deliverable.
+Child of Deliverable can't be over 50.
+Clear formula failed
+Column Name is required.
+Components][#%0#] The Component '%1' can not be pedestal for non-pedestal Tool Template.
+Components][#%0#] The Component '%1' is duplicated inside of the selected rows.
+Components][#%0#] The Component Number '%1' is duplicated inside of the selected rows.
+Components][#%0#] The shareable count for component '%1' is less than its related shared tool components
+Components][Row #%0]
+Components][Row #%0] Component '%1' is referencing an invalid ToolTemplate '%2'.
+Components][Row #%0] Component Name '%1' is duplicated inside of the selected rows.
+Components][Row #%0] Component Number '%1' is duplicated inside of the selected rows.
 Current excel sheet type \"%0\" is not supported
 Custom Type \"%0\" is not supported
-Date Formating is invalid.
-DocumentId Is Empty.
-Don't support the unit Type %0
-DPPSTemplate file is not found. Please contact the administrator
-DPPSTemplate.xlsx is not found. Please contact the administrator
-Duplicated [Event Type], [Tool Design Type], [Tool Complexity] in the database.
-Duplicated [Event Type], [Tool Design Type], [Tool Complexity] in the Excel.
-Duplicated [Role]: %0
-Duplicated [Template Name]:%0.
+Didn't post any release note
 duplicated option \"%0\"
-Duration can not be negative.
-EmailTemplate.html is not found. Please contact the administrator
-Empty collection
-encoded
-Entity type Not found for %0
+Edit Row #%0]
+Edit][Row %0] [WorkPackage: %1] [Definition: %2] Cannot find the work package.
+Edit][Row %0] [WorkPackage: %1] Cannot find the work package.
+Edit][Row %0][Tool: %1] [%2] [%3] is out of range.
+Edit][Row %0][Tool: %1] Cannot update %2 forecast date date, as actual date has been entered.
+Edit][Row %0][Tool: %1] Cannot update %2 planned date, as actual date has been entered.
+Edit][Row %0][Tool: %1] Can't get the building for BuildingArea '%2'.
+Edit][Row %0][Tool: %1] finish date can't be earlier than startup date.
+Edit][Row %0][Tool: %1] New tools must start at Revision 0.
+Edit][Row %0][Tool: %1] Revision can't be changed when editing a tool.
+Edit][Row %0][Tool: %1] The field Life can't less than 0.
+Edit][Row %0][Tool: %1] The following fields have conflicts with the system data: %2
+Edit][Row %0][Tool: %1] You can't free/un-freeze methodology for a milestone formula tool
+Edit][Row %0][Tool: %1] You can't reset to default formula for a methodology tool
+Edit][Row %0][Tool: %1] You do not have the permission to modify schedule type.
+Edit][Row %0][Tool: %1] You do not have the permission to modify tool life.
+Edit][Row %0][Tool: %1] You do not have the permission to modify tool name.
+Edit][Row %0][Tool: %1] You do not have the permission to modify tool role.
+Edit][Row %0][Tool: %1] You do not have the permission to modify tool template.
+Edit][Row %0][Tool: %1] You do not have the permission to update schedule type.
+Edit][Row %0][Tool: %1] Your account does not have override permission to update  %2 actual date.
+Edit][Row %0][Tool: %1] Your account does not have permission to override the tool state.
+Edit][Row %0][Tool: %1] Your account does not have permission to update milestone dates.
+Edit][Row %0][WorkPackage: %1] The package need to sync procurement activity definition.
+Edit][Row %0][WorkPackage: %1] The package schedule type is %2, you cannot update the '%3' planned dates as it is linked or synced with P6.
+
+Edit][Row %0][WorkPackage: %1] The package schedule type is Sync And Methodology, you cannot update the '%2' forcast dates as it is linked or synced with P6.
+Edit][Row %0][WorkPackage: %1] The package schedule type is Sync, you cannot update the '%2' forcast dates as it is linked or synced with P6.
+Edit][Row %0][WorkPackage: %1] Your cannot update the '%2' dates as it is linked or synced with P6.
+Edit][Row %0][WorkPackage: %1] Your cannot update the planned dates as it is linked or synced with P6.
+Edit][Row %0][WorkPackage: %1][Activity: %2] You cannot update the '%3' actual dates as it is linked or synced with P6.
+Edit][Row %0][WorkPackage: %1][Activity: %2] Your cannot update the actual dates as it is linked or synced with P6.
+End date should later than start date.
+Entity convert failed
 Entity Validation Failed - errors follow:\n
+EntityType '%0' has no data for verify formula.
 EntityType \"%0\" is not supported
-Error attempting to manifold with a service that is not mapped. No mapping exists between %0 and %1.
-Error occurred.
-exists
-expression
-expression can't be parsed to ModelMetadata
-Faield to execute migration caused by capacity unit missing
-Faield to execute migration caused by service missing
-Failed to connect to the database with the given settings.
-Failed to create Discipline: 
-Failed to create DocumentScale: 
-Failed to create DocumentSheetSize: 
-Failed to create DocumentType: 
-Failed to create Facility: 
-Failed to create WorkPackage: 
+FacilityDto can not be null.
+Failed load ProjectScheduleIntegration.
 False
-Finish date can't be earlier than startup date
-Forecast date is in the past.
-Forecast date is moved to a later date.
-formula parameters type mismatched
-has no role permission to access.
-httpContext
-Id cannot be empty
-identity
-Identity Carrier
-Interface methods 'GetEntityModels' are not implemented.
+formula: %0, exception: %1
+Group '%0' is not authorized
 Invalid {0}: \"{1}\"
 Invalid {0}: \"{1}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
-Invalid Expression Parameter Type 
+Invalid formula type: %0
+Invalid formula, can't use '%0.%1.%2' in formula
+Invalid formula, can't use '%0.%1.%2' in phase end
+Invalid formula, can't use '%0.%1.%2' in phase start
 Invalid name: \"{0}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
 Invalid name: \"{0}\", can't end with Start or End
 Invalid name: \"{0}\", it is for internal using
-invalid parameter
 Invalid short name: \"{0}\", Allowable characters: a-z, A-Z, 0-9, and \"_\" . Example: ABC_def_123
 Invalid short name: \"{0}\": It is the same as short name \"{1}\" in \"{2}\". Example: ABC_def_123 = ABCdef123
 Invalid short name: \"{0}\": It is the same as short name \"{1}\". Example: ABC_def_123 = ABCdef123
-'Is Multiple' for WorkPackage only support for Internal & AutoDetect.
-key
-MetaType:'%0' does not implement EntitySnapShot.
-Mismatched '%0' column
-Missing the following activity headers: %0
-Missing the following required headers: %0
-modelMetadata does not contain a ModelType
-Name '%0' is duplicated
-No bulk file path entered!
-No property name is provided.
-Not a submission or already been submitted
-Not found the specified project!
-obj
-Only supports classes that inherit IFacade
-Oops, EMP is currently unavailable, Please refresh the page and wait for a minutes
-Oops, something has gone wrong. Error code: '%0', please contact the administrator.
-Parameter(s) %0 are not implemented for dynamic DropdownListData
-Password is required
-Phase must be a number
-Planned date is in the past.
-Planned date is moved to a later date.
-Please enter student name.
-Please provide correct formula type
-Please provide encrypt key.
-Please provide password to encrypt.
-please select a template.
-Please select at least one project role type.
-Please setup %0 of %1
-Please setup the correct id/text property of current provider
-Please setup the id property of current provider
-Please setup the text property of current provider
-Plesae choose a file to upload.
-POC '%0' has invalid Manifold POC '%1'
+Level Code can't contain '[]' characters.
+Meta Type %0 is not supported.
+No data changed
+No step set for this scope group, please check.
+Not found the specified tool!
+P6 integration setting instances: (%0) are being used and cannot be deleted.
+Please check below pocs, they are required multiple connections:
+Please check your setting. It will cause the Start Date to be AFTER the End Date
+Please create a deliverable first.
+Please enter parameters.
+Please input the correct format for %0
+Please input the correct value for %0
+Please input the email address recipients for testing.
+Please make sure all pocs you want to remove are Unassigned.
+Please provide correct FilterType
+Please provide correct MetaType
+Please provide correct project id
+Please provide correct template name
+Please provide the correct data array
+Please provide the correct manifold poc 
+Please provide the correct material 
+Please provide the correct parameters
+Please provide the correct segment 
+Please provide the correct size unit 
+Please provide the poc id for poc #%0
+Please provide the poc name for poc #%0
+Please provide the segment 
+Please provide the tool id.
+Please provide the tool template id.
+Please provider the request body.
+Please save %0 first before save roles
+Please save workpackage first before save roles
+Please select a calendar to edit first.
+Please select a p6 configuration.
+Please select a project to connection with.
+Please set the mapping how we can migrate the segment to new hierarchy.
+Please set up the 'External Project Numbers' in Project Settings Page.
+Please use an integer as sequence
 Poc \"\" + e.model.Name + \"\" is duplicated under the tool, please check again.
-Poc Number (%0) has been assigned, please un-assign it firstly.
-POC(%0)'s flow or diversity factor changed. %1
 POC(s) \"%0\": %1
-Port Number is required
-Process cannot be empty.
-Progress should be in the range of 0 - 100%
-Project number must be entered!
-propName
-Provided bulk file does not exist!
-reached the access count limit.
-Release
-Role '%0' is required.
-Segment does not exist.
-Segment type hierarchy  are wrong for the below segments: %0
-Sender E-Mail Address is required
+POCs][#%0#] Error attempting to manifold with a service that is not mapped. No mapping exists between %1 and %2.
+POCs][#%0#] The POC '%1' is duplicated inside of the selected rows.
+POCs][#%0#] The Poc Number '%1' is duplicated inside of the selected rows.
+POCs][#%0#] You do not have permission to override the service default capacity unit for POC %1.
+POCs][#%0#] You do not have permission to override the service default pressure unit for POC %1
+POCs][#%0#] You do not have permission to override the service default size unit for POC %1.
+POCs][Row #%0]
+POCs][Row #%0] Error attempting to manifold with a service that is not mapped. No mapping exists between %1 and %2.
+POCs][Row #%0] POC '%1' has invalid flow 'Minimum=%2, Average=%3, Maximum =%4' that minimum flow should be less than or equal with average flow and average flow should be less than or equal with maximum flow
+POCs][Row #%0] POC '%1' has invalid Manifold POC '%2'
+POCs][Row #%0] POC '%1' has invalid pressure 'Minimum Pressure=%2, Maximum Pressure=%3' that minimum pressure should be less than or equal with maximum pressure
+POCs][Row #%0] POC '%1' has invalid Target Service '%2'
+POCs][Row #%0] POC '%1' is referencing an invalid ToolTemplate '%2'.
+POCs][Row #%0] POC '%1' Your account does not have permission to change the target service of POC.
+POCs][Row #%0] The Poc Name '%1' is duplicated inside of the selected rows.
+
+POCs][Row #%0] The Poc Number '%1' is duplicated inside of the selected rows.
+Priority should be a number.
+Project %0 already has a mapping.
+RoleId is required.
+Row
+Row #%0] \" : \"\")}%1
+Row #%0] \" : \"\")}Can't change scope group to be empty.
+Row #%0] \" : \"\")}Wbs item cannot change the level to other sequence level.
+Row #%0] %1
+Row #%0] Cannot find '%1' in selected rows and in db.
+Row #%0] has invalid parent \"%1\"
+Row #%0] Name '%1'
+Row #%0] Phase can't be empty when segment's CalculationType is PhaseMIN, PhaseAVG or PhaseMAX
+Row #%0] Phase is not applicable when segment's CalculationType is MIN, AVG or MAX
+Row #%0] Phase must be a number
+Row #%0] Please provide the facility name.
+Row #%0] Please provide the segment name.
+Row #%0] Please provide the segment type.
+Row #%0] Please provide the system name.
+Row #%0] Size, Material, Connection Type can't be changed when they are from Tool Poc.
+Row #%0] The %1 ('%2','%3','%4') is duplicated inside of the database.
+Row #%0] The '%1' does not exists.
+Row #%0] The '%1' is duplicated in database.
+Row #%0] The %1 value '%2' is duplicated in database.
+Row #%0] The %1 value '%2' is duplicated inside of the selected rows.
+Row #%0] The calculation type %1 is incorrect.
+Row #%0] The ClientName value '%1' is duplicated inside of the database.
+Row #%0] The ClientName value '%1' is duplicated inside of the selected rows.
+Row #%0] The Drawing Name of this row is out of range.
+Row #%0] The facility poc %1 does not exist
+Row #%0] The following fields have conflicts with the system data: %1
+Row #%0] The POC's manifold POC '%1' is invalid
+Row #%0] The POC's manifold POC '%1' is invalid, which can't be a manifolded POC
+Row #%0] The POC's manifold POC '%1' is invalid, which is under assignment
+Row #%0] The POC's maximum flow(%1 %2) can't be more than its manifold POC's(%3 %4)
+Row #%0] The POC's segment(%1) is different from its manifold POC's(%2)
+Row #%0] The POC's sequence '%1' is duplicated
+Row #%0] The segment direction %1 is incorrect.
+Row #%0] The segment status %1 is incorrect for new segment.
+Row #%0] The segment status %1 is incorrect.
+Row #%0] The Tool ID value %1 already exists.
+Row #%0] Tool Template conflicts with its data in database
+Row #%0] Your account does not have permission to delete this.
+Row #%0] Your account does not have permission to override segment size unit. The 'Unit of Size' should be '%1'
+Row #%0]\" : \"\")}Cannot remove item '%1' as it has active child item
+Row %0] 
+Row %0] %1
+Row %0] Custom Column '%1' is not exist.
+Row %0] Please input correct Discipline.
+Row %0] Please input correct Status.
+Row %0] The Parent '%1' is not valid
+Row %0] The Parent '%1' will cause infinite loop
+Row %0] The POC's manifold POC '%1' is invalid
+Row %0] Tool Role '%1' is not exist.
+Row %0] ToolMilestone '%1' is not exist.
+Row %0][Tool: %1] Cannot find the '%2' process.
+Row %0][Tool: %1] can't proceed because some relation data be expired.%2
+Row %0][Tool: %1] You can't select Sub-Process: \"%2\", it is not used in process: \"%3\".
+Row(s) %0] %1
+Row(s) %0] The name %1 with parent '%2' has been existed in db.
+Row(s) (%0)] The name %1 with parent '%1' has been existed in db.
+Row(s) (%0)] There are %1 '%2' with parent '%3' in selected rows.
+Save failed, %0
+Segment %0 is %1 for facility poc #%2
+Selected tool poc not found which should be removed.
 Service group \"{0}\" had been used in target service of poc, autoMapping can not be unchecked
-source
-Start Date %0 can not be after End Date %1.
-Start Date %0 must before End Date %1.
-Start Time %0 can not be after End Time %1.
-Success to connect to P6 database with the setting
-Sync the users of group %0 failed.
-T must be an enumerated type
-Template %0 file does not exist
-Template rule name already exists
-Template%0 file does not exist
-The %0 custom report already exist.
-The %0 is required
-The <%0>:%1 is an invalid week hour.
-The Capacity Unit of the POC is invalid.
-The cell field is required.
-The cell is readonly
-The cell is required.
-The combination of Name: %0, Life: %1, Revision: %2 is already exists.
-The discipline (%0) not include the Sub-Discipline (%1).
-The Discipline field is required.
-The discipline must be supplied if Sub-Discipline supplied.
-The document revision '%0' is not the last revision, can't be removed.
-The document revision is being used, there is other data that depends on this.
-The Earned Credit must be between 0% to 100%.
-The field %0 is invalid.
-The field Revision must be higher than 0.
-The filter value '%0' is invalid.
+Some of the database IDs in the uploaded file do not exist in the database. Please check your file
+text-danger
+text-success
+The %0 id(s) %1 are invalid because they are already existing.
+The '%0' project is referenced by some tool templates, can't be removed from Reference Projects.
+The %0 value '%1' %2 duplicated in %3
+The [%0]:%1 is an invalid week hour.
+The activity has been map to other milestone.
+The activity has been mapped to QA/QC milestone can not change.
+The area is being used, there is other data that depends on this.
+The assignee already existed in current step
+The assignment status %0 is invalid or empty.
+The assignments for this tool are frozen. You can't change any assignments of it
+The assignments for this tool are frozen. You can't change status of them
+The assignments for this tool are frozen. You do not have permission to modify them
+The ClientName value '%0' already exists
+The column type %0 can not be changed to %1.
+The combination of %0 already exists.
+The combination of %0 is duplicated in database.
+The combination of %0 is inside of the selected rows
+The default formula is wrong, please don't contain self or other columns depend on it
+The 'Discipline' field is required for Work Package(s): %0.
+The Discipline Mapping 'EMP Discipline' field is required.
+The Ecard Report Setting for discipline '%0' already exists.
+The estimated Working End Time %0 is over a day.
+The 'External Package ID' field is required for Work Package(s): %0.
+The External Project Number '%0' already exists.
+The facility poc (%0) are inactive.
+The facility poc (%0) AssignTo is required.
+The facility poc (%0) AverageFlow is required.
+The facility poc (%0) can not be find.
+The facility poc (%0) cannot be found.
+The facility poc (%0) Capacity is required in SplitPocs.
+The facility poc (%0) DiversityFactor is required.
+The facility poc (%0) MaximumFlow is required.
+The facility poc (%0) MinimumFlow is required.
+The facility poc (%0) Size is required in SplitPocs.
+The facility poc can not be removed
+The facility poc name is required.
+The Facility Poc Name is required.
+The field Capacity can't be negative number.
 The filter value \"%0\" is invalid
-the 'GridQueryCriteria.PreFilters' can not be null
-The group %0 not found.
+The following Work Package(s) are duplicated: %0.
 The input value \"%0\" is invalid for \"%1\"
-the 'LinkType' can not be null or empty
+The 'Installed' assignment status cannot be set manually.
+The level is not found in database.
+The level should be start level.
+The list option '%0' is already been used, you can't remove it.
+The list option '%0' is duplicated.
 The matrix: \"{0}\" is for internal use and cannot be modified.
-The Milestone.Name field is required.
-The name %0 is invalid
-The new value of RevisionNumber '%0' is invalid, you can only use value(s) '%1' to create the next Revision.
-The parameters fromUnitName and toUnitName can not be empty
-The parsed data is expired, please refresh the dialog and redo the steps.
-The POC (%0) is currently assigned. You must remove all assignments before you can proceed.
-The Process field is required.
-The query project doesn't setup p6 integration, please contact admin
-The query project doesn't setup p6 payment milestone activity names, please contact admin
-The remaining key combinations will be repeated, continue will keep first combinations( %0 ) and delete others. Do you want to continue?
-The replaced user can not be empty.
-The replaced user is not found.
-The replaced user name can not be empty.
-The Report Template Type does not match.
-The ReportTemplatePath does not exist. Please contact your administrator.
-The same column names exist in the file.
-the ScenarioSetting can not be null
-the ScenarioSettingId can not be null
-The SegmentIds can not be null
-The Service field is required.
-The stage or state of this document has been changed by other users, please download the latest data.
-The step is being used, there are other steps depends on this.
-the 'TemplateLinkId' can not be null or empty
-The Tool ID value {0} already exists
-The ToolRoleUser.Name field is required.
-The TPOC Capacity Unit is invalid.
-The type of %0 does not contain the 'Contains' operation.
-The type of %0 does not contain the 'Does Not Contains' operation.
-The type of %0 does not contain the 'Equal' operation.
-The type of %0 does not contain the 'Greater Than' operation.
-The type of %0 does not contain the 'Greater Than Or Equal' operation.
-The type of %0 does not contain the 'IsEmpty' operation.
-The type of %0 does not contain the 'IsNotEmpty' operation.
-The type of %0 does not contain the 'Less Than' operation.
-The type of %0 does not contain the 'Less Than Or Equal' operation.
-The type of %0 does not contain the 'Not Equal' operation.
+The name '%0' is duplicate with system / custom column name.
+The name '%0' is duplicate with system / project role column name.
+The Name value '%0' already exists.
+The number of POCs[%0] %1 duplicated.
+The P6 integration setting instance: (%0) is being used and cannot be deleted.
+The parent of %0 is inactive, please change the parent status first.
+The ParentPoc '%0' in Segment '%1' has been used in segment '%2'.
+The POC Capacity Unit '%0' cannot be converted to its Manifold POC Capacity Unit '%1'.
+The POC Name is over the max length(200)
+The POC's manifold POC '%0' is invalid
+The POCs[%0] %1 duplicated.
+The POCs[%0] have been assigned, please make sure all pocs you want to remove are rejected.
+The POCs[%0] have been assigned, please release the assignment before change to un-assignable or remove it.
+The Pressure Unit '%0' cannot be converted to the Service Pressure Unit '%1'.
+The Project Template is being used, there is other data that depends on this.
+The request domain is invalid.
+The role '%0' is being used by some users,cannot be deleted.
+The role %0 is duplicated
+The roles '%0' are duplicate, please change the names.
+The roles names (%0) and '%1' will be regard as the same name, please change the names.
+The scenario you provided is wrong
+The scope work flow can't be empty
+The Segment '%0' can't be migrated to new segment types.
+The segment does not exists.
+The selected Capacity Unit '%0' cannot be converted from previous Unit of Measure '%1'
+The selected POC Pressure Unit '%0' cannot be converted from previous POC Pressure Unit '%1'
+The selected POC Size Unit '%0' cannot be converted from previous POC Size Unit '%1'
+The Sequence cannot be zero.
+The service does not exists.
+The Short Name value '%0' already exists.
+The stage or state of this document has been changed by other users, please refresh the web page.
+The status '%0' is incorrect.
+The tool poc data is not match, please ensure you didn't sort the sheet or change name of tool nor tool poc
 The type of matrix: \"{0}\" can't be modified.
-The uploaded file is out of date. Please re-download the file
-The user name can not be empty.
-The value %0 is invalid for field %1.
-The value of %0 '%1' is out of range
+The upload file has invalid data. Please make sure you are using the template from EMP without manual changes. 
+The value of %0 can not be find.
+The value of %0 is required.
+The value of %0 must be a number
 The value of \"%0\" is not valid
 The value of \"%0\" is not valid.
 The value of \"{0}\" is greater than \"{1}\"
 The value of \"{0}\" is less than \"{1}\"
-The view %0 does not exist, please refresh grid.
-There already have a template with the same name.
-There is already and schedule on the same time.
-There is already have a breakdown structure set as primary.
+The WorkingHours can not be greater than 24.
+There are %0 '%1' in selected rows[%2].
+There are invalid new users(%0) for Role %1
+There are no changes to be saved.
+There are some other rows with the same activity definition name '
+There are some other rows with the same activity definition name.
+There are some other rows with the same activity definition short name.
+There are some other rows with the same code.
+There are some other rows with the same name.
+There have same facility to be split.
+There is a duplicate segment '%0'.
+There is a package with name %0 already exists.
+There is a package with short name %0 already exists.
+There is already a '%0' facility with the same Name or ShortName.
+There is already have the budget template with the same keys.
 There is another matrix for custom column options of entity type : \"{0}\"
+There is no new herarchy to be migrate.
 There is tool keys for entity type : \"{0}\"
-This item '%0' level don't allow new.
-This item may cause cycle reference to item '%0'.
-This Level has children, can't be remove now.
-This Level used by some Level Options, can't be remove now.
-This Level used by some WBS items, can't be remove now.
-This POC (%0) has a manifold POC
-This role field is required.
-This step is being used by a scope item and cannot be deleted
-This system does not exist.
-This tool template was modified by someone else, please refresh the page and try again.
-This view is not created by yourself, you can not delete it.
-token
-Tool Id can not be null
-Total progress can't be greater than 100%
+These values of %0 are required.
+This %0 under %1 reference is required, please remove / update the reference under %2 first.
+This comment is not unique. Entries must be unique based on 'Drawing', 'Revision', 'Component' and 'Comment'.
+This document no longer exists, it may have been deleted by other users.
+This object can not be modified anymore.
+This tool POC %0:%1 does not exist
+This tool POC %0:%1 duplicated in the excel
+This tool poc has been removed，please check it in Tools.
+Tool id can't be empty.
+Tool milestone id is invalid
+Tool Template conflicts with its data in database
+Tool template id can't be empty.
+Tool Templates] The combination of Name: %0, Process: %1 is already exists.
+Tool Templates] The combination of Name: %0, Process: %1, Revision: %2 is already exists.
+Tool Templates][#%0#] The template is being used, there is other data that depends on this.
+Tool Templates][#%0#] You can't select Sub-Process: \"%1\", it is not used in process: \"%2\".
+Tool Templates][#%0#] You must add a new template if you want to change the name or process.
+Tool Templates][#%0#] Your account does not have permission to create a new %1.
+Tool Templates][#%0#] Your account does not have permission to delete this.
+Tool Templates][#%0#] Your account does not have permission to modify the object '%1'.
+ToolId is required.
+ToolTemplate][Row #%0] Process: '%1' not found.
+ToolTemplate][Row #%0] Revision is readonly.
+ToolTemplate][Row #%0] Revision must be start from 0.
+ToolTemplate][Row #%0][%1] ReferenceToolTemplate can't be itself.
+ToolTemplate][Row #%0][%1] The ReferenceToolTemplate cannot be modified,only last revision can modify this.
+ToolTemplate][Row #%0][Revision #%1] Name '%2' is duplicated inside of the selected rows.
+ToolTemplateId error.
+ToolTemplateId is required.
 True
 Type \"%0\" is not supported
-Unable to find connection setting, please contact administrator.
-Unable to proceed. You already have a pending same operation for this project. If you think this is an error please contact your administrator.
-Unit %0's multiplier is 0
-Unknown DB configuration
-Unknown Error
-Unknown Error!
-Unsupported data type %0
-User %0 doesn't have any project role for %1.
+User '%0' is inactive
+User '%0' is not authorized.
 value \"%0\" is over the max length(%1) of field
-Waiting read lock overtime
-Waiting write lock overtime
-WBS item '%0' is invalid data.
-When [Template Name] has value, [Event Type], [Tool Design Type], [Tool Complexity] should be empty.
-You account does not have permission to take this action
-You are assigned as the owner for the following overdue activities. Please propose a new forecast date in EMP or work with the project scheduler directly.:<br /><br />
-You are not allowed to delete project view.
-You can't delete the first step when we have more than one steps.
-You can't go to next step because the scope group %0 had been locked, please change to another group and save first
-You haven't selected a submission or the submission is in review or reviewed
-Your cannot update the actual dates as it is linked or synced with P6.
-Your cannot update the forcast dates as it is linked or synced with P6.
-Your setting did not allow to sync.
-Your setting did not config which column need to sync.
-Your setting did not config which step need to sync.
+Value of %0 must be boolean
+Value of %0 must be date
+Value of %0 must be integer
+Value of %0 must be number
+Value of Sequence must be integer
+We already have another transition to same step
+We can't have more than one root type.
+You cannot change the EMPType,the level option is already used by some scopeitems.
+You cannot change the Type,the level option is already used by some scopeitems.
+You can't change assignment status to %0 without any assignment
+You can't change current project status
+You can't unassign below pocs: 
+You does not have system role, but you are trying assign system role [ %0 ] to %1
+You have created the same Missed Milestone snapshot today.
+You must provide project id
+Your account does not have permission to change project status
+Your account does not have permission to create a new project
+Your account does not have permission to create a new project template
+Your account does not have permission to create the mapping.
+Your account does not have permission to delete this object.
+Your account does not have permission to delete this.
+Your account does not have permission to do this.
+Your account does not have permission to modify this object.
+Your account does not have permission to override service capacity unit. The 'Unit of Capacity' should be '%0'
+Your account does not have permission to override service pressure unit. The 'Unit of Pressure' should be '%0'
+Your account does not have permission to override service size unit. The 'Unit of Size' should be '%0'
+Your account does not have permission to remove project template
+Your account does not have permission to run jobs.
+Your account does not have permission to sync this.
+Your selected column does not in db, please refresh the page.
+Your selected Facility is being used and can not be deleted.
+Your should select a location.

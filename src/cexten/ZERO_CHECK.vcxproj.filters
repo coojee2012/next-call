@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\xcode\n-demo\src\cexten\CMakeFiles\8bb232d7fe6528bd82416a72139b2985\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{1188E636-93D1-3084-A9E5-295990A030B7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -420,7 +420,8 @@ export class FlowBaseService {
 
       const bLegCgrVars = `{${blegArgs.join(',')}}`;
       // let dialStr = `${bLegCgrVars}sofia/external/${number}@${tenantId}`;
-      let dialStr = `{sip_invite_domain='192.168.2.230'}user/${number}@${tenantId}`;
+      // sofia/internal
+      let dialStr = `user/${number}`;//`{sip_invite_domain='192.168.2.230'}user/${number}@${tenantId}`;
 
       await this.pbxExtensionService.setAgentLastCallId(
         tenantId,
@@ -631,7 +632,8 @@ export class FlowBaseService {
       let hasListenOutGoing = false;
       let BLegId = '';
 
-      const onOutGoing = async (evt: any) => {
+      const onOutGoing = async (conn_id:string, evt: any) => {
+        console.log('FlowBaseService', 'Dial A Call CHANNEL_OUTGOING',conn_id, evt)
         const aLegId = evt.getHeader('Other-Leg-Unique-ID');
         const bLegId = (BLegId = evt.getHeader('Unique-ID'));
         this.logger.debug('FlowBaseService', 'Dial A Call CHANNEL_OUTGOING', {

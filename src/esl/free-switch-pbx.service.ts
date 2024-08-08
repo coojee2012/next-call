@@ -874,7 +874,7 @@ export class FreeSwitchPbxService {
       }>((resolve, reject) => {
         // const dialStr = `sofia/external/${number}@${domain}`;
         conn.executeAsync('bridge', dialStr, uuid, (evt: Event) => {
-          this.logger.debug('FreeSwitchPBXService','PBX Bridge A Call:', evt.getHeader('Event-Name'));
+          this.logger.debug('FreeSwitchPBXService','PBX Bridge A Call:', { eventName: evt.getHeader('Event-Name'), dialStr: dialStr});
           const dialstatus = evt.getHeader('variable_DIALSTATUS');
           if (dialstatus == 'SUCCESS') {
             const cause = evt.getHeader('variable_bridge_hangup_cause');
