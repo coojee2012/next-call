@@ -10,7 +10,7 @@
         >
         </head-image>
       </div>
-      <el-menu background-color="#E8F2FF" style="margin-top: 25px">
+      <el-menu background-color="#E8F2FF" style="margin-top: 25px;padding-left: 15px;">
         <el-menu-item title="聊天" :index="'/home/chat'">
           <router-link :to="'/home/chat'" class="link">
             <span class="icon iconfont icon-chat"></span>
@@ -35,6 +35,16 @@
           @click="showSetting()"
         >
           <span class="icon iconfont icon-setting"></span>
+        </el-menu-item>
+      </el-menu>
+      <el-menu background-color="#E8F2FF" 
+      style="position: absolute; bottom: 60px;padding-left: 15px;">
+        <el-menu-item
+          title="管理菜单"
+          :index="'/home/manage'"
+          @click="showSetting()"
+        >
+        <el-icon style="font-size: 30px;"><Menu /></el-icon>
         </el-menu-item>
       </el-menu>
       <div class="exit-box" @click="onExit()" title="退出">

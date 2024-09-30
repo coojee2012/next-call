@@ -41,7 +41,7 @@
                   ref="emotion"
                   @click.stop="showEmotionBox()"
                 ></div>
-                <div title="发送图片">
+                <div title="发送图片" class="chat-tool-icon">
                   <file-upload
                     :action="'/image/upload'"
                     :maxSize="5 * 1024 * 1024"
@@ -59,7 +59,7 @@
                   <el-icon><PictureFilled /></el-icon>
                   </file-upload>
                 </div>
-                <div title="发送文件">
+                <div title="发送文件" class="chat-tool-icon">
                   <file-upload
                     ref="fileUpload"
                     :action="'/file/upload'"
@@ -73,39 +73,40 @@
                 </div>
                 <div
                   title="回执消息"
-                  v-show="true ||chat.type == 'GROUP'"
+                  v-show="chat.type == 'GROUP'"
                   class="icon iconfont icon-receipt"
                   :class="isReceipt ? 'chat-tool-active' : ''"
                   @click="onSwitchReceipt"
                 ></div>
                 <div
                   title="发送语音"
-                  class="el-icon-microphone"
+                  style="padding-top: 3px;"
+                  class="chat-tool-icon"
                   @click="showRecordBox()"
                 ><el-icon><Microphone /></el-icon></div>
                 <div
                   title="语音通话"
-                  v-show="true ||chat.type == 'PRIVATE'"
-                  class="el-icon-phone-outline"
+                  v-show="chat.type == 'PRIVATE'"
+                  class="chat-tool-icon"
                   @click="showPrivateVideo('voice')"
-                ><el-icon><PhoneFilled /></el-icon></div>
+                ><el-icon><Phone /></el-icon></div>
                 <div
                   title="语音通话"
-                  v-show="true || chat.type == 'GROUP'"
-                  class="el-icon-phone-outline"
+                  v-show="chat.type == 'GROUP'"
+                  class="chat-tool-icon"
                   @click="onGroupVideo()"
                 ><el-icon><Phone /></el-icon></div>
                 <div
                   title="视频通话"
-                  v-show="true || chat.type == 'PRIVATE'"
-                  class="el-icon-video-camera"
+                  v-show="chat.type == 'PRIVATE'"
+                  class="chat-tool-icon"
                   @click="showPrivateVideo('video')"
-                ><el-icon><Camera /></el-icon></div>
+                ><el-icon><VideoCamera /></el-icon></div>
                 <div
                   title="聊天记录"
-                  class="el-icon-chat-dot-round"
+                  class="chat-tool-icon"
                   @click="showHistoryBox()"
-                ><el-icon><Memo /></el-icon></div>
+                ><el-icon><ChatDotRound /></el-icon></div>
               </div>
               <div class="send-content-area">
                 <ChatInput
@@ -825,6 +826,9 @@ export default {
       border-top: #ccc solid 1px;
       padding: 2px;
       background-color: #e8f2ff;
+      .chat-tool-icon {
+        padding-top: 3px;
+      }
 
       > div {
         font-size: 22px;
