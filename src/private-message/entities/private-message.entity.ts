@@ -4,7 +4,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 
 @Entity('private-message')
 export class PrivateMessage extends BaseEntity {
-    @Column()
+    @Column({type: 'text', nullable: false})
     content: string;
 
     @ManyToOne(() => UserEntity, (user) => user.priSendMessages)

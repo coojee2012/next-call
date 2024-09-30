@@ -160,11 +160,12 @@ export default {
           return;
         }
         // 暂时没有处理群组消息的问题
+        const friend = userStore.getters.findFriend(msgInfo.sendId)
         const chatInfo = {
           type: type,
           targetId: +msgInfo.sendId, // 一般接收消息的人才可能没有chat
-          showName: "新的消息",
-          headImage: "",
+          showName: friend.nickName,
+          headImage: friend.headImage,
         }
         chat = {
           targetId: +chatInfo.targetId,
@@ -500,6 +501,10 @@ export default {
           return chat.messages[idx]
         }
       }
+    },
+    findFriend: (state, getters) => (fid) => {
+      let friends = userStore.getters.findFriends()
+      return friends.find((friend) => friend.friendId == fid)
     },
   },
 }

@@ -75,4 +75,11 @@ export class AppController {
       thumbUrl: `http://127.0.0.1:3001/static/${file.filename}`, // replace with your own domain and port
     };
   }
+  @Post('file/upload')
+  @UseInterceptors(FileInterceptor('file', { storage }))
+  fileUpload(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    return  `http://127.0.0.1:3001/static/${file.filename}`; // replace with your own domain and port
+     
+  }
 }

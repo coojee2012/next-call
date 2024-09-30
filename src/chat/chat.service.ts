@@ -78,7 +78,7 @@ export class ChatService {
     const client = this.getUserSocket(+toUserId);
     if (isNil(client) || !isClientAliveNow(client.user.lastActiveTime)) {
       console.log(`${toUserId} offline`);
-      return null;
+      return nmsg;
     }
     const msg = {
       cmd: 3,

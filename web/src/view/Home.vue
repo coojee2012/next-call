@@ -313,6 +313,7 @@ export default {
       // 打开会话
       this.$store.commit('openChat', chatInfo);
       // 插入消息
+      msg.loadStatus = 'ok'; // 标记消息已加载,针对图片等
       this.$store.commit('insertMessage', msg);
       // 播放提示音
       if (
