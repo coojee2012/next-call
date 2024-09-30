@@ -3,10 +3,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository, UpdateResult } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Repository, UpdateResult } from 'typeorm';
 import { RoleEntity } from 'src/role/entities/role.entity';
 import { RoleToUserEntity } from 'src/common/entiies/RoleToUserEntity';
 import { LoggerService } from 'src/logger/logger.service';
+import { classToPlain } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -56,8 +57,27 @@ export class UserService {
     });
   }
 
+  findWithIds(ids: number[]): Promise<UserEntity[]> {
+    return this.usersRepository.find({
+      select:{
+        password: false,
+      },
+      where: {
+        id: In(ids),
+      },
+    });
+  }
+
   findOne(id: number): Promise<UserEntity | null> {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  findOneBy(data: Partial<UserEntity>): Promise<UserEntity | null> {
+    return this.usersRepository.findOneBy(data as FindOptionsWhere<UserEntity>);
+  }
+
+  findBy(data: Partial<UserEntity>): Promise<UserEntity[]> {
+    return this.usersRepository.findBy(data as FindOptionsWhere<UserEntity>);
   }
 
   update(id: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {

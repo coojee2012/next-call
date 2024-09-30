@@ -1,4 +1,9 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  ValidationPipe,
+} from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -6,32 +11,33 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from 'config/configuration';
 import databaseConfig from 'config/database.config';
-import { IDtabaseConifg } from 'config/database.config';
 import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { CorsMiddleware } from './middware/cors/cors.middleware';
 import { WhiteListMiddleware } from './middware/white-list/white-list.middleware';
-import { UserService } from './user/user.service';
 import { LoggerModule } from './logger/logger.module';
 import { RoleModule } from './role/role.module';
 import { TasksModule } from './tasks/tasks.module';
 import { RoleToUserEntity } from './common/entiies/RoleToUserEntity';
-import { DgramModule } from './dgram/dgram.module';
-import { ProcessModule } from './process/process.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import * as GraphQLJSON from 'graphql-type-json';
-import { join } from 'path';
-import { DgramService } from './dgram/dgram.service';
-import { ProcessService } from './process/process.service';
-import { ApolloDriver } from '@nestjs/apollo';
 import { EslModule } from './esl/esl.module';
 import { EslService } from './esl/esl.service';
 import { LoggerService } from './logger/logger.service';
 import { PbxModule } from './pbx/pbx.module';
 import { TenantModule } from './tenant/tenant.module';
-import { Connection } from './esl/NodeESL/Connection';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { FriendModule } from './friend/friend.module';
+import { GroupModule } from './group/group.module';
+import { ChatModule } from './chat/chat.module';
+import { PrivateMessageModule } from './private-message/private-message.module';
+import { GroupMessageModule } from './group-message/group-message.module';
+import { SensitiveWordModule } from './sensitive-word/sensitive-word.module';
+import { GroupMemberModule } from './group-member/group-member.module';
+
+
 
 @Module({
   imports: [
@@ -65,11 +71,11 @@ import { Connection } from './esl/NodeESL/Connection';
         retryDelay: 3,
         synchronize: true, // live need to false
         autoLoadEntities: true,
-        logging: true,
+        logging: false,
+        bigNumberStrings: false, 
       }),
       inject: [ConfigService],
     }),
-    DgramModule.forRoot({ address: '0.0.0.0', port: 3002 }),
     EventEmitterModule.forRoot({
       // set this to `true` to use wildcards
       wildcard: true,
@@ -86,55 +92,57 @@ import { Connection } from './esl/NodeESL/Connection';
       // disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
     }),
-    // BullModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     redis: {
-    //       host: configService.get('redis.host'),
-    //       port: configService.get('redis.port'),
-    //       db: 10,
-    //       password: configService.get('redis.password', undefined),
-    //     },
-    //     prefix: 'esl_bull',
-    //   }),
-    //   inject: [ConfigService],
-    // }),
+    {
+      ...BullModule.forRootAsync({
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+          redis: {
+            host: config.get('redis.host'),
+            port: config.get('redis.port'),
+            password: config.get('redis.password', undefined),
+          },
+        }),
+      }),
+      global: true,
+    },
+    {
+      ...BullModule.registerQueue({
+        name: 'chat',
+      }),
+      global: true,
+    },
     UserModule,
     LoggerModule,
     RoleModule,
     TasksModule,
-    GraphQLModule.forRoot({
-      driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
-      path: '/',
-      resolvers: { JSON: GraphQLJSON },
-      subscriptions: {
-        path: '/ws',
-        keepAlive: 10000,
-      },
-      installSubscriptionHandlers: true,
-      resolverValidationOptions: {
-        requireResolversForResolveType: false,
-      },
-      debug: true,
-      definitions: {
-        path: join(process.cwd(), 'src/graphql.schema.ts'),
-        outputAs: 'class',
-      },
-    }),
-    ProcessModule,
     EslModule,
     PbxModule,
     TenantModule,
+    AuthModule,
+    FriendModule,
+    GroupModule,
+    PrivateMessageModule,
+    GroupMessageModule,
+    SensitiveWordModule,
+    GroupMemberModule,
+    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   constructor(
     private readonly loggerr: LoggerService,
-    private readonly dgramService: DgramService,
-    private readonly processService: ProcessService,
     private readonly eslService: EslService,
   ) {}
 
@@ -142,8 +150,6 @@ export class AppModule implements NestModule {
     this.loggerr.setContext('START APP');
     consumer.apply(CorsMiddleware).forRoutes('*'); // for all routes
     consumer.apply(WhiteListMiddleware).forRoutes('*');
-    const dgramSocketServer = this.dgramService.createDgramSocket();
-    this.processService.onMessage(dgramSocketServer);
     // await BullModule.registerQueueAsync({
     //   name: 'BullQueue,RedLock,PUB,SUB',
     // });

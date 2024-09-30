@@ -17,7 +17,7 @@ export const createDgramProviders = (
 				console.log('bindOptions:', bindOptions);
 				return new Promise(resolve => socket.bind(bindOptions, () => resolve(socket)));
 			} catch (error) {
-				console.log(error)
+				console.log('createDgramProviders:',error)
 				rejects(error);
 			}
 		},

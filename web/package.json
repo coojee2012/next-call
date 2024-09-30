@@ -1,0 +1,76 @@
+{
+  "name": "n-demo-web",
+  "version": "2.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@voicenter-team/vsip": "^1.1.63",
+    "axios": "^1.7.6",
+    "core-js": "^3.38.1",
+    "element-plus": "^2.8.3",
+    "generate-unique-id": "^2.0.1",
+    "js-audio-recorder": "^1.0.7",
+    "jssip": "^3.4.0",
+    "localforage": "^1.10.0",
+    "loglevel": "^1.7.1",
+    "mitt": "^3.0.1",
+    "p-iteration": "^1.1.8",
+    "sass": "^1.79.2",
+    "sass-loader": "^16.0.2",
+    "socket.io-client": "^4.8.0",
+    "vue": "^3.5.8",
+    "vue-axios": "^3.5.2",
+    "vue-router": "^4.4.5",
+    "vue-socket.io": "^3.0.10",
+    "vuex": "^4.1.0",
+    "vuex-persist": "^3.1.3"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/plugin-transform-class-properties": "^7.25.4",
+    "@eslint/config-array": "^0.18.0",
+    "@eslint/object-schema": "^2.1.4",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.5.0",
+    "eslint-plugin-vue": "^9.28.0",
+    "vue-template-compiler": "^2.7.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-mixed-spaces-and-tabs": 0,
+      "generator-star-spacing": "off",
+      "no-tabs": "off",
+      "no-unused-vars": "off",
+      "no-unused-labels": "off",
+      "no-console": "off",
+      "vue/no-unused-components": "off",
+      "no-irregular-whitespace": "off",
+      "no-debugger": "off",
+      "no-useless-escape": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -71,3 +71,29 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## cli command
+```bash
+npx nest g module auth
+npx nest g service auth
+npx nest g res GroupMember
+curl -v -H 'Connection: Upgrade' -H 'Upgrade: websocket' -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBwYXJ0' ws://localhost:3001/ws
+```
+
+## references
+[Nest CN](https://nest.nodejs.cn/security/authentication)
+[Demo](https://github.com/DarknessZY/my-blog-app-nest/tree/master)
+[chat的一些建议](https://article.juejin.cn/post/7225171762395824188)
+[nest-websocket](https://github.com/tashuo/nest-websocket)
+[nest接管vue](https://blog.csdn.net/qq_36571175/article/details/130843090)
+[查询](https://typeorm.nodejs.cn/find-options)
+
+## fs command
+```bash
+sofia status profile internal reg # 查看fs分机注册情况
+sofia status # 查询网关注册状态
+sofia profile external rescan # freeswitch xml配置文件新增网关后，使其生效，可以重启freeswitch或者使用命令方式
+show calls # fs查看有多少电话在线
+show dialplan
+version # 查看freeswitch版本号
+```

@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   BaseEntity as TypeOrmBaseEntity,
   Column,
@@ -7,7 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 export abstract class BaseEntity extends TypeOrmBaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type: 'bigint'})
+  @Type(() => Number)
   id: number;
 
   @CreateDateColumn()
@@ -19,8 +20,8 @@ export abstract class BaseEntity extends TypeOrmBaseEntity {
   @Column({default: 0})
   status: number;
 
-  @Expose()
-  get statusName(): string {
-    return this.status == 0 ? '正常' : '无效';
-  }
+  // @Expose()
+  // get statusName(): string {
+  //   return this.status == 0 ? '正常' : '无效';
+  // }
 }

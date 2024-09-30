@@ -1,6 +1,7 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { Column, Entity, OneToMany,ManyToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
+import { UserEntity } from 'src/user/entities/user.entity';
 @Entity('tenant')
 export class Tenant extends BaseEntity {
     @Column()
@@ -20,4 +21,7 @@ export class Tenant extends BaseEntity {
     dids: string[];  // 呼叫中心电话号码
     @Column('simple-array')
     telephones: string[]; // 公司联系电话
+
+    @OneToMany(() => UserEntity, (user) => user.tenant)
+    users: UserEntity[]
 }

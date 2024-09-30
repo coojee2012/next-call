@@ -6,28 +6,33 @@ import {
   Patch,
   Param,
   Delete,
-  Ip,
   Req,
   Res,
   Session,
-  Inject,
   ClassSerializerInterceptor,
   UseInterceptors,
-  ParseIntPipe
+  ParseIntPipe,
+  UseGuards,
+  Query,
+  Put
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login.dot';
-import { IUser } from './interfaces/user.interface';
+
 import * as svgCaptCha from 'svg-captcha';
 import { Request, Response } from 'express';
 import { LoggerService } from 'src/logger/logger.service';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from './entities/user.entity';
 import { UpdateResult } from 'typeorm';
+import { AuthGuard } from '@nestjs/passport';
+import { onlineUsersDemo,findUserDemo } from 'src/mock/chat.data';
+import {userInfoDemo} from'src/mock/chat.data';
 
 @Controller('users')
+@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(
@@ -63,7 +68,7 @@ export class UserController {
       background: '#cc9966',
     });
     session.code = captcha.text;
-    console.log(session);
+    console.log("session:", session);
     res.type('image/svg+xml');
     res.send(captcha.data);
   }
@@ -74,12 +79,33 @@ export class UserController {
     @Body() body: LoginUserDto,
     @Session() session: any,
   ) {
-    console.log(body, session);
+    console.log('authenticate:',body, session);
     if (body?.code?.toLocaleLowerCase() == session?.code?.toLocaleLowerCase()) {
       return { code: 200 };
     } else {
       return { code: 500 };
     }
+  }
+
+  @Get('self')
+  findSelf(@Req() req:Request,): Promise<UserEntity | null> {
+    const user = req.user as UserEntity;
+    const id = user?.id;
+    return this.userService.findOne(+id);
+  }
+  @Get('terminal/online')
+  async getOnlineUsers(): Promise<any> {
+    return onlineUsersDemo.data;
+  }
+
+  @Get('findByName')
+  async findByName(@Query('name') name: string): Promise<any> {
+    return this.userService.findBy({ nickName: name });
+  }
+
+  @Get('find/:id')
+  async findUserById(@Param('id', ParseIntPipe) id: number): Promise<UserEntity | null> {
+    return this.userService.findOne(+id);
   }
 
   @Get(':id')
@@ -89,6 +115,11 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) : Promise<UpdateResult> {
+    return this.userService.update(+id, updateUserDto);
+  }
+
+  @Put([':id', 'update/:id'])
+  update2(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) : Promise<UpdateResult> {
     return this.userService.update(+id, updateUserDto);
   }
 

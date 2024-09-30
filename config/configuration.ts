@@ -2,6 +2,11 @@ export default () => ({
   app: {
     name: 'TEST',
     version: 9627,
+    jwtSecret: process.env.JWT_SECRET ||'123456',
+    jwtExpiration: '1h',
+    jwtRefreshExpiration: '24h',
+    corsOrigin: '*',
+    corsMethods: 'GET,POST,PUT,DELETE,OPTIONS',
   },
   fsOutbound: {
     host: '0.0.0.0',

@@ -31,11 +31,24 @@
         },
 
         {
-            "name": "Launch via NPM",
+            "name": "Launch NPM DEBUG",
             "request": "launch",
             "runtimeArgs": [
                 "run",
                 "start:debug"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Launch NPM",
+            "request": "launch",
+            "runtimeArgs": [
+                "run",
+                "start"
             ],
             "runtimeExecutable": "npm",
             "skipFiles": [

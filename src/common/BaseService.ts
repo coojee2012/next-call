@@ -41,6 +41,11 @@ export abstract class BaseService<T extends BaseEntity> {
     return await this.findOne(where);
   }
 
+  async updateBy(where: Partial<T>, data: Partial<T>): Promise<number | undefined> {
+    const result = await this.repository.update(where as FindOptionsWhere<T>, data as QueryDeepPartialEntity<T>);
+    return result?.affected;
+  }
+
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
   }
