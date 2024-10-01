@@ -58,7 +58,10 @@
                   :src="activeGroup.headImage"
                   class="avatar"
                 />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                
+                <i v-else class="el-icon-plus avatar-uploader-icon">
+                  <el-icon  ><Plus /></el-icon>
+                </i>
               </file-upload>
               <head-image
                 v-show="!isOwner"
@@ -69,12 +72,20 @@
               >
               </head-image>
               <el-button
+                v-if="isJoind"
                 class="send-btn"
                 icon="el-icon-position"
                 type="primary"
                 @click="onSendMessage()"
-                >发消息</el-button
-              >
+                >发送消息</el-button>
+                <el-button
+                  v-else
+                  class="send-btn"
+                  icon="el-icon-position"
+                  type="primary"
+                  @click="onSendMessage()"
+                  >加入本群</el-button>
+              
             </div>
             <el-form
               class="group-form"
@@ -96,6 +107,7 @@
               <el-form-item label="群名备注">
                 <el-input
                   v-model="activeGroup.remarkGroupName"
+                  :disabled="!isJoind"
                   :placeholder="activeGroup.name"
                   maxlength="20"
                 ></el-input>
@@ -103,6 +115,7 @@
               <el-form-item label="我在本群的昵称">
                 <el-input
                   v-model="activeGroup.remarkNickName"
+                  :disabled="!isJoind"
                   maxlength="20"
                   :placeholder="$store.state.userStore.userInfo.nickName"
                 ></el-input>
@@ -117,10 +130,10 @@
                 ></el-input>
               </el-form-item>
               <div>
-                <el-button type="success" @click="onSaveGroup()"
+                <el-button v-show="isJoind" type="success" @click="onSaveGroup()"
                   >保存</el-button
                 >
-                <el-button type="danger" v-show="!isOwner" @click="onQuit()"
+                <el-button  type="danger" v-show="!isOwner && isJoind" @click="onQuit()"
                   >退出群聊</el-button
                 >
                 <el-button type="danger" v-show="isOwner" @click="onDissolve()"
@@ -141,13 +154,13 @@
                   @del="onKick"
                 ></group-member>
               </div>
-              <div class="group-invite">
+              <div class="group-invite" v-show="isJoind">
                 <div
                   class="invite-member-btn"
                   title="邀请好友进群聊"
                   @click="onInviteMember()"
                 >
-                  <i class="el-icon-plus"></i>
+                  <i class="el-icon-plus"><el-icon><Plus /></el-icon></i>
                 </div>
                 <div class="invite-member-text">邀请</div>
                 <add-group-member
@@ -242,7 +255,7 @@ export default {
         if (valid) {
           let vo = this.activeGroup
           this.$http({
-            url: '/group/modify',
+            url: `/group/modify/${vo.id}`,
             method: 'put',
             data: vo,
           }).then((group) => {
@@ -348,6 +361,11 @@ export default {
     },
     isOwner() {
       return this.activeGroup.ownerId == this.$store.state.userStore.userInfo.id
+    },
+    isJoind() {
+      return this.groupMembers.some(
+        (m) => m.userId == this.$store.state.userStore.userInfo.id
+      )
     },
     imageAction() {
       return `/image/upload`

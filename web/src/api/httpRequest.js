@@ -30,6 +30,10 @@ http.interceptors.request.use(
  */
 http.interceptors.response.use(
   async (response) => {
+    if(!response) {
+      console.log('response is null', response)
+      return Promise.reject('response is null')
+    }
     if (response.status === 200 || response.status === 201) {
       return response.data
     } else if (response.status === 400) {
