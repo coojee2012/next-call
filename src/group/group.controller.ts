@@ -74,7 +74,7 @@ export class GroupController {
     @Res() res: Response,
     @Param('id') id: string,
     @Body() updateGroupDto: UpdateGroupDto,
-  ) {
+  ): Promise<any> {
     const user = req.user as UserEntity;
     const group = await this.groupService.findOne({ id: +id });
     if (!group) {
@@ -89,7 +89,7 @@ export class GroupController {
       });
     }
     const updatedGroup = await this.groupService.update(+id, updateGroupDto);
-    return updatedGroup;
+    return  res.status(201).json(updatedGroup);
   }
 
   @Delete(':id')

@@ -70,6 +70,10 @@ http.interceptors.response.use(
     }
   },
   (error) => {
+    if(!error.response) {
+      console.log('request error:', error)
+      return Promise.reject(error.message)
+    }
     switch (error.response.status) {
       case 400:
         ElMessage({

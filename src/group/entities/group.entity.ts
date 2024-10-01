@@ -69,4 +69,6 @@ export class Group extends BaseEntity {
 
   @OneToMany(() => GroupMember, (groupMessage) => groupMessage.group)
   members: GroupMessage[];
+
+ 
 }

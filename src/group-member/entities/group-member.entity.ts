@@ -29,5 +29,10 @@ export class GroupMember extends BaseEntity {
     quit: boolean;
     @Column({nullable: true} )
     quitTime: Date;
+
+    @Expose()
+    get showNickName(): string {
+      return this.remarkNickName? this.remarkNickName : this.userNickName;
+    }
     
 }
