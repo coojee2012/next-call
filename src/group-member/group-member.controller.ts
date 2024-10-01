@@ -4,7 +4,7 @@ import { CreateGroupMemberDto } from './dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from './dto/update-group-member.dto';
 import { groupMemberDemo } from 'src/mock/chat.data';
 
-@Controller('group-members')
+@Controller('gmembers')
 export class GroupMemberController {
   constructor(private readonly groupMemberService: GroupMemberService) {}
 
@@ -18,10 +18,9 @@ export class GroupMemberController {
     return this.groupMemberService.findAll();
   }
 
-  @Get(':id')
-  findMembers(@Param('id') id: string) {
-    return groupMemberDemo.data
-    //return this.groupMemberService.findBy({ group: +id });
+  @Get(':groupId')
+  findMembers(@Param('groupId') groupId: string) {
+    return this.groupMemberService.findBy({ groupId: +groupId, quit: false });
   }
 
   @Patch(':id')

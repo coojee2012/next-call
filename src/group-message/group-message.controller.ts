@@ -3,7 +3,7 @@ import { GroupMessageService } from './group-message.service';
 import { CreateGroupMessageDto } from './dto/create-group-message.dto';
 import { UpdateGroupMessageDto } from './dto/update-group-message.dto';
 
-@Controller('group-message')
+@Controller('gmessage')
 export class GroupMessageController {
   constructor(private readonly groupMessageService: GroupMessageService) {}
 

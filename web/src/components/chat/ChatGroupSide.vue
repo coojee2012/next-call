@@ -125,7 +125,7 @@ export default {
     },
     loadGroupMembers() {
       this.$http({
-        url: `/group-members/${this.group.id}`,
+        url: `/gmembers/${this.group.id}`,
         method: 'get',
       }).then((members) => {
         this.groupMembersData = members

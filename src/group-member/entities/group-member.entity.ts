@@ -9,18 +9,22 @@ import { UserEntity } from 'src/user/entities/user.entity';
 export class GroupMember extends BaseEntity {
     @ManyToOne(() => Group, group => group.members)
     group: Group;
+    @Column()
+    groupId: number;
 
-    @ManyToOne(() => UserEntity, user => user.groups)
+    @ManyToOne(() => UserEntity, user => user.joinedGroups)
     user: UserEntity;
+    @Column()
+    userId: number;
 
     @Column({default: ''})
-    userNickName: string;
+    userNickName: string; // 群成员昵称
     @Column({default: ''})
-    remarkNickName: string;
+    remarkNickName: string; // 群成员备注名
     @Column({default: ''})
-    headImage: string;
+    headImage: string; // 群成员头像
     @Column({default: ''})
-    remarkGroupName: string;
+    remarkGroupName: string;    // 群备注名
     @Column({default: false})
     quit: boolean;
     @Column({nullable: true} )

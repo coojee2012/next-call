@@ -17,5 +17,16 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "web",
+    "test",
+    "public",
+    "**/*.spec.ts" // 排除测试文件
+  ],
+  "include": [
+    "src/**/*.ts" // 只包含 features 目录
+  ]
 }

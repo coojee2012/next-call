@@ -34,5 +34,6 @@ export class PrivateMessageService extends BaseService<PrivateMessage> {
     .limit(100)
     .getMany();
     return messages;
+    
   }
 }

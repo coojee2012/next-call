@@ -79,7 +79,7 @@ export default {
     },
     loadGroupMembers(checkedIds, lockedIds) {
       this.$http({
-        url: `/group-members/${this.groupId}`,
+        url: `/gmembers/${this.groupId}`,
         method: 'get',
       }).then((members) => {
         members.forEach((m) => {

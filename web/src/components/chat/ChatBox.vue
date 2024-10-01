@@ -578,7 +578,7 @@ export default {
     },
     loadReaded(fId) {
       this.$http({
-        url: `/private-message/maxReadedId?friendId=${fId}`,
+        url: `/pmessage/maxReadedId?friendId=${fId}`,
         method: 'get',
       }).then((id) => {
         this.$store.commit('readedMessage', {
@@ -598,7 +598,7 @@ export default {
       })
 
       this.$http({
-        url: `/group-members/${groupId}`,
+        url: `/gmembers/${groupId}`,
         method: 'get',
       }).then((groupMembers) => {
         this.groupMembers = groupMembers

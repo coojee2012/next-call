@@ -4,7 +4,7 @@ import { CreatePrivateMessageDto } from './dto/create-private-message.dto';
 import { UpdatePrivateMessageDto } from './dto/update-private-message.dto';
 import { Request, Response } from 'express';
 
-@Controller('private-message')
+@Controller('pmessage')
 export class PrivateMessageController {
   constructor(private readonly privateMessageService: PrivateMessageService) {}
 

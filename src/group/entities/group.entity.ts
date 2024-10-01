@@ -3,12 +3,14 @@ import { Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
 import { GroupMessage } from 'src/group-message/entities/group-message.entity';
 import { GroupMember } from 'src/group-member/entities/group-member.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Entity('group')
 export class Group extends BaseEntity {
   @Column({ unique: true })
   name: string;
-
+  @ManyToOne(() => UserEntity, (user) => user.ownedGroups)
+  owner: UserEntity
   @Column()
   ownerId: number;
 

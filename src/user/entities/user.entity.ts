@@ -8,6 +8,7 @@ import { Tenant } from 'src/tenant/entities/tenant.entity';
 import { GroupMessage } from 'src/group-message/entities/group-message.entity';
 import { PrivateMessage } from 'src/private-message/entities/private-message.entity';
 import { GroupMember } from 'src/group-member/entities/group-member.entity';
+import { Group } from 'src/group/entities/group.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -58,8 +59,11 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => PrivateMessage, (privateMessage) => privateMessage.recv)
   priRecvMessages: PrivateMessage[];
 
-  @OneToMany(() => GroupMember, (groupMember) => groupMember.user)
-  groups: GroupMember[];
+  @OneToMany(() => Group, (group) => group.owner)
+  ownedGroups: Group[];
+
+  @OneToMany(() => GroupMember, (groupMembers) => groupMembers.user)
+  joinedGroups: Group[];
 
 
   @Transform(({ value }) => value.name)

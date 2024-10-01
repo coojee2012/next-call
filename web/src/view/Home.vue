@@ -236,7 +236,7 @@ export default {
     pullPrivateOfflineMessage(minId) {
       this.$store.commit('loadingPrivateMsg', true);
       this.$http({
-        url: '/private-message/pullOfflineMessage?minId=' + minId,
+        url: '/pmessage/pullOfflineMessage?minId=' + minId,
         method: 'GET',
       })
         .then((data) => {
@@ -258,7 +258,7 @@ export default {
     pullGroupOfflineMessage(minId) {
       this.$store.commit('loadingGroupMsg', true);
       this.$http({
-        url: '/group-message/pullOfflineMessage?minId=' + minId,
+        url: '/gmessage/pullOfflineMessage?minId=' + minId,
         method: 'GET',
       })
         .then((res) => {
