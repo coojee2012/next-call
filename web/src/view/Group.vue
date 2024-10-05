@@ -83,7 +83,7 @@
                   class="send-btn"
                   icon="el-icon-position"
                   type="primary"
-                  @click="onSendMessage()"
+                  @click="joinGroup()"
                   >加入本群</el-button>
               
             </div>
@@ -244,6 +244,7 @@ export default {
       this.showAddGroupMember = true
     },
     onCloseAddGroupMember() {
+      console.log('关闭邀请成员弹窗')
       this.showAddGroupMember = false
     },
     onUploadSuccess(data) {
@@ -334,7 +335,16 @@ export default {
       }
       this.$store.commit('openChat', chat)
       this.$store.commit('activeChat', 0)
-      this.$router.push('/home/chat')
+      this.$router.push('/cc/chat')
+    },
+    joinGroup() {
+      this.$http({
+        url: `/group/join/${this.activeGroup.id}`,
+        method: 'post',
+      }).then(() => {
+        this.$message.success(`加入群聊'${this.activeGroup.name}'成功`)
+        this.loadGroupMembers()
+      })
     },
     loadGroupMembers() {
       this.$http({

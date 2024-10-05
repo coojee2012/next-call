@@ -33,7 +33,7 @@
       <el-form-item label="用户名">
         <el-input
           disabled
-          v-model="userInfo.userName"
+          v-model="userInfo.username"
           autocomplete="off"
         ></el-input>
       </el-form-item>

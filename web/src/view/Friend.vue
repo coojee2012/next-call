@@ -182,7 +182,7 @@ export default {
       }
       this.$store.commit('openChat', chat)
       this.$store.commit('activeChat', 0)
-      this.$router.push('/home/chat')
+      this.$router.push('/cc/chat')
     },
     showFullImage() {
       if (this.userInfo.headImage) {

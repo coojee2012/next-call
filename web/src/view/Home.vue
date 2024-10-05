@@ -11,27 +11,27 @@
         </head-image>
       </div>
       <el-menu background-color="#E8F2FF" style="margin-top: 25px;padding-left: 15px;">
-        <el-menu-item title="聊天" :index="'/home/chat'">
-          <router-link :to="'/home/chat'" class="link">
+        <el-menu-item title="聊天" :index="'/cc/chat'">
+          <router-link :to="'/cc/chat'" class="link">
             <span class="icon iconfont icon-chat"></span>
             <div v-show="unreadCount > 0" class="unread-text">
               {{ unreadCount }}
             </div>
           </router-link>
         </el-menu-item>
-        <el-menu-item title="好友" :index="'/home/friend'">
-          <router-link :to="'/home/friend'" class="link">
+        <el-menu-item title="好友" :index="'/cc/friend'">
+          <router-link :to="'/cc/friend'" class="link">
             <span class="icon iconfont icon-friend"></span>
           </router-link>
         </el-menu-item>
-        <el-menu-item title="群聊" :index="'/home/group'">
-          <router-link :to="'/home/group'" class="link">
+        <el-menu-item title="群聊" :index="'/cc/group'">
+          <router-link :to="'/cc/group'" class="link">
             <span class="icon iconfont icon-group"></span>
           </router-link>
         </el-menu-item>
         <el-menu-item
           title="设置"
-          :index="'/home/setting'"
+          :index="'/cc/setting'"
           @click="showSetting()"
         >
           <span class="icon iconfont icon-setting"></span>
@@ -41,7 +41,7 @@
       style="position: absolute; bottom: 60px;padding-left: 15px;">
         <el-menu-item
           title="管理菜单"
-          :index="'/home/manage'"
+          :index="'/cc/manage'"
           @click="showSetting()"
         >
         <el-icon style="font-size: 30px;"><Menu /></el-icon>
@@ -240,7 +240,7 @@ export default {
         method: 'GET',
       })
         .then((data) => {
-          console.log('pullPrivateOfflineMessage', data);
+          console.log('pullPrivateOfflineMessage data:', data);
           this.$store.commit('loadingPrivateMsg', false);
           if ( data && data.length > 0) {
             data.forEach((msg) => {
@@ -248,7 +248,8 @@ export default {
             });
           }
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log('pullPrivateOfflineMessage error:', e);
           this.$store.commit('loadingPrivateMsg', false);
         });
     },
@@ -261,14 +262,17 @@ export default {
         url: '/gmessage/pullOfflineMessage?minId=' + minId,
         method: 'GET',
       })
-        .then((res) => {
-          console.log('pullGroupOfflineMessage', res);
+        .then((data) => {
+          console.log('pullGroupOfflineMessage dara:', data);
           this.$store.commit('loadingGroupMsg', false);
-          if (res.data.length > 0) {
-            this.$store.commit('insertGroupOfflineMessage', res.data);
+          if (data && data.length > 0) {
+            data.forEach((msg) => {
+              this.handleGroupMessage(msg);
+            });
           }
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log('pullGroupOfflineMessage error:', e);
           this.$store.commit('loadingGroupMsg', false);
         });
     },
@@ -335,12 +339,12 @@ export default {
       }
     },
     handleGroupMessage(msg) {
-      // 消息加载标志
+      // 消息加载标志 30
       if (msg.type == this.$enums.MESSAGE_TYPE.LOADING) {
         this.$store.commit('loadingGroupMsg', JSON.parse(msg.content));
         return;
       }
-      // 消息已读处理
+      // 消息已读处理 11
       if (msg.type == this.$enums.MESSAGE_TYPE.READED) {
         // 我已读对方的消息，清空已读数量
         let chatInfo = {
@@ -350,7 +354,7 @@ export default {
         this.$store.commit('resetUnreadCount', chatInfo);
         return;
       }
-      // 消息回执处理
+      // 消息回执处理 12
       if (msg.type == this.$enums.MESSAGE_TYPE.RECEIPT) {
         // 更新消息已读人数
         let msgInfo = {
@@ -383,6 +387,7 @@ export default {
         showName: group.showGroupName,
         headImage: group.headImageThumb,
       };
+      msg.loadStatus = 'ok'; // 标记消息已加载,针对图片等
       // 打开会话
       this.$store.commit('openChat', chatInfo);
       // 插入消息

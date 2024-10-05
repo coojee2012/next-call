@@ -5,6 +5,7 @@ import { BaseService } from 'src/common/BaseService';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrivateMessage } from './entities/private-message.entity';
+import { min } from 'lodash';
 
 @Injectable()
 export class PrivateMessageService extends BaseService<PrivateMessage> {
@@ -25,11 +26,11 @@ export class PrivateMessageService extends BaseService<PrivateMessage> {
     return maxReadedId?.id;
   }
 
-  async pullOfflineMessage(userId: number) {
+  async pullOfflineMessage(userId: number, minId: number) {
     const messages = await this.privateMessageRepository
     .createQueryBuilder('privateMessage')
-    .where('privateMessage.send = :userId', { userId })
-    .orWhere('privateMessage.recv = :userId', {userId })
+    .where('privateMessage.id > :minId AND (privateMessage.send = :userId OR privateMessage.recv = :userId)', { minId, userId })
+    //.where('privateMessage.id > :minId', {minId })
     .orderBy('privateMessage.id', 'ASC')
     .limit(100)
     .getMany();

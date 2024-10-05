@@ -18,6 +18,7 @@ export default {
 
   mutations: {
     initChats(state, chatsData) {
+      console.log('initChats lynn:',chatsData)
       state.chats = []
       state.privateMsgMaxId = chatsData.privateMsgMaxId || 0
       state.groupMsgMaxId = chatsData.groupMsgMaxId || 0
@@ -30,6 +31,7 @@ export default {
           }
         })
       })
+      state.chats = cacheChats.concat(state.chats)
     },
     openChat(state, chatInfo) {
       let chats = this.getters.findChats()
@@ -350,8 +352,9 @@ export default {
       }
       // 加载离线消息
       if (cacheChats.length > 0) {
+        console.log('加载离线消息')
         state.chats = cacheChats
-        cacheChats = []
+        //cacheChats = []
         this.commit('saveToStorage')
         return
       }
@@ -360,9 +363,9 @@ export default {
         return chat2.lastSendTime - chat1.lastSendTime
       })
       // 将消息一次性装载回来
-      state.chats = cacheChats
+      state.chats = [...cacheChats]
       // 断线重连后不能使用缓存模式，否则会导致聊天窗口的消息不刷新
-      cacheChats = state.chats
+      cacheChats = [...state.chats]
       this.commit('saveToStorage')
     },
     saveToStorage(state) {
@@ -414,6 +417,7 @@ export default {
         localForage
           .getItem(key)
           .then((chatsData) => {
+            console.log('加载本地缓存消息成功', chatsData)
             if (!chatsData) {
               console.log('本地缓存没有任何消息数据')
               resolve()
@@ -430,7 +434,7 @@ export default {
             }
           })
           .catch((e) => {
-            console.log('加载消息失败')
+            console.log('加载本地缓存消息失败')
             reject()
           })
       })

@@ -7,4 +7,5 @@ export class UpdateGroupDto extends PartialType(CreateGroupDto) {
     id: number;
     @Exclude()
     ownerId?: number | undefined;
+    remarkNickName: string | undefined;
 }

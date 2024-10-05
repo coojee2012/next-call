@@ -64,11 +64,11 @@ export class Group extends BaseEntity {
   @Column({ default: true })
   dissolve: boolean;
 
-  @OneToMany(() => GroupMessage, (groupMessage) => groupMessage.sender)
+  @OneToMany(() => GroupMessage, (groupMessage) => groupMessage.group)
   groupMessages: GroupMessage[];
 
-  @OneToMany(() => GroupMember, (groupMessage) => groupMessage.group)
-  members: GroupMessage[];
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.group)
+  members: GroupMember[];
 
  
 }

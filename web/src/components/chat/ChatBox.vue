@@ -574,7 +574,11 @@ export default {
         url: url,
         method: 'put',
         data: {targetId: +this.chat.targetId}
-      }).then(() => {})
+      }).then((data) => {
+        console.log("readedMessage result:",data)
+      }).catch((e) => {
+        console.log("readedMessage error:",e)
+      })
     },
     loadReaded(fId) {
       this.$http({
@@ -585,6 +589,8 @@ export default {
           friendId: fId,
           maxId: id,
         })
+      }).catch((e) => {
+        console.log("loadReaded error:",e)
       })
     },
     loadGroup(groupId) {
@@ -595,6 +601,8 @@ export default {
         this.group = group
         this.$store.commit('updateChatFromGroup', group)
         this.$store.commit('updateGroup', group)
+      }).catch((e) => {
+        console.log('loadGroup error:', e)
       })
 
       this.$http({
@@ -602,6 +610,8 @@ export default {
         method: 'get',
       }).then((groupMembers) => {
         this.groupMembers = groupMembers
+      }).catch((e) => {
+        console.log('loadGroupMembers error:', e)
       })
     },
     loadFriend(friendId) {
@@ -613,6 +623,8 @@ export default {
         this.friend = friend
         this.$store.commit('updateChatFromFriend', friend)
         this.$store.commit('updateFriend', friend)
+      }).catch((e) => {
+        console.log('loadFriend error:', e)
       })
     },
     showName(msgInfo) {

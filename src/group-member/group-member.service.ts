@@ -13,5 +13,14 @@ export class GroupMemberService extends BaseService<GroupMember> {
   ) {
     super(groupMemberRepository);
   }
+
+  async findGroupIdsByUser(userId: number): Promise<number[]> {
+    const groupIds = await this.groupMemberRepository
+     .createQueryBuilder('groupMember')
+     .select('groupMember.groupId')
+     .where('groupMember.userId = :userId', { userId })
+     .getRawMany();
+    return groupIds.map((groupId) => groupId.groupMember_groupId);
+  }
   
 }

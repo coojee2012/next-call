@@ -17,6 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // 这里可以添加你的逻辑来从payload中提取用户信息
     console.log('validate payload:', payload);
-    return { id: payload.sub, username: payload.username } as UserEntity;
+    return { 
+      id: payload.sub, 
+      username: payload.username,
+      nickName: payload.nickName,
+      sex: payload.sex,
+     } as UserEntity;
   }
 }

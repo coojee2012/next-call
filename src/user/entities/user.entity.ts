@@ -50,7 +50,7 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => UserEventEntity, (userEventEntity) => userEventEntity.user)
   userEvents: UserEventEntity[];
 
-  @OneToMany(() => GroupMessage, (groupMessage) => groupMessage.user)
+  @OneToMany(() => GroupMessage, (groupMessage) => groupMessage.send)
   groupMessages: GroupMessage[];
 
   @OneToMany(() => PrivateMessage, (privateMessage) => privateMessage.send)

@@ -24,22 +24,22 @@ export default VueRouter.createRouter({
     },
     {
       name: 'Home',
-      path: '/home',
+      path: '/cc',
       component: Home,
       children: [
         {
           name: 'Chat',
-          path: '/home/chat',
+          path: '/cc/chat',
           component: () => import('../view/Chat'), //Vue.defineAsyncComponent(() => import('../view/Chat')),
         },
         {
           name: 'Friend',
-          path: '/home/friend',
+          path: '/cc/friend',
           component: () => import('../view/Friend'), // Vue.defineAsyncComponent(() => import('../view/Friend')),
         },
         {
           name: 'GROUP',
-          path: '/home/group',
+          path: '/cc/group',
           component: () => import('../view/Group'), // Vue.defineAsyncComponent(() => import('../view/Group')),
         },
       ],

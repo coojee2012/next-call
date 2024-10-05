@@ -32,7 +32,7 @@
                 @click.stop=""
                 class="agm-friend-checkbox"
                 v-model="friend.isCheck"
-                size="medium"
+                size="default"
               ></el-checkbox>
             </friend-item>
           </div>
@@ -76,13 +76,14 @@ export default {
   },
   data() {
     return {
-      isVisible: this.visible,
+      isVisible: false,
       searchText: '',
       friends: [],
     }
   },
   methods: {
     onClose() {
+      console.log('close in dialog')
       $emit(this, 'close')
     },
     onOk() {
@@ -97,7 +98,7 @@ export default {
       })
       if (inviteVO.friendIds.length > 0) {
         this.$http({
-          url: '/group/invite',
+          url: `/group/invite/${this.groupId}`,
           method: 'post',
           data: inviteVO,
         }).then(() => {
@@ -134,6 +135,8 @@ export default {
   },
   watch: {
     visible: function (newData, oldData) {
+      console.log('visible change', newData, oldData)
+      this.isVisible = newData
       if (newData) {
         this.friends = []
         this.$store.state.friendStore.friends.forEach((f) => {
@@ -151,6 +154,7 @@ export default {
           }
           this.friends.push(friend)
         })
+        
       }
     },
   },
@@ -163,6 +167,7 @@ export default {
   display: flex;
   .agm-l-box {
     flex: 1;
+    margin-top: 10px;
     border: #587ff0 solid 1px;
     border-radius: 5px;
     overflow: hidden;
@@ -182,6 +187,7 @@ export default {
   }
 
   .agm-r-box {
+    margin-top: 10px;
     flex: 1;
     border: #587ff0 solid 1px;
     border-radius: 5px;

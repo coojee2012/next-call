@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { GroupMemberService } from './group-member.service';
 import { CreateGroupMemberDto } from './dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from './dto/update-group-member.dto';
 import { groupMemberDemo } from 'src/mock/chat.data';
+import { Group } from 'src/group/entities/group.entity';
+import { GroupMember } from './entities/group-member.entity';
 
 @Controller('gmembers')
+@UseInterceptors(ClassSerializerInterceptor)
 export class GroupMemberController {
   constructor(private readonly groupMemberService: GroupMemberService) {}
 
@@ -19,8 +22,8 @@ export class GroupMemberController {
   }
 
   @Get(':groupId')
-  findMembers(@Param('groupId') groupId: string) {
-    return this.groupMemberService.findBy({ groupId: +groupId, quit: false });
+  async findMembers(@Param('groupId') groupId: string): Promise<GroupMember[]> {
+    return await this.groupMemberService.findBy({ groupId: +groupId, quit: false });
   }
 
   @Patch(':id')

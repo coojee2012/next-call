@@ -50,7 +50,9 @@ export class EventGateway
         throw new Error('Authorization header is missing');
       }
       const token = authHeader.replace('Bearer ', '');
-      const { sub } = await this.jwtService.decode(token);
+      const userInfo = await this.jwtService.decode(token);
+      const { sub, nickName } = userInfo;
+      console.log('cat jwt userinfo:', userInfo);
       client.user = {
         id: sub,
         lastActiveTime: client.handshake.issued,

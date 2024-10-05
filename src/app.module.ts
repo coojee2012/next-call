@@ -71,7 +71,7 @@ import { GroupMemberModule } from './group-member/group-member.module';
         retryDelay: 3,
         synchronize: true, // live need to false
         autoLoadEntities: true,
-        logging: false,
+        logging: true,
         bigNumberStrings: false, 
       }),
       inject: [ConfigService],

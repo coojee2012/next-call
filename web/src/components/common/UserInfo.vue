@@ -75,8 +75,8 @@ export default {
       }
       this.$store.commit('openChat', chat)
       this.$store.commit('activeChat', 0)
-      if (this.$route.path != '/home/chat') {
-        this.$router.push('/home/chat')
+      if (this.$route.path != '/cc/chat') {
+        this.$router.push('/cc/chat')
       }
       $emit(this, 'close')
     },

@@ -19,10 +19,10 @@ export class PrivateMessageController {
   }
   
   @Get('pullOfflineMessage')
-  pullOfflineMessage(@Req() req:Request,) {
+  pullOfflineMessage(@Req() req:Request, @Query('minId') minId: number) {
     const user = req.user as any;
     console.log("pullOfflineMessage:",user);
-    return this.privateMessageService.pullOfflineMessage(+user.id);
+    return this.privateMessageService.pullOfflineMessage(+user.id, +minId);
   }
 
   @Get('maxReadedId')

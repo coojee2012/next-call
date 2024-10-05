@@ -8,6 +8,7 @@ import { CreatePrivateMessageDto } from 'src/private-message/dto/create-private-
 import { PrivateMessageService } from 'src/private-message/private-message.service';
 import { PrivateMessage } from 'src/private-message/entities/private-message.entity';
 import {MessageStatus} from'src/constants/app';
+import { GroupMessageService } from 'src/group-message/group-message.service';
 
 @Injectable()
 export class ChatService {
@@ -17,7 +18,9 @@ export class ChatService {
 
   private server: Server;
 
-  constructor(private privateMessageService: PrivateMessageService) {
+  constructor(private privateMessageService: PrivateMessageService,
+              private groupMessageService: GroupMessageService
+  ) {
     this.userSocket = new Map();
   }
 
@@ -51,23 +54,42 @@ export class ChatService {
     client.emit(event, data);
   }
 
-  async sendGroupMessage(groupSendDto: CreateGroupMessageDto){
+  async sendGroupMessage(groupSendDto: CreateGroupMessageDto, memberIds: number[]){
     // TODO
-    return {
-          "id": 100950,
-          "groupId": 1853,
-          "sendId": 2,
-          "sendNickName": "王五",
-          "content": "12332",
-          "type": 0,
-          "receipt": false,
-          "receiptOk": null,
-          "readedCount": 0,
-          "atUserIds": [],
-          "status": null,
-          "sendTime": 1727596892639
+    groupSendDto.sendTime = new Date().getTime();
+    groupSendDto.atUserIds = JSON.stringify(groupSendDto.atUserIds);
+    //groupSendDto.status = MessageStatus.UNSEND;
+    const groupMessage = await this.groupMessageService.create(groupSendDto);
+    for (const memberId of memberIds) {
+      const client = this.getUserSocket(memberId);
+      if (isNil(client) || !isClientAliveNow(client.user.lastActiveTime)) {
+        console.log(`${memberId} offline`);
+        continue;
       }
-  
+      const msg = {
+        cmd: 4,
+        data: groupMessage
+      }
+      client.emit('newMessage', JSON.stringify(msg));
+    }
+    return groupMessage;
+  }
+
+  async  readGroupMessage(groupId: number, memberId: number) {
+    await this.groupMessageService.readedByUser(groupId, memberId);
+    const client = this.getUserSocket(memberId);
+    if (isNil(client) || !isClientAliveNow(client.user.lastActiveTime)) {
+      console.log(`${memberId} offline`);
+      return;
+    }
+    const msg = {
+      cmd: 6, // 群消息已读
+      data: {
+        groupId: groupId,
+        status: MessageStatus.READED
+      }
+    }
+    client.emit('newMessage', JSON.stringify(msg));
   }
 
   async sendPrivateMessage(dto:CreatePrivateMessageDto): Promise<PrivateMessage | null> {

@@ -111,7 +111,7 @@ export default {
             sessionStorage.setItem('accessToken', data.accessToken)
             sessionStorage.setItem('refreshToken', data.refreshToken)
             this.$message.success('登陆成功')
-            this.$router.push('/home/chat')
+            this.$router.push('/cc/chat')
           })
         }
       })

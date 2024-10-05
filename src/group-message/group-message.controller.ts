@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
 import { GroupMessageService } from './group-message.service';
 import { CreateGroupMessageDto } from './dto/create-group-message.dto';
 import { UpdateGroupMessageDto } from './dto/update-group-message.dto';
+import { Request } from 'express';
 
 @Controller('gmessage')
 export class GroupMessageController {
@@ -18,8 +19,12 @@ export class GroupMessageController {
   }
 
   @Get('pullOfflineMessage')
-  pullOfflineMessage() {
-    return [];
+  pullOfflineMessage(@Req() req:Request,
+  @Query('minId') minId: string) {
+    const  user = req.user as any;
+    const yourId = user.id;
+    const messages = this.groupMessageService.pullOfflineMessage(yourId, +minId);
+    return messages;
   }
 
   @Get(':id')
