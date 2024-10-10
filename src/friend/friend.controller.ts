@@ -16,7 +16,7 @@ export class FriendController {
   @Post(["", "add"])
   async create(@Req() req: Request, @Body() createFriendDto: CreateFriendDto): Promise<any> {
     const user = req.user as any;
-    console.log(user, createFriendDto);
+    //console.log(user, createFriendDto);
     createFriendDto.userId = user.sub;
     const friend = await this.userService.findOne(createFriendDto.friendId);
     if(!friend) {

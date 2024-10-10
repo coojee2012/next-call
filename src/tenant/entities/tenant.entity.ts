@@ -4,7 +4,7 @@ import { BaseEntity } from 'src/common/entiies/BaseEntity';
 import { UserEntity } from 'src/user/entities/user.entity';
 @Entity('tenant')
 export class Tenant extends BaseEntity {
-    @Column()
+    @Column({unique: true})
     domain: string;
     @Column()
     companyName: string;  // 租户公司名称

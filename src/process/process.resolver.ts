@@ -70,7 +70,7 @@ export class ProcessResolver {
 			pubSub.publish('processRemoved', { processRemoved });
 			success = true;
 		} catch (e) {
-			console.log(e);
+			console.log('processRemove',e);
 		}
 		return success;
 	}

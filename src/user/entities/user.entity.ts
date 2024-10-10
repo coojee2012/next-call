@@ -40,6 +40,8 @@ export class UserEntity extends BaseEntity {
 
   @ManyToOne(() => Tenant, (tenant) => tenant.users)
   tenant: Tenant;
+  @Column()
+  tenantId: number;
 
   @OneToMany(
     () => RoleToUserEntity,

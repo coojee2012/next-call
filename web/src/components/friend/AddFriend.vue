@@ -44,14 +44,14 @@
           </div>
           <el-button
             type="success"
-            size="mini"
+            size="small"
             v-show="!isFriend(user.id)"
             @click="onAddFriend(user)"
             >添加</el-button
           >
           <el-button
             type="info"
-            size="mini"
+            size="small"
             v-show="isFriend(user.id)"
             plain
             disabled

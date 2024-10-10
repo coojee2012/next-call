@@ -38,10 +38,32 @@ export default VueRouter.createRouter({
           component: () => import('../view/Friend'), // Vue.defineAsyncComponent(() => import('../view/Friend')),
         },
         {
-          name: 'GROUP',
+          name: 'Group',
           path: '/cc/group',
           component: () => import('../view/Group'), // Vue.defineAsyncComponent(() => import('../view/Group')),
         },
+        {
+          name: 'WorkPlate',
+          path: '/cc/manage',
+          component: () => import('../view/WorkPlate'),
+          children: [
+            {
+              name: 'Extension',
+              path: '/cc/manage/extension',
+              component: () => import('../view/manage/Extension'), 
+            },
+            {
+              name: 'Queue',
+              path: '/cc/manage/queue',
+              component: () => import('../view/manage/Queue'), 
+            },
+            {
+              name: 'IVR',
+              path: '/cc/manage/ivr',
+              component: () => import('../view/manage/IVR'), 
+            },
+          ]
+        }
       ],
     },
   ],

@@ -75,6 +75,13 @@ export class UserService {
   findOneBy(data: Partial<UserEntity>): Promise<UserEntity | null> {
     return this.usersRepository.findOneBy(data as FindOptionsWhere<UserEntity>);
   }
+  
+  findOneWithTenant(data: Partial<UserEntity>): Promise<UserEntity | null> {
+    return this.usersRepository.findOne({
+      where: data as FindOptionsWhere<UserEntity>,
+      relations: ['tenant'], 
+    });
+  }
 
   findBy(data: Partial<UserEntity>): Promise<UserEntity[]> {
     return this.usersRepository.findBy(data as FindOptionsWhere<UserEntity>);

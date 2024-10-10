@@ -101,7 +101,7 @@ export class ProcessService {
 				extension: path.win32.extname(processPath).toLocaleLowerCase(),
 				permission: ProcessPermission.ALLOW,
 			}).catch(err => {
-				console.log(err);
+				console.log('loadFromFile',err);
 			});
 		}
 		console.log('finished loads');

@@ -34,6 +34,7 @@ export class PbxExtensionn extends BaseEntity {
   @Column()
   accountCode: string; //账号,分机号
   @Column({ nullable: false })
+  @Exclude()
   password: string;
   @Column({ default: 0 })
   agentId: number;

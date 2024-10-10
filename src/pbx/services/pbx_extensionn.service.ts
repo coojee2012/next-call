@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PbxExtensionn, ExtensionSate } from '../entities/pbx_extensionn';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { BaseService } from 'src/common/BaseService';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoggerService } from 'src/logger/logger.service';
 import * as xml from 'xmlbuilder';
 import * as crypto from 'crypto';
+import { orderBy } from 'lodash';
 @Injectable()
 export class PbxExtensionnService extends BaseService<PbxExtensionn> {
   private DialString: string;
@@ -1102,4 +1103,27 @@ export class PbxExtensionnService extends BaseService<PbxExtensionn> {
       return Promise.reject(error);
     }
   }
+
+  async list(tenantId: number, searchKey: string) {
+    try {
+      const where: any = {
+        tenantId,
+        status: 0, // 'Login',
+      };
+      if (searchKey) {
+        where['accountCode'] = Like(`${searchKey}%`);
+      }
+      const docs = await this.repository.find({
+        where,
+        order: {
+          accountCode: 'ASC',
+        },
+      });
+      return docs;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+  
 }
+

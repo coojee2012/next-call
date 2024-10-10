@@ -105,7 +105,7 @@ export class FreeSwitchPbxService {
   message(conn_id:string, data: any) {
     const conn = this.runtimeData.getConn(conn_id);
     conn.message(data, (e: any) => {
-      console.log(e.headers);
+      //console.log(e.headers);
     });
   }
 

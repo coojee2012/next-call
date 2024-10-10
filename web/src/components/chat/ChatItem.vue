@@ -18,7 +18,7 @@
     <div class="chat-right">
       <div class="chat-name">
         <div class="chat-tag" v-if="chat.type == 'GROUP'">
-          <el-tag size="mini">群</el-tag>
+          <el-tag size="small">群</el-tag>
         </div>
         <div class="chat-name-text">{{ chat.showName }}</div>
         <div class="chat-time-text">{{ showTime }}</div>

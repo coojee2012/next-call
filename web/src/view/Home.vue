@@ -37,12 +37,12 @@
           <span class="icon iconfont icon-setting"></span>
         </el-menu-item>
       </el-menu>
-      <el-menu background-color="#E8F2FF" 
+      <el-menu background-color="#E8F2FF" :default-active="activeManaMenu" @select="handleManageMenuSelect"
       style="position: absolute; bottom: 60px;padding-left: 15px;">
         <el-menu-item
           title="管理菜单"
           :index="'/cc/manage'"
-          @click="showSetting()"
+          @click="goRoute('/cc/manage')"
         >
         <el-icon style="font-size: 30px;"><Menu /></el-icon>
         </el-menu-item>
@@ -81,9 +81,7 @@ import FullImage from '../components/common/FullImage.vue';
 import RtcPrivateVideo from '../components/rtc/RtcPrivateVideo.vue';
 import RtcPrivateAcceptor from '../components/rtc/RtcPrivateAcceptor.vue';
 import RtcGroupVideo from '../components/rtc/RtcGroupVideo.vue';
-import { io } from 'socket.io-client';
-import { DEFAULT_FORMATS_DATE } from 'element-plus';
-import { C } from 'jssip';
+
 
 export default {
   components: {
@@ -99,6 +97,7 @@ export default {
     return {
       showSettingDialog: false,
       lastPlayAudioTime: new Date().getTime() - 1000,
+      activeManaMenu: '-1',
     };
   },
   methods: {
@@ -255,6 +254,10 @@ export default {
     },
     goRoute(path) {
       this.$router.push(path);
+    },
+    handleManageMenuSelect(key,path) {
+      console.log('handleManageMenuSelect', key, path);
+      this.activeManaMenu = "-1";
     },
     pullGroupOfflineMessage(minId) {
       this.$store.commit('loadingGroupMsg', true);

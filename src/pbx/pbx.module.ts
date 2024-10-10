@@ -45,6 +45,7 @@ import { PbxLocalNumber } from './entities/pbx_local_number';
 import { PbxRouter } from './entities/pbx_router';
 import { PbxSound } from './entities/pbx_sound';
 import { PbxTrunk } from './entities/pbx_trunk';
+import { PbxExtensionnController } from './controllers/pbx_extensionn.controller';
 
 @Module({
   imports: [
@@ -71,7 +72,11 @@ import { PbxTrunk } from './entities/pbx_trunk';
     TypeOrmModule.forFeature([PbxSound]),
     TypeOrmModule.forFeature([PbxTrunk]),
   ],
-  controllers: [PbxController, PbxAgentController],
+  controllers: [
+    PbxController, 
+    PbxAgentController,
+    PbxExtensionnController
+  ],
   providers: [
     PbxService,
     PbxAgentService,

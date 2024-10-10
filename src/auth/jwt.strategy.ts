@@ -2,7 +2,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
-import { UserEntity } from '../user/entities/user.entity';
  
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,6 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       username: payload.username,
       nickName: payload.nickName,
       sex: payload.sex,
-     } as UserEntity;
+      tenantId: payload.tenantId,
+      domain: payload.domain,
+     };
   }
 }

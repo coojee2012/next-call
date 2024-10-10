@@ -106,7 +106,6 @@
 import FriendItem from '../components/friend/FriendItem.vue'
 import AddFriend from '../components/friend/AddFriend.vue'
 import HeadImage from '../components/common/HeadImage.vue'
-import { fr } from 'element-plus/es/locale/index.mjs';
 
 export default {
   name: 'friend',

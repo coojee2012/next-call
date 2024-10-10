@@ -23,5 +23,4 @@ const data = {
     min: 1,
   },
 };
-console.log("1111111")
-console.log(JSON.stringify(data))
+

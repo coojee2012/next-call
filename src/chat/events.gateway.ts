@@ -51,10 +51,13 @@ export class EventGateway
       }
       const token = authHeader.replace('Bearer ', '');
       const userInfo = await this.jwtService.decode(token);
-      const { sub, nickName } = userInfo;
+      const { sub, nickName, tenantId, domain } = userInfo;
       console.log('cat jwt userinfo:', userInfo);
       client.user = {
         id: sub,
+        domain: domain,
+        nickName,
+        tenantId,
         lastActiveTime: client.handshake.issued,
       };
       this.chatService.addUserSocket(sub, client);

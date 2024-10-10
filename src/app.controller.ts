@@ -69,7 +69,7 @@ export class AppController {
   @Post('image/upload')
   @UseInterceptors(FileInterceptor('file', { storage }))
   imageUpload(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+    //console.log(file);
     return {
       originUrl: `http://127.0.0.1:3001/static/${file.filename}`, // replace with your own domain and port
       thumbUrl: `http://127.0.0.1:3001/static/${file.filename}`, // replace with your own domain and port
@@ -78,7 +78,7 @@ export class AppController {
   @Post('file/upload')
   @UseInterceptors(FileInterceptor('file', { storage }))
   fileUpload(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+    //console.log(file);
     return  `http://127.0.0.1:3001/static/${file.filename}`; // replace with your own domain and port
      
   }

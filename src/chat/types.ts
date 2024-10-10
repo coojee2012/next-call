@@ -4,6 +4,9 @@ export interface SocketWithUserData extends Socket {
   user: {
     id: number;
     lastActiveTime: number;
+    domain: string;
+    tenantId: number;
+    nickName: string;
   };
 }
 
