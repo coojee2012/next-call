@@ -15,7 +15,7 @@
         <el-input
           v-model="searchKey"
           clearable
-          size="large"
+          size="default"
           style="max-width: 300px; margin-right: 10px"
           placeholder="关键字搜索"
           @input="handleSearch"
@@ -27,10 +27,10 @@
           </template>
         </el-input>
 
-        <el-button type="primary" size="large" @click="handleCreateExt"
+        <el-button type="primary" size="default" @click="handleCreateExt"
           >新建分机</el-button
         >
-        <el-button type="primary" size="large" @click="handleBatchCreateExt"
+        <el-button type="primary" size="default" @click="handleBatchCreateExt"
           >批量新建</el-button
         >
       </el-col>
@@ -47,22 +47,38 @@
           {{ formatedDate(scope.row.createAt) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="140">
         <template #default="scope">
+          <el-button-group>
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="分配分机到坐席"
+              placement="top"
+            >
           <el-button
             size="small"
-            type="primary"
+            type="success"
             @click="handleEdit(scope.$index, scope.row)"
           >
-            编辑
+          <el-icon><Avatar /></el-icon>
           </el-button>
+        </el-tooltip>
+        <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="删除队列"
+              placement="top"
+            >
           <el-button
             size="small"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
           >
-            删除
+          <el-icon><Delete /></el-icon>
           </el-button>
+        </el-tooltip>
+        </el-button-group>
         </template>
       </el-table-column>
     </el-table>
@@ -291,11 +307,11 @@ const submitForm = async () => {
       const password = extForm.value.password;
       const codes = [];
       for (let i = startCode; i <= endCode; i++) {
-        codes.push(i);
+        codes.push(`${i}`);
       }
       const a = await store.dispatch(
-        'extensionStore/batchCreateExtension',
-        { codes, password },
+        'extensionStore/batchCreateExtensions',
+        { accountCodes:codes, password },
       );
       if (a) {
         dialogVisible.value = false;
@@ -317,8 +333,25 @@ const handleEdit = (index, row) => {
   isBatch.value = false;
 };
 
-const handleDelete = (index, row) => {
+const handleDelete = async (index, row) => {
   console.log('handleDelete', index, row);
+  try {
+    await store.dispatch('extensionStore/deleteExtension', row.id);
+    await fetchExtensions();
+    ElMessage({
+      message: '删除成功',
+      type:'success',
+      duration: 1500,
+      customClass: 'element-error-message-zindex',
+    })
+  } catch (error) {
+    ElMessage({
+      message: '删除失败',
+      type: 'error',
+      duration: 1500,
+      customClass: 'element-error-message-zindex',
+    })
+  }
 };
 </script>
 <style lang="scss">

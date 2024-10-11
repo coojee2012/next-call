@@ -16,6 +16,7 @@ export class Tenant extends BaseEntity {
     balance: number; // 账户余额
     @Column({default:0})
     consume: number;  // 消费总额
+    @Column({default:''})
     apikey: string;
     @Column('simple-array')
     dids: string[];  // 呼叫中心电话号码

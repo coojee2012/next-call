@@ -62,6 +62,26 @@ export default VueRouter.createRouter({
               path: '/cc/manage/ivr',
               component: () => import('../view/manage/IVR'), 
             },
+            {
+              name: 'PBXRoute',
+              path: '/cc/manage/route',
+              component: () => import('../view/manage/PBXRoute'), 
+            },
+            {
+              name: 'PBXSound',
+              path: '/cc/manage/sound',
+              component: () => import('../view/manage/PBXSound'), 
+            },
+            {
+              name: 'PBXRecord',
+              path: '/cc/manage/record',
+              component: () => import('../view/manage/PBXRecord'), 
+            },
+            {
+              name: 'PBXCdr',
+              path: '/cc/manage/cdr',
+              component: () => import('../view/manage/PBXCdr'), 
+            },
           ]
         }
       ],

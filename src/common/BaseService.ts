@@ -1,4 +1,4 @@
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { Brackets, DeepPartial, FindOptionsWhere, Like, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { BaseEntity } from './entiies/BaseEntity';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -7,6 +7,20 @@ export abstract class BaseService<T extends BaseEntity> {
 
   async findAll(): Promise<T[]> {
     return await this.repository.find();
+  }
+
+  async listSearch(searchKey:string, searchFields:string[], data: Partial<T>): Promise<T[]> {
+    const where: string | Brackets | ObjectLiteral | ObjectLiteral[] | ((qb: SelectQueryBuilder<T>) => string) = [];
+    if(searchKey) {
+      searchFields.forEach(field => {
+        where.push({ [field]: Like(`%${searchKey}%`) });
+      });
+    }
+    const docs = await this.repository.createQueryBuilder()
+    .where(where)
+    .andWhere(data)
+    .getMany();
+    return docs;
   }
 
   async findById(id: number): Promise<T|null> {
@@ -48,6 +62,16 @@ export abstract class BaseService<T extends BaseEntity> {
 
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+  async deleteOne(where: Partial<T>): Promise<void> {
+    await this.repository.delete(where as FindOptionsWhere<T>);
+  }
+  async deleteBy(where: Partial<T>): Promise<number> {
+    const result = await this.repository.delete(where as FindOptionsWhere<T>);
+    if(!result || !result.affected) {
+      return 0;
+    }
+    return result.affected;
   }
 }
 

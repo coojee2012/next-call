@@ -46,6 +46,9 @@ import { PbxRouter } from './entities/pbx_router';
 import { PbxSound } from './entities/pbx_sound';
 import { PbxTrunk } from './entities/pbx_trunk';
 import { PbxExtensionnController } from './controllers/pbx_extensionn.controller';
+import { Pbx } from './entities/pbx.entity';
+import { PbxQueueController } from './controllers/pbx_queue.controller';
+import { PbxIvrMenmuController } from './controllers/pbx_ivr_menmu.controller';
 
 @Module({
   imports: [
@@ -75,7 +78,9 @@ import { PbxExtensionnController } from './controllers/pbx_extensionn.controller
   controllers: [
     PbxController, 
     PbxAgentController,
-    PbxExtensionnController
+    PbxExtensionnController,
+    PbxQueueController,
+    PbxIvrMenmuController,
   ],
   providers: [
     PbxService,

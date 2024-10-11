@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
 
 export enum TrunkPtotocol {
@@ -14,6 +14,7 @@ export enum TrunkTransport {
 }
 
 @Entity('pbx_trunk')
+@Index(['name', 'tenantId'], { unique: true })
 export class PbxTrunk extends BaseEntity {
   @Column()
   tenantId: number;

@@ -18,10 +18,15 @@
             <el-menu-item index="/cc/manage/extension"  :route="'/cc/manage/extension'">分机管理</el-menu-item>
             <el-menu-item index="/cc/manage/queue">队列管理</el-menu-item>
             <el-menu-item index="/cc/manage/ivr">IVR管理</el-menu-item>
-            <el-menu-item index="1-4">语音管理</el-menu-item>
+            <el-menu-item index="/cc/manage/route">路由管理</el-menu-item>
+            <el-menu-item index="/cc/manage/sound">语音管理</el-menu-item>
+            <el-menu-item index="/cc/manage/record">录音管理</el-menu-item>
+            <el-menu-item index="/cc/manage/cdr">通话记录</el-menu-item>
           </el-menu-item-group>
-          <el-menu-item-group title="进阶配置" style="text-align: left;">
-            <el-menu-item index="1-5">item three</el-menu-item>
+          <el-menu-item-group title="进阶管理" style="text-align: left;">
+            <el-menu-item index="/cc/manage/autocall">自动外呼</el-menu-item>
+            <el-menu-item index="/cc/manage/mancall">人工外呼</el-menu-item>
+            
           </el-menu-item-group>
           
         </el-sub-menu>

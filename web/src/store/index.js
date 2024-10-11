@@ -7,6 +7,8 @@ import groupStore from './groupStore.js'
 import configStore from './configStore.js'
 import uiStore from './uiStore.js'
 import extensionStore from './extensionStore.js'
+import queueStore from './queueStore.js'
+import ivrStore from './ivrStore.js'
 
 export default Vuex.createStore({
   modules: {
@@ -17,6 +19,8 @@ export default Vuex.createStore({
     configStore,
     uiStore,
     extensionStore,
+    queueStore,
+    ivrStore,
   },
   state: {},
   mutations: {},

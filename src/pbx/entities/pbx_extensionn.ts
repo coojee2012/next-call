@@ -1,6 +1,8 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { Column, Entity, OneToMany, Index } from 'typeorm';
+import { Column, Entity, OneToMany, Index, OneToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from 'src/common/entiies/BaseEntity';
+import { UserEntity } from 'src/user/entities/user.entity';
+
 
 // 签入状态 embedPhone电话条,softPhone软电话like:sipLite,physicalPhone:Avaya IP话机 OR Cisco IP话机
 export enum ExtensionLoginType {
@@ -28,6 +30,7 @@ export enum ExtensionLoginType {
   }
 
 @Entity('pbx_extensionn')
+@Index(["tenantId", "accountCode"], { unique: true })
 export class PbxExtensionn extends BaseEntity {
   @Column()
   tenantId: number;
@@ -36,8 +39,11 @@ export class PbxExtensionn extends BaseEntity {
   @Column({ nullable: false })
   @Exclude()
   password: string;
-  @Column({ default: 0 })
-  agentId: number;
+  @OneToOne(() => UserEntity)
+  @JoinColumn() 
+  agent:UserEntity
+  @Column({default: null, nullable:true})
+  agentId: number; //坐席ID
   @Column({default: ''})
   deviceProto: string; //设备协议
   @Column({default: ''})

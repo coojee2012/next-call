@@ -6,12 +6,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoggerService } from 'src/logger/logger.service';
 import * as xml from 'xmlbuilder';
 import * as crypto from 'crypto';
-import { orderBy } from 'lodash';
+
 @Injectable()
 export class PbxExtensionnService extends BaseService<PbxExtensionn> {
   private DialString: string;
   constructor(
     @InjectRepository(PbxExtensionn) repository: Repository<PbxExtensionn>,
+    
     private readonly logger: LoggerService,
   ) {
     super(repository);
@@ -1104,7 +1105,7 @@ export class PbxExtensionnService extends BaseService<PbxExtensionn> {
     }
   }
 
-  async list(tenantId: number, searchKey: string) {
+  async list(tenantId: number, searchKey: string): Promise<PbxExtensionn[]> {
     try {
       const where: any = {
         tenantId,
@@ -1123,6 +1124,26 @@ export class PbxExtensionnService extends BaseService<PbxExtensionn> {
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  async batchCreate(tenantId: number, newAccounts: string[], password: string): Promise<PbxExtensionn[]> {
+    const existsAccounts = await this.repository.find({
+      where: {tenantId: tenantId},
+      select: ['accountCode'],
+    });
+    const existsAccountCodes = existsAccounts.map(item => item.accountCode);
+    const newAccountCodes = newAccounts.filter(item =>!existsAccountCodes.includes(`${item}`));
+    const newAccountsData = newAccountCodes.map(item => {
+      return {
+        tenantId,
+        accountCode: item,
+        logicOptions: '{}',
+        password,
+        status: 0, 
+      };
+    });
+    const result = await this.repository.save(newAccountsData);
+    return result;
   }
   
 }

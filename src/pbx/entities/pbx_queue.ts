@@ -23,7 +23,7 @@ export class PbxQueue extends BaseEntity {
   sayMember: boolean; //是否启用播放坐席工号
   @Column({default: ''})
   failedDone: string; //队列呼叫失败的本地处理号码
-  @Column('simple-array')
+  @Column({type: 'simple-array', nullable: true})
   members: string[]; //队列成员，如:[8001,8002,8003]
   /**                  
    ;ringall :ring 所有可用channels 直到应答为止
@@ -38,11 +38,15 @@ export class PbxQueue extends BaseEntity {
   @Column({default: 0})
   announceFrequency: number; //每隔多少秒将向队列等待者播放提示录音
   @OneToOne(() => PbxQueueOption)
-  @JoinColumn()
+  @JoinColumn({name: 'queueOptionId'})
   queueOption: PbxQueueOption;
+  @Column({nullable: true})
+  queueOptionId: number;
   @OneToOne(() => PbxQueueAgentOption)
-  @JoinColumn()
+  @JoinColumn({name: 'agentOptionId'})
   agentOption: PbxQueueAgentOption; // 'callback' will try to reach the agent via the contact fields value. 'uuid-standby' will try to bridge the call directly using the agent uuid.
-  @Column()
+  @Column({nullable: true})
+  agentOptionId: number;
+  @Column({default: false})
   hasNew: boolean;
 }
