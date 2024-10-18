@@ -82,6 +82,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <ex-tableb :columns="columns" :table-data="extList" style="width: 100%"  @update:columns="updateColumns"  />
   </el-container>
   <el-dialog
     v-model="dialogVisible"
@@ -151,12 +152,12 @@
   </el-dialog>
 </template>
 <script setup>
-import { ref, onMounted, watchEffect, nextTick, computed } from 'vue';
+import { ref, onMounted, watchEffect, nextTick, computed, h } from 'vue';
 import { debounce } from 'lodash';
 import { useStore } from 'vuex';
 import moment from 'moment';
 import { ElMessage  } from 'element-plus'
-
+import ExTableb from '../../components/common/ExTableb.vue';
 const store = useStore();
 console.log('extension page store', store.state.extensionStore);
 const fetchExtensions = async (searchKey = '') => {
@@ -221,6 +222,28 @@ const dialogTitle = ref('');
 const formSize = ref('default');
 const extFormRef = ref(null);
 const formReady = ref(false);
+
+const columns = ref([
+  { label: '分机号码', prop: 'accountCode', width: '180', show: true },
+  { label: '状态', prop: 'accountCode', width: '180',  show: true,
+   template: (row) => { return row.status === 0 ? '启用' : '停用' } 
+  },
+  { label: '创建时间', prop: 'createAt', width: '180',  show: true,
+   template: (row) => { return formatedDate(row.createAt) }
+   },
+   { label: '操作', prop: 'id', width: '140', show: true, 
+   template: (row) => { 
+    return h('div', [
+      h('el-button', { onClick: () => { /* 编辑操作 */ } }, '编辑'),
+      h('el-button', { type: 'danger', onClick: () => { /* 删除操作 */ } }, '删除')
+    ]) 
+} },
+]);
+
+const updateColumns = (newColumns) => {
+  console.log('updateColumns', newColumns);
+  columns.value = newColumns;
+};
 
 onMounted(() => {
   console.log('extension page mounted');

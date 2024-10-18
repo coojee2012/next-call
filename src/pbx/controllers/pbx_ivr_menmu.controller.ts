@@ -27,4 +27,20 @@ export class PbxIvrMenmuController {
             ivrName, 
             description});
     }
+    @Put(':id')
+    async update(@Req() req: Request, @Param('id') id: number, @Body() body: any): Promise<PbxIvrMenmu | null> {
+        const user = req.user as any;
+        const {tenantId} = user
+        const {ivrNumber,ivrName, description} = body;
+        return await this.pbxIvrMenmuService.updateOne({id, tenantId}, {
+            ivrName, 
+            description});
+    }
+
+    @Delete(':id')
+    async delete(@Req() req: Request, @Param('id') id: number): Promise<any> {
+        const user = req.user as any;
+        const {tenantId} = user
+        return await this.pbxIvrMenmuService.deleteBy({id,tenantId});    
+    }
 }
